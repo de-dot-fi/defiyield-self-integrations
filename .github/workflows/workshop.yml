@@ -1,0 +1,33 @@
+name: "DeFiYield Self Integrations Workshop"
+on:
+  pull_request:
+
+jobs:
+  go:
+    name: "Run DeFiYield Self Integrations Workshop Tasks"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout Repo"
+        uses: actions/checkout@v3
+
+      - name: "Set up Node.js"
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16.17"
+          cache: "yarn"
+          architecture: "x64"
+
+      - name: Install All The Dependencies
+        run: yarn install --immutable
+
+      - name: "Build All The Projects"
+        run: yarn workshop build
+
+      - name: "Run Tests"
+        run: yarn workshop test
+
+      - name: "Run Linter"
+        run: yarn workshop lint
+
+      - name: "Run Prettier"
+        run: yarn workshop format

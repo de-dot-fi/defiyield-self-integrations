@@ -1,0 +1,14 @@
+{
+  "name": "@defiyield/eslint-config",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "@typescript-eslint/eslint-plugin": "^5.41.0",
+    "@typescript-eslint/parser": "^5.41.0",
+    "eslint": "^8.26.0",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-sonarjs": "^0.16.0",
+    "typescript": "^4.8.4"
+  }
+}

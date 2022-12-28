@@ -1,0 +1,10 @@
+.panelTitleWrapper {
+  margin-right: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  justify-items: end;
+}
+
+.panelExtraText {
+  color: var(--text-secondary);
+}

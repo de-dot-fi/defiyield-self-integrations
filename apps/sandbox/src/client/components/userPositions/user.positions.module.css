@@ -1,0 +1,36 @@
+.textInput {
+  height: 100%;
+  width: 380px !important;
+  padding: 14px 16px !important;
+  border: var(--border) !important;
+  border-radius: var(--border-radius) !important;
+  color: var(--text-secondary) !important;
+  margin-right: 12px !important;
+}
+
+.submitButton {
+  height: 100%;
+  border-radius: 4px !important;
+  padding: 12px 24px !important;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 24px;
+  background-color: var(--text-accent) !important;
+}
+
+.submitButton:hover {
+  background-color: var(--text-accent-light20) !important;
+}
+
+.submitButton:active {
+  background-color: var(--text-accent-dark20) !important;
+}
+
+.noDataMessage {
+  margin: 24px;
+  color: var(--text-secondary);
+}
+
+.warningMessage {
+  color: var(---text-warning);
+}

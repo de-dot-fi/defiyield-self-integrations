@@ -1,0 +1,4 @@
+{
+  "extends": "@defiyield/tsconfig/base.json",
+  "display": "Sandbox"
+}

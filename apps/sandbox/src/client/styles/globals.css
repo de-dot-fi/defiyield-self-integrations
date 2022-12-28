@@ -1,0 +1,120 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+svg.loader {
+    display: block;
+    width: 80px;
+    height: 80px;
+    transform-origin: 50%;
+    -webkit-animation: svg-spinner 1.4s linear infinite;
+            animation: svg-spinner 1.4s linear infinite;
+  }
+  svg.loader .spinner {
+    stroke-dasharray: 224;
+    stroke-dashoffset: 0;
+    transform-origin: 50%;
+    -webkit-animation: spinner 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+            animation: spinner 1.4s ease-in-out infinite, colors 5.6s ease-in-out infinite;
+  }
+
+:root {
+    --background-main: #F9FAFD;
+    --background-primary: #fff;
+    --divider-primary: #EDEFF1;
+
+    --text-primary: #050F19;
+    --text-secondary: #657795;
+    --text-warning: #FF9500;
+    --text-positive: #0CCE6B;
+    --text-accent: #1452F0;
+    --text-accent-dark20: #1042C0;
+    --text-accent-light20: #4375F3;
+
+    --border: 1px solid var(--divider-primary);
+    --border-radius: 8px;
+}
+
+body {
+    background-color: var(--background-main);
+    color: var(--text-primary)
+}
+
+@-webkit-keyframes spinner {
+    0% {
+      stroke-dashoffset: 224;
+    }
+    50% {
+      stroke-dashoffset: 56;
+      transform: rotate(135deg);
+    }
+    100% {
+      stroke-dashoffset: 224;
+      transform: rotate(360deg);
+    }
+  }
+  
+  @keyframes spinner {
+    0% {
+      stroke-dashoffset: 224;
+    }
+    50% {
+      stroke-dashoffset: 56;
+      transform: rotate(135deg);
+    }
+    100% {
+      stroke-dashoffset: 224;
+      transform: rotate(360deg);
+    }
+  }
+  @-webkit-keyframes colors {
+    0% {
+      stroke: #22ff00;
+    }
+    25% {
+      stroke: #ffee00;
+    }
+    50% {
+      stroke: #ff9f00;
+    }
+    75% {
+      stroke: #ff7700;
+    }
+    100% {
+      stroke: #22ff00;
+    }
+  }
+  @keyframes colors {
+    0% {
+      stroke: #22ff00;
+    }
+    25% {
+      stroke: #ffee00;
+    }
+    50% {
+      stroke: #ff9f00;
+    }
+    75% {
+      stroke: #ff7700;
+    }
+    100% {
+      stroke: #22ff00;
+    }
+  }
+  @-webkit-keyframes svg-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(270deg);
+    }
+  }
+  @keyframes svg-spinner {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(270deg);
+    }
+  }

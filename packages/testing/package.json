@@ -1,0 +1,20 @@
+{
+  "name": "@defiyield/testing",
+  "prettier": "../../packages/prettier-config",
+  "main": "index.ts",
+  "dependencies": {
+    "@defiyield/sandbox": "workspace:^",
+    "@defiyield/tsconfig": "workspace:^",
+    "axios": "^1.1.3",
+    "axios-mock-adapter": "^1.21.2",
+    "bignumber.js": "^9.1.0",
+    "vitest": "^0.25.1"
+  },
+  "devDependencies": {
+    "@defiyield/eslint-config": "workspace:^",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.43.0",
+    "eslint": "^8.27.0",
+    "eslint-plugin-sonarjs": "^0.16.0"
+  }
+}

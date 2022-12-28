@@ -1,0 +1,5 @@
+{
+  "extends": "@defiyield/tsconfig/base.json",
+  "display": "Workshop",
+  "include": ["**/*.ts", "**/*.json"]
+}

@@ -1,0 +1,25 @@
+{
+  "typescript.tsdk": ".yarn/sdks/typescript/lib",
+  "eslint.packageManager": "yarn",
+  "npm.packageManager": "yarn",
+  "search.exclude": {
+    "**/.yarn": true,
+    "**/.pnp.*": true
+  },
+  "typescript.enablePromptUseWorkspaceTsdk": true,
+  "cSpell.words": [
+    "arbitrum",
+    "boba",
+    "celo",
+    "cronos",
+    "Defi",
+    "defiyield",
+    "ethcall",
+    "heco",
+    "iotex",
+    "klaytn",
+    "kucoin",
+    "milkomedia",
+    "moonriver"
+  ]
+}

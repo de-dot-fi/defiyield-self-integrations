@@ -1,0 +1,12 @@
+{
+  "name": "@defiyield/utils",
+  "prettier": "../../packages/prettier-config",
+  "devDependencies": {
+    "@defiyield/eslint-config": "workspace:^",
+    "@defiyield/tsconfig": "workspace:^",
+    "@typescript-eslint/eslint-plugin": "^5.42.1",
+    "@typescript-eslint/parser": "^5.43.0",
+    "eslint": "^8.27.0",
+    "eslint-plugin-sonarjs": "^0.16.0"
+  }
+}

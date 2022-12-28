@@ -1,0 +1,12 @@
+.tokenLogo {
+  width: 40px;
+  height: 40px;
+}
+
+.warningMessage {
+  color: var(--text-warning);
+}
+
+.panel {
+  margin: 24px;
+}
