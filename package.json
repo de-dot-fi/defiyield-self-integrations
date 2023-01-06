@@ -3,9 +3,9 @@
   "packageManager": "yarn@3.2.4",
   "private": true,
   "lint-staged": {
-    "*.json": "prettier --write",
+    "*.json": "yarn dlx prettier --write",
     "*.ts": [
-      "prettier --write",
+      "yarn dlx prettier --write",
       "yarn lint"
     ]
   },
