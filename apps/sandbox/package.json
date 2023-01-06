@@ -33,6 +33,7 @@
     "typescript": "^4.8.4"
   },
   "dependencies": {
+    "@emurgo/cardano-serialization-lib-nodejs": "11.2.1",
     "@koa/router": "^12.0.0",
     "@urql/core": "^3.0.4",
     "antd": "^5.0.0",

@@ -214,6 +214,13 @@ export default convict({
       env: 'KLAYTN_RPC',
       arg: 'klaytn',
     },
+    cardano: {
+      doc: 'Cardano REST url',
+      format: String,
+      default: 'https://api.koios.rest/api/v0',
+      env: 'CARDANO_RPC',
+      arg: 'Cardano',
+    },
   },
 })
   .validate({ allowed: 'strict' })

@@ -43,7 +43,8 @@ export function PoolList({ onPoolsLoaded }) {
   const PanelTitle = ({ pool }: { pool: IPool }) => {
     return (
       <span className={styles.panelTitleWrapper}>
-        <span>{pool.id}</span> <PanelSuppliedTokens supplied={pool?.supplied} />
+        <span className={styles.panelTitleWrapper__assetId}>{pool.id}</span> 
+        <PanelSuppliedTokens supplied={pool?.supplied} />
         <PanelTvl supplied={pool?.supplied} />
       </span>
     );

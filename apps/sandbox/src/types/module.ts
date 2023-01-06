@@ -1,6 +1,7 @@
 import { AxiosInstance, AxiosStatic } from 'axios';
 import type BigNumber from 'bignumber.js';
 import type * as ethcall from 'ethcall';
+import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
 
 export type SupportedChain =
@@ -27,9 +28,10 @@ export type SupportedChain =
   | 'moonriver'
   | 'okx'
   | 'optimism'
-  | 'polygon';
+  | 'polygon'
+  | 'cardano';
 
-export type SupportedProtocolType = 'staking' | 'lending';
+export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
 export interface LoggerInterface {
   debug: (msg: string) => void;
@@ -40,6 +42,7 @@ export interface LoggerInterface {
 
 export type Context = {
   ethers: typeof ethers;
+  cardano: typeof cardano;
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: ethcall.Provider;
@@ -93,13 +96,16 @@ export type FetchPoolsContext = Context & {
   tokens: Token[];
 };
 export type FetchUserPositionsContext = Context & {
-  // tokens: Token[];
   pools: Pool[];
   user: Address;
 };
 
 export type FetchTokenDetailsContext = Context & {
   address: Address;
+};
+
+export type FetchTokenPricesContext = Context & {
+  assets: ComplexAsset[];
 };
 
 export type UserPosition = GenericPool<UserSupplied, UserRewarded, UserBorrowed>;
@@ -151,10 +157,6 @@ export interface ComplexAsset {
   underlying: UnderlyingAsset[];
   metadata: AssetMetadata;
 }
-
-export type FetchTokenPricesContext = Context & {
-  assets: ComplexAsset[];
-};
 
 export interface IPlatformLinks {
   url: string; // website url

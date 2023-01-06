@@ -5,6 +5,7 @@ import { createMap } from './utils/createMap';
 import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
+import * as cardano from './utils/cardano';
 
 async function createProviders(rpc: string): Promise<ChainProvider | void> {
   try {
@@ -14,6 +15,7 @@ async function createProviders(rpc: string): Promise<ChainProvider | void> {
     await ethcallProvider.init(ethersProvider);
 
     return {
+      cardano: null as any,
       ethers: ethers,
       ethcall: ethcall,
       provider: ethersProvider,
@@ -24,6 +26,16 @@ async function createProviders(rpc: string): Promise<ChainProvider | void> {
       `RPC - Failed to connect to ${rpc} If this impacts your work, please update the RPC in your .env file`,
     );
   }
+}
+
+function createCardanoProviders(): ChainProvider {
+  return {
+    cardano: cardano,
+    ethers: null as any,
+    ethcall: null as any,
+    provider: null as any,
+    ethcallProvider: null as any,
+  };
 }
 
 export async function initializeProviders(): Promise<ProviderMap> {
@@ -104,6 +116,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     okx,
     optimism,
     polygon,
+    cardano: createCardanoProviders(),
   };
 
   return createMap(providerOptions) as ProviderMap;

@@ -244,7 +244,7 @@ export class Project {
             ...context,
             address,
           });
-          if (newToken?.underlying?.length) {
+          if (newToken) {
             found.push(await this.fillUnderlying(newToken, context));
           }
         }),
