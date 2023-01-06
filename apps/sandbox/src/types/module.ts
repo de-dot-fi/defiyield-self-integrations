@@ -64,6 +64,7 @@ export type Token = {
 
   underlying: TokenUnderlying[];
   price?: number;
+  totalSupply?: string;
 };
 
 export interface TokenUnderlying extends Token {
@@ -106,13 +107,14 @@ export type FetchTokenDetailsContext = Context & {
 
 export type FetchTokenPricesContext = Context & {
   assets: ComplexAsset[];
+  allAssets: ComplexAsset[];
 };
 
 export type UserPosition = GenericPool<UserSupplied, UserRewarded, UserBorrowed>;
 
 export type TokenDetail = {
-  name: string;
-  symbol: string;
+  name?: string;
+  symbol?: string;
   icon?: string;
   address: Address;
   decimals: number;
@@ -152,6 +154,7 @@ export interface AssetMetadata {
 }
 export interface ComplexAsset {
   address: string;
+  price?: number;
   decimals: number;
   categories: ComplexAssetCategory[];
   underlying: UnderlyingAsset[];

@@ -1,4 +1,4 @@
-import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
+import type { ModuleDefinitionInterface, TokenDetail, TokenExtra } from '@defiyield/sandbox';
 import { CARDANO_COIN_ADDRESS } from '../../../common/constants/cardano.constants';
 import { ADAX_POLICY, AVAILABLE_POOLS } from '../helpers/constants';
 import { accountAssets } from '../helpers/queries';
@@ -16,46 +16,37 @@ export const AdaxLiquidity: ModuleDefinitionInterface = {
   },
 
   async fetchMissingTokenDetails({ address }) {
-    if (!AVAILABLE_POOLS.has(address)) {
-      return;
-    }
-
     const underlying = AVAILABLE_POOLS.get(address);
-    if (!underlying) {
-      return;
+    if (Array.isArray(underlying)) {
+      return <TokenDetail>{
+        decimals: 0,
+        address,
+        underlying,
+      };
     }
-    const name = 'Cardano LP';
-    return {
-      name: name,
-      symbol: name,
-      address: address,
-      decimals: 0,
-      displayName: name,
-      underlying: [],
-    };
+    return void 0;
   },
 
-  async fetchPools({ tokens, axios, BigNumber }) {
+  async fetchMissingTokenPrices({ assets, axios, BigNumber, allAssets }) {
     const {
       data: { pools },
     } = await axios.post('https://amm-api.adax.pro', { endpoint: 'getPools' });
 
-    const adaToken = tokens.find((token) => token.address === CARDANO_COIN_ADDRESS);
+    const adaToken = allAssets.find((token) => token.address === CARDANO_COIN_ADDRESS);
     const poolMap = new Map(
       pools.map((pool: any) => [`${ADAX_POLICY}.${pool.pool_nft_name}`, pool]),
     );
 
-    return tokens
+    return assets
       .filter((token) => token.address.startsWith(ADAX_POLICY))
       .map((token) => {
         const pool: any = poolMap.get(token.address);
-        const secondToken = tokens.find(
-          (token) => token.address === `${pool.asset_b.symbol}.${pool.asset_b.name}`,
-        );
+        const secondTokenAddress = `${pool.asset_b.symbol}.${pool.asset_b.name}`;
+        const secondToken = allAssets.find((token) => token.address === secondTokenAddress);
         let tvl = new BigNumber(0);
         let price = new BigNumber(0);
 
-        if (adaToken?.price && secondToken?.price) {
+        if (adaToken!.price && secondToken!.price) {
           const amountA = new BigNumber(pool.asset_a.amount).div(
             10 ** pool.asset_a.metadata.metadata_decimals,
           );
@@ -63,23 +54,40 @@ export const AdaxLiquidity: ModuleDefinitionInterface = {
             10 ** pool.asset_b.metadata.metadata_decimals,
           );
 
-          tvl = amountA.times(adaToken.price).plus(amountB.times(secondToken.price));
+          tvl = amountA.times(adaToken!.price).plus(amountB.times(secondToken!.price));
           price = tvl.div(pool.pool_lp_amount);
         }
-        const newTokenSymbol = `ADA-${secondToken?.displayName}`;
 
+        return {
+          address: token.address,
+          price: price.toNumber(),
+          underlying: [
+            {
+              address: CARDANO_COIN_ADDRESS,
+              reserve: Number(pool.asset_a.amount).toString(),
+            },
+            {
+              address: secondTokenAddress,
+              reserve: Number(pool.asset_b.amount).toString(),
+            },
+          ],
+          totalSupply: Number(pool.pool_lp_amount).toString(),
+        };
+      });
+  },
+
+  async fetchPools({ tokens, BigNumber }) {
+    return tokens
+      .filter((token) => token.address.startsWith(ADAX_POLICY))
+      .map((token) => {
         return {
           id: token.address,
           supplied: [
             {
               token: {
                 ...token,
-                name: `${newTokenSymbol} LP`,
-                symbol: newTokenSymbol,
-                displayName: `${newTokenSymbol} LP`,
-                price: price.toNumber(),
               },
-              tvl: tvl.toNumber(),
+              tvl: new BigNumber(token?.price || 0).times(token?.totalSupply || 0).toNumber(),
             },
           ],
         };
