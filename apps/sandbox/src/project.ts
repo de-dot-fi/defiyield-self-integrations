@@ -283,13 +283,14 @@ export class Project {
   }
 
   private async fetchBasicTokenInfo(addresses: Address[], context: Context): Promise<Token[]> {
-    // TODO: batch and use internal where possible
-    // const tokens = await client.fetchTokens(
-    //   addresses.map((address) => ({
-    //     chainId: getInternalChainId(module.chain),
-    //     address,
-    //   }))
-    // )
+    if (context.chain === 'cardano') {
+      return await client.fetchTokens(
+        addresses.map((address) => ({
+          chainId: getInternalChainId(context.chain),
+          address,
+        })),
+      );
+    }
 
     const info = await context.ethcallProvider.all(
       addresses.flatMap((address) => {
@@ -313,6 +314,7 @@ export class Project {
       } as Token;
     });
   }
+
   private getMergedUniqueTokenMap(tokens: Token[]) {
     const flat = tokens.flatMap((token) => this.flattenTokenStructure(token));
     return flat.reduce((map, token) => {

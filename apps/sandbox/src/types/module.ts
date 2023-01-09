@@ -23,7 +23,7 @@ export type SupportedChain =
   | 'klaytn'
   | 'kucoin'
   | 'metis'
-  | 'milkomedia'
+  | 'milkomeda'
   | 'moonbeam'
   | 'moonriver'
   | 'okx'
@@ -41,6 +41,7 @@ export interface LoggerInterface {
 }
 
 export type Context = {
+  chain: SupportedChain;
   ethers: typeof ethers;
   cardano: typeof cardano;
   provider: ethers.providers.BaseProvider;

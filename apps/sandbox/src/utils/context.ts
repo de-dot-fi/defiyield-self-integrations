@@ -8,6 +8,7 @@ import * as cardano from './cardano';
 
 export function createContext(chain: ChainProvider) {
   const context: Context = {
+    chain: chain.chain,
     axios: axios,
     cardano: cardano,
     BigNumber: BigNumber,
