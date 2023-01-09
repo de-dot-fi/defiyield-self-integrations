@@ -1,4 +1,4 @@
-import type { ModuleDefinitionInterface, TokenDetail, TokenExtra } from '@defiyield/sandbox';
+import type { ModuleDefinitionInterface, TokenDetail } from '@defiyield/sandbox';
 import { CARDANO_COIN_ADDRESS } from '../../../common/constants/cardano.constants';
 import { ADAX_POLICY, AVAILABLE_POOLS } from '../helpers/constants';
 import { accountAssets, getPools } from '../helpers/queries';
