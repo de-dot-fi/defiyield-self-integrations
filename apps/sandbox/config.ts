@@ -165,12 +165,12 @@ export default convict({
       env: 'METIS_URL',
       arg: 'metis',
     },
-    milkomedia: {
+    milkomeda: {
       doc: 'Milkomedia RPC url',
       format: String,
       default: 'https://rpc-mainnet-cardano-evm.c1.milkomeda.com',
-      env: 'MILKOMEDIA_URL',
-      arg: 'milkomedia',
+      env: 'MILKOMEDA_URL',
+      arg: 'milkomeda',
     },
     moonbeam: {
       doc: 'Moonbeam RPC url',
@@ -213,6 +213,13 @@ export default convict({
       default: 'https://public-node-api.klaytnapi.com/v1/cypress',
       env: 'KLAYTN_RPC',
       arg: 'klaytn',
+    },
+    cardano: {
+      doc: 'Cardano REST url',
+      format: String,
+      default: 'https://api.koios.rest/api/v0',
+      env: 'CARDANO_RPC',
+      arg: 'cardano',
     },
   },
 })

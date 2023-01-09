@@ -1,6 +1,7 @@
 import { AxiosInstance, AxiosStatic } from 'axios';
 import type BigNumber from 'bignumber.js';
 import type * as ethcall from 'ethcall';
+import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
 
 export type SupportedChain =
@@ -22,14 +23,15 @@ export type SupportedChain =
   | 'klaytn'
   | 'kucoin'
   | 'metis'
-  | 'milkomedia'
+  | 'milkomeda'
   | 'moonbeam'
   | 'moonriver'
   | 'okx'
   | 'optimism'
-  | 'polygon';
+  | 'polygon'
+  | 'cardano';
 
-export type SupportedProtocolType = 'staking' | 'lending';
+export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
 export interface LoggerInterface {
   debug: (msg: string) => void;
@@ -39,7 +41,9 @@ export interface LoggerInterface {
 }
 
 export type Context = {
+  chain: SupportedChain;
   ethers: typeof ethers;
+  cardano: typeof cardano;
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: ethcall.Provider;
@@ -61,6 +65,7 @@ export type Token = {
 
   underlying: TokenUnderlying[];
   price?: number;
+  totalSupply?: string;
 };
 
 export interface TokenUnderlying extends Token {
@@ -93,7 +98,6 @@ export type FetchPoolsContext = Context & {
   tokens: Token[];
 };
 export type FetchUserPositionsContext = Context & {
-  // tokens: Token[];
   pools: Pool[];
   user: Address;
 };
@@ -102,11 +106,16 @@ export type FetchTokenDetailsContext = Context & {
   address: Address;
 };
 
+export type FetchTokenPricesContext = Context & {
+  assets: ComplexAsset[];
+  allAssets: ComplexAsset[];
+};
+
 export type UserPosition = GenericPool<UserSupplied, UserRewarded, UserBorrowed>;
 
 export type TokenDetail = {
-  name: string;
-  symbol: string;
+  name?: string;
+  symbol?: string;
   icon?: string;
   address: Address;
   decimals: number;
@@ -146,15 +155,12 @@ export interface AssetMetadata {
 }
 export interface ComplexAsset {
   address: string;
+  price?: number;
   decimals: number;
   categories: ComplexAssetCategory[];
   underlying: UnderlyingAsset[];
   metadata: AssetMetadata;
 }
-
-export type FetchTokenPricesContext = Context & {
-  assets: ComplexAsset[];
-};
 
 export interface IPlatformLinks {
   url: string; // website url

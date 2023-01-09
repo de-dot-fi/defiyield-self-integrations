@@ -1,8 +1,14 @@
 .panelTitleWrapper {
   margin-right: 12px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
+  grid-template-columns: minmax(50%, 1fr) minmax(30%, 1fr) minmax(20%, 1fr);
   justify-items: end;
+}
+.panelTitleWrapper__assetId {
+  max-width: 100%;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
 }
 
 .panelExtraText {

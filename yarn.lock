@@ -347,6 +347,7 @@ __metadata:
     "@defiyield/abi": "workspace:^"
     "@defiyield/eslint-config": "workspace:^"
     "@defiyield/tsconfig": "workspace:^"
+    "@emurgo/cardano-serialization-lib-nodejs": 11.2.1
     "@koa/router": ^12.0.0
     "@types/convict": ^6.1.1
     "@types/koa": ^2.13.5
@@ -468,6 +469,13 @@ __metadata:
   version: 0.7.5
   resolution: "@emotion/unitless@npm:0.7.5"
   checksum: f976e5345b53fae9414a7b2e7a949aa6b52f8bdbcc84458b1ddc0729e77ba1d1dfdff9960e0da60183877873d3a631fa24d9695dd714ed94bcd3ba5196586a6b
+  languageName: node
+  linkType: hard
+
+"@emurgo/cardano-serialization-lib-nodejs@npm:11.2.1":
+  version: 11.2.1
+  resolution: "@emurgo/cardano-serialization-lib-nodejs@npm:11.2.1"
+  checksum: 467f492f229f75130f68459c7226e381e3f0219ab80fe75834cda92f7b4f2f623584bb1355618887e44f572de9f31086a3469777c3e723236d7e3dc088e77486
   languageName: node
   linkType: hard
 
