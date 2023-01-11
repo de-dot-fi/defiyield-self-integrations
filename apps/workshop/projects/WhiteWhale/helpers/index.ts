@@ -1,4 +1,4 @@
-import { Context, FetchTokenDetailsContext } from '@defiyield/sandbox';
+import { Context, FetchTokenDetailsContext, FetchUserPositionsContext } from '@defiyield/sandbox';
 
 export const factory = 'juno14m9rd2trjytvxvu4ldmqvru50ffxsafs8kequmfky7jh97uyqrxqs5xrnx';
 
@@ -18,14 +18,32 @@ interface IPair {
     };
   }[];
   contract_addr: string;
+  liquidity_token: string;
 }
 
-interface IPairResponse {
+interface IContractInfoResponse {
   data: IPair;
 }
 
+interface IPairResponse {
+  data: {
+    assets: {
+      info: {
+        native_token?: {
+          denom: string;
+        };
+        token?: {
+          contract_addr: string;
+        };
+      };
+      amount: string;
+    }[];
+    total_share: string;
+  };
+}
+
 export async function getContracts({ axios, endpoint }: Context) {
-  const message: Record<string, any> = { pairs: {} };
+  const message = { pairs: {} };
   const segment = getMessageUrl(factory, message);
 
   const url = new URL(segment, endpoint).toString();
@@ -34,21 +52,40 @@ export async function getContracts({ axios, endpoint }: Context) {
   return data.data.pairs.map((pair) => pair.contract_addr);
 }
 
-export async function getContractUnderlying({
-  axios,
-  endpoint,
-  address,
-}: FetchTokenDetailsContext) {
-  const message: Record<string, any> = { pair: {} };
+export async function getContractInfo(
+  address: string,
+  { axios, endpoint }: Pick<Context, 'axios' | 'endpoint'>,
+) {
+  const message = { pair: {} };
+  const segment = getMessageUrl(address, message);
+
+  const url = new URL(segment, endpoint).toString();
+  const { data } = await axios.get<IContractInfoResponse>(url);
+
+  return data.data;
+}
+
+export async function getPoolInfo(
+  address: string,
+  { axios, endpoint }: Pick<Context, 'axios' | 'endpoint'>,
+) {
+  const message = { pool: {} };
   const segment = getMessageUrl(address, message);
 
   const url = new URL(segment, endpoint).toString();
   const { data } = await axios.get<IPairResponse>(url);
 
-  return [
-    data.data.asset_infos[0].native_token?.denom || data.data.asset_infos[0].token?.contract_addr,
-    data.data.asset_infos[1].native_token?.denom || data.data.asset_infos[1].token?.contract_addr,
-  ];
+  return data.data;
+}
+
+export async function getBalance(contract: string, ctx: FetchUserPositionsContext) {
+  const message = { balance: { address: ctx.user } };
+  const segment = getMessageUrl(contract, message);
+
+  const url = new URL(segment, ctx.endpoint).toString();
+  const { data } = await ctx.axios.get(url);
+
+  return Number(data.data.balance);
 }
 
 export function getMessageUrl(contract: string, message: Record<string, any>) {

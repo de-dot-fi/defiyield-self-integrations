@@ -69,6 +69,7 @@ export type Token = {
   underlying: TokenUnderlying[];
   price?: number;
   totalSupply?: string;
+  metadata?: AssetMetadata;
 };
 
 export interface TokenUnderlying extends Token {
