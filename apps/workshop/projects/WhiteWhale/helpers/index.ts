@@ -42,11 +42,19 @@ interface IPairResponse {
   };
 }
 
+const join = (...parts: string[]): string =>
+  parts
+    .join('/')
+    .split('/')
+    .filter(Boolean)
+    .join('/')
+    .replace(/(http(s?)):\//, '$1://');
+
 export async function getContracts({ axios, endpoint }: Context) {
   const message = { pairs: {} };
   const segment = getMessageUrl(factory, message);
 
-  const url = new URL(segment, endpoint).toString();
+  const url = join(endpoint, segment);
   const { data } = await axios.get<IPairsResponse>(url);
 
   return data.data.pairs.map((pair) => pair.contract_addr);
@@ -59,7 +67,7 @@ export async function getContractInfo(
   const message = { pair: {} };
   const segment = getMessageUrl(address, message);
 
-  const url = new URL(segment, endpoint).toString();
+  const url = join(endpoint, segment);
   const { data } = await axios.get<IContractInfoResponse>(url);
 
   return data.data;
@@ -82,7 +90,7 @@ export async function getBalance(contract: string, ctx: FetchUserPositionsContex
   const message = { balance: { address: ctx.user } };
   const segment = getMessageUrl(contract, message);
 
-  const url = new URL(segment, ctx.endpoint).toString();
+  const url = join(ctx.endpoint, segment);
   const { data } = await ctx.axios.get(url);
 
   return Number(data.data.balance);

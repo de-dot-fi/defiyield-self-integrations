@@ -31,7 +31,19 @@ export type SupportedChain =
   | 'polygon'
   | 'cardano'
   | 'cosmos'
-  | 'juno';
+  | 'juno'
+  | 'kava'
+  | 'osmosis'
+  | 'secret'
+  | 'thor'
+  | 'sifchain'
+  | 'stargaze'
+  | 'akash'
+  | 'kujira'
+  | 'evmos'
+  | 'crescent'
+  | 'agoric'
+  | 'terra-2';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
