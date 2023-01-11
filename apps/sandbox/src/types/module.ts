@@ -19,7 +19,7 @@ export type SupportedChain =
   | 'harmony'
   | 'heco'
   | 'iotex'
-  | 'kava'
+  | 'kava-evm'
   | 'klaytn'
   | 'kucoin'
   | 'metis'
@@ -29,7 +29,9 @@ export type SupportedChain =
   | 'okx'
   | 'optimism'
   | 'polygon'
-  | 'cardano';
+  | 'cardano'
+  | 'cosmos'
+  | 'juno';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
@@ -41,6 +43,7 @@ export interface LoggerInterface {
 }
 
 export type Context = {
+  endpoint: string;
   chain: SupportedChain;
   ethers: typeof ethers;
   cardano: typeof cardano;

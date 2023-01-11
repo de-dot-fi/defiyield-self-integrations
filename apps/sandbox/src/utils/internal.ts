@@ -22,9 +22,11 @@ const internalChainIds: Record<SupportedChain, number> = {
   fuse: 21,
   cardano: 22,
   iotex: 29,
-  kava: 41,
+  'kava-evm': 41,
   metis: 23,
   milkomeda: 30,
+  cosmos: 25,
+  juno: 34,
   moonbeam: 31,
 };
 

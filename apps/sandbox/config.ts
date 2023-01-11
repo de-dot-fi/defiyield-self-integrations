@@ -137,7 +137,7 @@ export default convict({
       env: 'IOTEX_URL',
       arg: 'iotex',
     },
-    kava: {
+    'kava-evm': {
       doc: 'Kava RPC url',
       format: String,
       default: 'https://evm.kava.io',
@@ -220,6 +220,20 @@ export default convict({
       default: 'https://api.koios.rest/api/v0',
       env: 'CARDANO_RPC',
       arg: 'cardano',
+    },
+    cosmos: {
+      doc: 'Cosmos REST url',
+      format: String,
+      default: 'https://api-cosmoshub-ia.cosmosia.notional.ventures',
+      env: 'COSMOS_REST',
+      arg: 'cosmos',
+    },
+    juno: {
+      doc: 'Juno REST url',
+      format: String,
+      default: 'https://api-juno-ia.cosmosia.notional.ventures/',
+      env: 'JUNO_REST',
+      arg: 'juno',
     },
   },
 })

@@ -5,6 +5,7 @@ import { SupportedChain } from './module';
 import * as cardano from '../utils/cardano';
 
 export interface ChainProvider {
+  endpoint: string;
   chain: SupportedChain;
   cardano: typeof cardano;
   ethers: typeof ethers;

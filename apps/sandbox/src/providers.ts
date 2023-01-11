@@ -17,6 +17,7 @@ async function createProviders(rpc: string, chain: SupportedChain): Promise<Chai
     return {
       chain: chain,
       cardano: null as any,
+      endpoint: null as any,
       ethers: ethers,
       ethcall: ethcall,
       provider: ethersProvider,
@@ -33,6 +34,19 @@ function createCardanoProviders(chain: SupportedChain): ChainProvider {
   return {
     chain: chain,
     cardano: cardano,
+    endpoint: null as any,
+    ethers: null as any,
+    ethcall: null as any,
+    provider: null as any,
+    ethcallProvider: null as any,
+  };
+}
+
+function createCosmosProviders(endpoint: string, chain: SupportedChain): ChainProvider {
+  return {
+    chain: chain,
+    endpoint: endpoint,
+    cardano: null as any,
     ethers: null as any,
     ethcall: null as any,
     provider: null as any,
@@ -56,7 +70,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     harmony,
     heco,
     iotex,
-    kava,
+    kavaEvm,
     klaytn,
     kucoin,
     metis,
@@ -66,6 +80,9 @@ export async function initializeProviders(): Promise<ProviderMap> {
     okx,
     optimism,
     polygon,
+    cosmos,
+    juno,
+    cardano,
   ] = await Promise.all([
     createProviders(config.rpcs.arbitrum, 'arbitrum'),
     createProviders(config.rpcs.aurora, 'aurora'),
@@ -81,7 +98,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     createProviders(config.rpcs.harmony, 'harmony'),
     createProviders(config.rpcs.heco, 'heco'),
     createProviders(config.rpcs.iotex, 'iotex'),
-    createProviders(config.rpcs.kava, 'kava'),
+    createProviders(config.rpcs['kava-evm'], 'kava-evm'),
     createProviders(config.rpcs.klaytn, 'klaytn'),
     createProviders(config.rpcs.kucoin, 'kucoin'),
     createProviders(config.rpcs.metis, 'metis'),
@@ -91,9 +108,13 @@ export async function initializeProviders(): Promise<ProviderMap> {
     createProviders(config.rpcs.okx, 'okx'),
     createProviders(config.rpcs.optimism, 'optimism'),
     createProviders(config.rpcs.polygon, 'polygon'),
+    createCosmosProviders(config.rpcs.cosmos, 'cosmos'),
+    createCosmosProviders(config.rpcs.juno, 'juno'),
+    createCardanoProviders('cardano'),
   ]);
 
   const providerOptions: Record<SupportedChain, ChainProvider | void> = {
+    'kava-evm': kavaEvm,
     arbitrum,
     aurora,
     avalanche,
@@ -108,7 +129,6 @@ export async function initializeProviders(): Promise<ProviderMap> {
     harmony,
     heco,
     iotex,
-    kava,
     klaytn,
     kucoin,
     metis,
@@ -118,7 +138,9 @@ export async function initializeProviders(): Promise<ProviderMap> {
     okx,
     optimism,
     polygon,
-    cardano: createCardanoProviders('cardano'),
+    cardano,
+    cosmos,
+    juno,
   };
 
   return createMap(providerOptions) as ProviderMap;
