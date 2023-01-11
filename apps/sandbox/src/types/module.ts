@@ -111,7 +111,6 @@ export type FetchTokenDetailsContext = Context & {
 
 export type FetchTokenPricesContext = Context & {
   assets: ComplexAsset[];
-  allAssets: ComplexAsset[];
 };
 
 export type UserPosition = GenericPool<UserSupplied, UserRewarded, UserBorrowed>;

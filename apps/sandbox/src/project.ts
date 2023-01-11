@@ -177,16 +177,6 @@ export class Project {
     const unpriced = tokens.filter((t) => !t.price);
     const prices = await module.fetchMissingTokenPrices({
       ...context,
-      allAssets: tokens.map(
-        (u): ComplexAsset => ({
-          address: u.address,
-          decimals: u.decimals,
-          price: u.price,
-          categories: [],
-          underlying: [],
-          metadata: {},
-        }),
-      ),
       assets: unpriced.map(
         (u): ComplexAsset => ({
           address: u.address,
