@@ -28,6 +28,18 @@ const internalChainIds: Record<SupportedChain, number> = {
   cosmos: 25,
   juno: 34,
   moonbeam: 31,
+  kava: 26,
+  osmosis: 27,
+  secret: 28,
+  thor: 32,
+  sifchain: 33,
+  stargaze: 35,
+  akash: 36,
+  kujira: 37,
+  evmos: 38,
+  agoric: 39,
+  crescent: 43,
+  'terra-2': 40,
 };
 
 export function getInternalChainId(chain: SupportedChain): number {

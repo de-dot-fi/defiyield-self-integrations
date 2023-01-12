@@ -141,8 +141,8 @@ export default convict({
       doc: 'Kava RPC url',
       format: String,
       default: 'https://evm.kava.io',
-      env: 'KAVA_URL',
-      arg: 'kava',
+      env: 'KAVA_EVM_URL',
+      arg: 'kava-evm',
     },
     klaytn: {
       doc: 'Klaytn RPC url',
