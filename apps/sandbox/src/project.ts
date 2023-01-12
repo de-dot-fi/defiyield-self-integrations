@@ -273,36 +273,34 @@ export class Project {
   }
 
   private async fetchBasicTokenInfo(addresses: Address[], context: Context): Promise<Token[]> {
-    if (context.chain === 'cardano') {
-      return await client.fetchTokens(
-        addresses.map((address) => ({
-          chainId: getInternalChainId(context.chain),
-          address,
-        })),
-      );
-    }
-
-    const info = await context.ethcallProvider.all(
-      addresses.flatMap((address) => {
-        const contract = new context.ethcall.Contract(address, erc20Abi);
-        return [contract.name(), contract.symbol(), contract.decimals()];
-      }),
+    return await client.fetchTokens(
+      addresses.map((address) => ({
+        chainId: getInternalChainId(context.chain),
+        address,
+      })),
     );
 
-    return addresses.map((address, idx): Token => {
-      const name = info[idx * 3];
-      const symbol = info[idx * 3 + 1];
-      const decimals = info[idx * 3 + 2];
+    // const info = await context.ethcallProvider.all(
+    //   addresses.flatMap((address) => {
+    //     const contract = new context.ethcall.Contract(address, erc20Abi);
+    //     return [contract.name(), contract.symbol(), contract.decimals()];
+    //   }),
+    // );
 
-      return {
-        name: name,
-        symbol: symbol,
-        address: address,
-        decimals: decimals,
-        displayName: symbol,
-        underlying: [],
-      } as Token;
-    });
+    // return addresses.map((address, idx): Token => {
+    //   const name = info[idx * 3];
+    //   const symbol = info[idx * 3 + 1];
+    //   const decimals = info[idx * 3 + 2];
+
+    //   return {
+    //     name: name,
+    //     symbol: symbol,
+    //     address: address,
+    //     decimals: decimals,
+    //     displayName: symbol,
+    //     underlying: [],
+    //   } as Token;
+    // });
   }
 
   private getMergedUniqueTokenMap(tokens: Token[]) {

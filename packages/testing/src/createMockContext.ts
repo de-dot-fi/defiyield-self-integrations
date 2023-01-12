@@ -37,6 +37,9 @@ export function createMockProviderMap(contracts: MockContracts): ProviderMap {
 
 export function createMockContextForProvider(chain: ChainProvider): Context {
   return {
+    chain: chain.chain,
+    endpoint: chain.endpoint,
+    cardano: chain.cardano,
     ethcall: chain.ethcall,
     ethcallProvider: chain.ethcallProvider,
     ethers: chain.ethers,
