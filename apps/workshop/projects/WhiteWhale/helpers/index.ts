@@ -1,4 +1,4 @@
-import { Context, FetchTokenDetailsContext, FetchUserPositionsContext } from '@defiyield/sandbox';
+import { Context, FetchUserPositionsContext } from '@defiyield/sandbox';
 
 export const factory = 'juno14m9rd2trjytvxvu4ldmqvru50ffxsafs8kequmfky7jh97uyqrxqs5xrnx';
 
@@ -80,7 +80,7 @@ export async function getPoolInfo(
   const message = { pool: {} };
   const segment = getMessageUrl(address, message);
 
-  const url = new URL(segment, endpoint).toString();
+  const url = join(endpoint, segment);
   const { data } = await axios.get<IPairResponse>(url);
 
   return data.data;
