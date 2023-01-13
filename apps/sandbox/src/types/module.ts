@@ -80,7 +80,7 @@ export type Token = {
 
   underlying: TokenUnderlying[];
   price?: number;
-  totalSupply?: string;
+  totalSupply?: number;
   metadata?: AssetMetadata;
 };
 

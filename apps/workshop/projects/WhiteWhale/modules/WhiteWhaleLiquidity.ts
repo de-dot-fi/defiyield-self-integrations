@@ -84,8 +84,7 @@ export const WhiteWhaleLiquidity: ModuleDefinitionInterface = {
 
   async fetchPools({ tokens, BigNumber }) {
     return tokens.map((token) => {
-      const totalSupply = new BigNumber(token.totalSupply || 0) //
-        .div(10 ** token.decimals);
+      const totalSupply = new BigNumber(token.totalSupply || 0);
       return {
         id: token.address,
         supplied: [

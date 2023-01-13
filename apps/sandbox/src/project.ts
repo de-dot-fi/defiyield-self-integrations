@@ -206,14 +206,14 @@ export class Project {
       return {
         ...token,
         price: price.price,
-        totalSupply: price.totalSupply,
+        totalSupply: Number(price.totalSupply) / 10 ** token.decimals,
         underlying: token.underlying.map((u, idx) => {
           const underPrice = priceMap.get(u.address);
           if (!price.underlying?.length) throw new Error('Failed to find an underlying asset');
 
           return {
             ...u,
-            u: underPrice?.price || u.price,
+            price: underPrice?.price || u.price,
             reserve: Number(price.underlying[idx].reserve) / 10 ** u.decimals,
           };
         }),
