@@ -7,12 +7,13 @@ import type {
   FetchUserPositionsContext,
   UserPosition
 } from '@defiyield/sandbox';
-import {getTokenInfo, getTokenInfos} from '../helpers/token-info';
+import {getTokenInfos} from '../helpers/token-info';
 import poolAbi from '../abis/pool-abi.json'
 import {ChainSymbol, chainSymbolToSupportedChain} from '../helpers/chain';
 import {BigNumber} from 'ethers';
 
 const SYSTEM_PRECISION = 1e3;
+
 export function getAllbridgeModule(chainSymbol: ChainSymbol): ModuleDefinitionInterface {
   return {
     name: `Allbridge Core ${chainSymbol}`,
@@ -38,25 +39,41 @@ export function getAllbridgeModule(chainSymbol: ChainSymbol): ModuleDefinitionIn
      */
     async fetchPools(ctx: FetchPoolsContext): Promise<Pool[]> {
       const result: Pool[] = [];
+
+      // filter out tokens to make looping simpler later
+      const tokens = []
+      const tokenInfos = await getTokenInfos(ctx, chainSymbol)
       for (const token of ctx.tokens) {
-        const tokenInfo = await getTokenInfo(ctx, chainSymbol, token.address);
+        const tokenInfo = tokenInfos.find(t => t.tokenAddress.toLowerCase() === token.address.toLowerCase());
         if (!tokenInfo) {
           continue
         }
 
-        const poolContract = new ctx.ethcall.Contract(tokenInfo.poolAddress, poolAbi);
-        const [tokenBalance] = await ctx.ethcallProvider.all<typeof BigNumber>([poolContract.tokenBalance()])
-        const tvl = (+tokenBalance) / SYSTEM_PRECISION;
+        tokens.push({token: token, info: tokenInfo});
+      }
+
+      // queue up all balance requests
+      const calls = []
+      for (const token of tokens) {
+        const poolContract = new ctx.ethcall.Contract(token.info.poolAddress, poolAbi);
+        calls.push(poolContract.tokenBalance());
+      }
+
+      // get balance for every token in a single rpc call
+      const tokenBalances = await ctx.ethcallProvider.all<BigNumber>(calls);
+
+      for (const token of tokens) {
+        const tvl = (+(tokenBalances.shift() || 0)) / SYSTEM_PRECISION;
         const pool: Pool = {
-          id: tokenInfo.poolAddress,
+          id: token.info.poolAddress,
           supplied: [
             {
-              token: token,
-              tvl: tvl * (token.price || 1),
-              apr: {year: +tokenInfo.apr},
+              token: token.token,
+              tvl: tvl * (token.token.price || 1),
+              apr: {year: +token.info.apr},
             },
           ],
-          extra: {lpRate: +tokenInfo.lpRate}
+          extra: {lpRate: +token.info.lpRate}
         };
         result.push(pool);
       }
@@ -71,18 +88,34 @@ export function getAllbridgeModule(chainSymbol: ChainSymbol): ModuleDefinitionIn
      */
     async fetchUserPositions(ctx: FetchUserPositionsContext): Promise<UserPosition[]> {
       const result: UserPosition[] = [];
+
+      // filter out pools to make looping simpler later
+      const pools = [];
       for (const pool of ctx.pools) {
         const poolSupplied = pool?.supplied?.[0];
         if (!poolSupplied) {
           continue;
         }
-        const poolContract = new ctx.ethcall.Contract(pool.id, poolAbi);
-        const [userInfo] = await ctx.ethcallProvider.all<{lpAmount: BigNumber}>([poolContract.userInfo(ctx.user)]);
+        pools.push({pool, supplied: poolSupplied});
+      }
+
+      // queue up all user info requests
+      const calls = []
+      for (const pool of pools) {
+        const poolContract = new ctx.ethcall.Contract(pool.pool.id, poolAbi);
+        calls.push(poolContract.userInfo(ctx.user));
+      }
+
+      // get user info for every pool in a single rpc call
+      const userInfos = await ctx.ethcallProvider.all<{ lpAmount: BigNumber }>(calls);
+
+      for (const pool of pools) {
+        const userInfo = userInfos.shift() || {lpAmount: BigNumber.from(0)}
         const lpBalance = +userInfo.lpAmount / SYSTEM_PRECISION;
         const userPosition: UserPosition = {
-          id: pool.id,
+          id: pool.pool.id,
           supplied: [
-            {...poolSupplied, balance: lpBalance * (pool?.extra?.lpRate as number ?? 1)},
+            {...pool.supplied, balance: lpBalance * (pool.pool.extra?.lpRate as number ?? 1)},
           ],
         };
         result.push(userPosition);
@@ -91,5 +124,3 @@ export function getAllbridgeModule(chainSymbol: ChainSymbol): ModuleDefinitionIn
     },
   }
 }
-
-// 0x01a494079dcb715f622340301463ce50cd69a4d0
