@@ -4,7 +4,7 @@ import type {
   TokenExtra,
   UserPosition,
 } from '@defiyield/sandbox';
-import { getContracts, getContractInfo, getPoolInfo, getBalance } from '../helpers';
+import { getContracts, getContractInfo, getPoolInfo, getBalance, tradingApr } from '../helpers';
 
 export const WhiteWhaleLiquidity: ModuleDefinitionInterface = {
   name: 'WhiteWhaleLiquidity',
@@ -82,15 +82,22 @@ export const WhiteWhaleLiquidity: ModuleDefinitionInterface = {
     return tokens;
   },
 
-  async fetchPools({ tokens, BigNumber }) {
+  async fetchPools(ctx) {
+    const { BigNumber, tokens } = ctx;
+    const aprs = await tradingApr(ctx);
+
     return tokens.map((token) => {
       const totalSupply = new BigNumber(token.totalSupply || 0);
+      const apr = aprs.get(token.address);
       return {
         id: token.address,
         supplied: [
           {
             token,
             tvl: new BigNumber(token?.price || 0).times(totalSupply).toNumber(),
+            apr: {
+              year: new BigNumber(apr || 0).div(100).toNumber(),
+            },
           },
         ],
       };

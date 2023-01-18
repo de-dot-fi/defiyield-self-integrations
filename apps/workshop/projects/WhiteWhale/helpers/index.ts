@@ -1,6 +1,7 @@
-import { Context, FetchUserPositionsContext } from '@defiyield/sandbox';
+import { Context, FetchPoolsContext, FetchUserPositionsContext } from '@defiyield/sandbox';
 
 export const factory = 'juno14m9rd2trjytvxvu4ldmqvru50ffxsafs8kequmfky7jh97uyqrxqs5xrnx';
+export const coinHallEndpoint = 'https://api.coinhall.org/api/v1/pairs';
 
 interface IPairsResponse {
   data: {
@@ -40,6 +41,13 @@ interface IPairResponse {
     }[];
     total_share: string;
   };
+}
+
+interface ICoinHallResponse {
+  pairs: {
+    pairAddress: string;
+    apr7d: number;
+  }[];
 }
 
 const join = (...parts: string[]): string =>
@@ -94,6 +102,16 @@ export async function getBalance(contract: string, ctx: FetchUserPositionsContex
   const { data } = await ctx.axios.get(url);
 
   return Number(data.data.balance);
+}
+
+export async function tradingApr(ctx: FetchPoolsContext): Promise<Map<string, number>> {
+  const pairs = ctx.tokens.map((token) => token.address);
+
+  const { data } = await ctx.axios.get<ICoinHallResponse>(coinHallEndpoint, {
+    params: { addresses: pairs.join(',') },
+  });
+
+  return new Map(data.pairs.map((pair) => [pair.pairAddress, pair.apr7d]));
 }
 
 export function getMessageUrl(contract: string, message: Record<string, any>) {
