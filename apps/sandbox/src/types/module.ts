@@ -3,6 +3,7 @@ import type BigNumber from 'bignumber.js';
 import type * as ethcall from 'ethcall';
 import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
+import * as BufferLayout from 'buffer-layout';
 
 export type SupportedChain =
   | 'arbitrum'
@@ -43,7 +44,8 @@ export type SupportedChain =
   | 'evmos'
   | 'crescent'
   | 'agoric'
-  | 'terra-2';
+  | 'terra-2'
+  | 'solana';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
@@ -59,6 +61,7 @@ export type Context = {
   chain: SupportedChain;
   ethers: typeof ethers;
   cardano: typeof cardano;
+  BufferLayout: typeof BufferLayout;
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: ethcall.Provider;
