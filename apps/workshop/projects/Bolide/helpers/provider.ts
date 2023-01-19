@@ -1,4 +1,4 @@
-const ENDPOINT_API = 'https://bolide.fi/api/';
+export const ENDPOINT_API = 'https://bolide.fi/api/';
 
 export interface AprInfo {
   stakingApy: string;
