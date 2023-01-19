@@ -240,7 +240,6 @@ export interface ModuleDefinitionInterface {
 - **Crescent**: `crescent`
 - **Agoric**: `agoric`
 - **Terra2**: `terra-2`
-- **Juno**: `juno`
 
 # Supported Project Categories
 
