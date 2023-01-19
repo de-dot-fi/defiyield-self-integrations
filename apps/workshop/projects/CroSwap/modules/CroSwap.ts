@@ -57,6 +57,11 @@ export const CroSwap: ModuleDefinitionInterface = {
               tvl: parseFloat(value.pair.reserve1USD),
             },
           ],
+          rewarded: [
+            {
+              token: finder(value.emittedTokenAddress),
+            },
+          ],
         });
       }
       return pools;
@@ -89,9 +94,10 @@ export const CroSwap: ModuleDefinitionInterface = {
         lpTokenContract.totalSupply(),
       ])) as [BigNumber, BigNumber, Reserves, BigNumber];
 
-      const [userInfo] = (await ethcallProvider.all([farms.getUserInfo(poolId, user)])) as [
-        UserInfo,
-      ];
+      const [userInfo, pending] = (await ethcallProvider.all([
+        farms.getUserInfo(poolId, user),
+        farms.pendingRewards(poolId, user),
+      ])) as [UserInfo, BigNumber];
 
       // total balance of lp tokens in wallet & staked
       const totalBalance = balance.add(userInfo.amount);
@@ -126,6 +132,13 @@ export const CroSwap: ModuleDefinitionInterface = {
             token: pool.supplied?.[1].token,
             //sucks this is a number
             balance: token1Balance,
+          },
+        ],
+        rewarded: [
+          {
+            token: pool.rewarded?.[0].token,
+            //sucks this is a number
+            balance: parseFloat(formatUnits(pending, 18)),
           },
         ],
       };
