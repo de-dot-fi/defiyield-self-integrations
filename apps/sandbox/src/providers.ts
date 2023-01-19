@@ -6,7 +6,8 @@ import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
 import * as cardano from './utils/cardano';
-import * as BufferLayout from 'buffer-layout';
+import * as BufferLayout from './utils/solana';
+import * as solanaWeb3 from '@solana/web3.js';
 
 async function createProviders(rpc: string, chain: SupportedChain): Promise<ChainProvider | void> {
   try {
@@ -17,7 +18,7 @@ async function createProviders(rpc: string, chain: SupportedChain): Promise<Chai
 
     return {
       chain: chain,
-      BufferLayout: null as any,
+      solana: null as any,
       cardano: null as any,
       endpoint: null as any,
       ethers: ethers,
@@ -36,7 +37,7 @@ function createCardanoProviders(chain: SupportedChain): ChainProvider {
   return {
     chain: chain,
     cardano: cardano,
-    BufferLayout: null as any,
+    solana: null as any,
     endpoint: null as any,
     ethers: null as any,
     ethcall: null as any,
@@ -49,7 +50,7 @@ function createCosmosProviders(endpoint: string, chain: SupportedChain): ChainPr
   return {
     chain: chain,
     endpoint: endpoint,
-    BufferLayout: null as any,
+    solana: null as any,
     cardano: null as any,
     ethers: null as any,
     ethcall: null as any,
@@ -62,7 +63,10 @@ function createSolanaProviders(endpoint: string, chain: SupportedChain): ChainPr
   return {
     chain: chain,
     endpoint: endpoint,
-    BufferLayout: BufferLayout,
+    solana: {
+      BufferLayout: BufferLayout,
+      web3: solanaWeb3,
+    },
     cardano: null as any,
     ethers: null as any,
     ethcall: null as any,

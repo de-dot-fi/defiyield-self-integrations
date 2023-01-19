@@ -4,6 +4,8 @@ import BigNumber from 'bignumber.js';
 import { createMock } from './createMock';
 import type { MockContracts } from './interfaces/MockContract';
 import MockAdapter from 'axios-mock-adapter';
+import * as BufferLayout from 'buffer-layout';
+import * as solanaWeb3 from '@solana/web3.js';
 
 export function createMockProvider(contracts: MockContracts): ChainProvider {
   const ethers = createMock({
@@ -11,6 +13,15 @@ export function createMockProvider(contracts: MockContracts): ChainProvider {
   });
 
   return {
+    cardano: {
+      getStakeAddress: () => '',
+    },
+    solana: {
+      BufferLayout: BufferLayout,
+      web3: solanaWeb3,
+    },
+    chain: null as any,
+    endpoint: null as any,
     ethers: ethers as Context['ethers'],
     ethcall: ethers as Context['ethcall'],
     provider: createMock() as Context['provider'],
@@ -37,6 +48,7 @@ export function createMockProviderMap(contracts: MockContracts): ProviderMap {
 
 export function createMockContextForProvider(chain: ChainProvider): Context {
   return {
+    solana: chain.solana,
     chain: chain.chain,
     endpoint: chain.endpoint,
     cardano: chain.cardano,

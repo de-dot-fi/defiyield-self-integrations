@@ -3,7 +3,8 @@ import type BigNumber from 'bignumber.js';
 import type * as ethcall from 'ethcall';
 import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
-import * as BufferLayout from 'buffer-layout';
+import * as BufferLayout from '../utils/solana/';
+import * as solanaWeb3 from '@solana/web3.js';
 
 export type SupportedChain =
   | 'arbitrum'
@@ -61,7 +62,10 @@ export type Context = {
   chain: SupportedChain;
   ethers: typeof ethers;
   cardano: typeof cardano;
-  BufferLayout: typeof BufferLayout;
+  solana: {
+    BufferLayout: typeof BufferLayout;
+    web3: typeof solanaWeb3;
+  };
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: ethcall.Provider;

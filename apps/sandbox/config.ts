@@ -322,7 +322,7 @@ export default convict({
     solana: {
       doc: 'Solana RPC',
       format: String,
-      default: 'https://www.ankr.com/rpc/solana/',
+      default: 'http://api.mainnet-beta.solana.com/',
       env: 'SOLANA_RPC',
       arg: 'solana',
     },
