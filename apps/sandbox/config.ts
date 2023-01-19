@@ -319,6 +319,13 @@ export default convict({
       env: 'TERRA2_REST',
       arg: 'terra-2',
     },
+    solana: {
+      doc: 'Solana RPC',
+      format: String,
+      default: 'http://api.mainnet-beta.solana.com/',
+      env: 'SOLANA_RPC',
+      arg: 'solana',
+    },
   },
 })
   .validate({ allowed: 'strict' })

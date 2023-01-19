@@ -225,6 +225,21 @@ export interface ModuleDefinitionInterface {
 - **Okx**: `okx`
 - **Optimism**: `optimism`
 - **Polygon**: `polygon`
+- **Solana**: `solana`
+- **Cosmos**: `cosmos`
+- **Juno**: `juno`
+- **Kava**: `kava`
+- **Osmosis**: `osmosis`
+- **Secret**: `secret`
+- **Thor**: `thor`
+- **Sifchain**: `sifchain`
+- **Stargaze**: `stargaze`
+- **Akash**: `akash`
+- **Kujira**: `kujira`
+- **Evmos**: `evmos`
+- **Crescent**: `crescent`
+- **Agoric**: `agoric`
+- **Terra2**: `terra-2`
 
 # Supported Project Categories
 

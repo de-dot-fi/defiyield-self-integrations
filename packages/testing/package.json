@@ -5,9 +5,13 @@
   "dependencies": {
     "@defiyield/sandbox": "workspace:^",
     "@defiyield/tsconfig": "workspace:^",
+    "@emurgo/cardano-serialization-lib-nodejs": "11.2.1",
+    "@solana/web3.js": "1.73.0",
     "axios": "^1.1.3",
     "axios-mock-adapter": "^1.21.2",
     "bignumber.js": "^9.1.0",
+    "bn.js": "^5.1.1",
+    "buffer-layout": "1.2.2",
     "vitest": "^0.25.1"
   },
   "devDependencies": {
