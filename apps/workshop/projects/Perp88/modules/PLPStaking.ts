@@ -28,7 +28,7 @@ import { parseEther, parseUnits } from 'ethers/lib/utils';
 import { BigNumber, ethers } from 'ethers';
 
 import { e18 } from '../helpers/constant';
-import { calAPR, getPLPPrice, getTokenOraclePrice, toFixed } from '../helpers/calculation';
+import { calAPR, toFixed } from '../helpers/calculation';
 
 export const PLPStaking: ModuleDefinitionInterface = {
   name: 'PLPStaking',
@@ -53,7 +53,7 @@ export const PLPStaking: ModuleDefinitionInterface = {
    */
   async fetchPools(ctx: FetchPoolsContext) {
     const { tokens, ethcall, ethcallProvider, logger } = ctx;
-    const filteredTokens = tokens.filter((i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR);
+    const filteredTokens = tokens.filter((i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR.toLowerCase());
 
     const multiCall = createMulticallChunker(ethcallProvider);
 
@@ -75,23 +75,18 @@ export const PLPStaking: ModuleDefinitionInterface = {
       mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i];
     }
 
-    const plpToken = {
-      name: 'PLP Token',
-      symbol: 'PLP',
-      icon: 'https://app.perp88.com/static/media/plp.8abb46909eb3f94836db629ab557c8f6.svg',
-      address: PLP_TOKEN_ADDR,
-      decimals: 18,
-      displayName: 'PLP',
-      price: parseFloat((await getPLPPrice(ctx)).displayPrice),
-      underlying: filteredTokens.map(
+    const _plpToken = tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
+    let plpToken = {
+      ..._plpToken,
+      underlying : filteredTokens.map(
         (i) =>
           ({
             reserve: mapAddrWithResult[i.address.toLowerCase()],
             ...i,
           } as unknown as TokenUnderlying),
       ),
-      chainId: 3, //polygon inernal chainId
-    };
+    }
+    
 
     const usdcToken = tokens.find(
       (i) => i.address.toLowerCase() === COMPOSITION_TOKENS.USDC.toLowerCase(),

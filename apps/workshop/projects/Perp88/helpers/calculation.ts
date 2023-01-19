@@ -7,14 +7,15 @@ import {
   PLP_STAKING_REVENUE_ADDR,
   PLP_TOKEN_ADDR,
   POOL_DIAMOND_ADDR,
-  ALL_TOKENS,
-} from './config';
+  } from './config';
 import GetterFacetAbi from '../abis/GetterFacet.json';
 import FeedableRewarderAbi from '../abis/FeedableRewarder.json';
 import PLPStakingAbi from '../abis/PLPStaking.json';
 import PoolOracleAbi from '../abis/PoolOracle.json';
 import ERC20Abi from '../abis/ERC20.json';
 import { e18, secondsInYear, Zero } from './constant';
+import { FetchPoolsContext } from '../../../../sandbox/src/types/module';
+import { parseEther } from 'ethers/lib/utils';
 
 interface TokenPrice {
   minPrice: BigNumber;
@@ -24,8 +25,13 @@ interface TokenPrice {
 }
 
 const decimalPlaceDefault = 2;
-export async function calAPR(ctx: Context): Promise<string> {
-  const { ethcall, ethcallProvider, logger } = ctx;
+export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
+  const { tokens,ethcall, ethcallProvider, logger } = ctx;
+
+  const plpToken = tokens && tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
+  if(!plpToken || !plpToken.price)throw new Error(`PLP Price is invalid`)
+
+  const plpPriceBN = parseEther(plpToken.price.toString())
 
   const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
   const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);
@@ -38,13 +44,11 @@ export async function calAPR(ctx: Context): Promise<string> {
   const rewardRateE18 = rewardRate.mul(10 ** 12); //usdc is 1e6
 
   const price = await getTokenOraclePrice(ctx, COMPOSITION_TOKENS.USDC);
-
-  const plpPrice = await getPLPPrice(ctx);
-
+  
   const secondsInYearBN = e18.mul(secondsInYear); //e18
   const rewardRatePerYear = secondsInYearBN.mul(rewardRateE18).div(e18);
   const rewardPricePerYear = rewardRatePerYear.mul(price.avgPrice).div(e18);
-  const totalRewardToken = totalShare.mul(plpPrice.avgPrice).div(e18);
+  const totalRewardToken = totalShare.mul(plpPriceBN).div(e18);
 
   if (totalRewardToken.isZero()) throw new Error(`_calAPR totalReward is 0`);
 
@@ -54,29 +58,6 @@ export async function calAPR(ctx: Context): Promise<string> {
 }
 
 // PRICES
-export async function getPLPPrice(ctx: Context): Promise<TokenPrice> {
-  const { ethcall, ethcallProvider, logger } = ctx;
-
-  const getterFacetContract = new ethcall.Contract(POOL_DIAMOND_ADDR, GetterFacetAbi);
-  const plpTokenContract = new ethcall.Contract(PLP_TOKEN_ADDR, ERC20Abi);
-
-  const [maxAum, minAum, plpTotalSupply]: BigNumber[] = await ethcallProvider.all([
-    getterFacetContract.getAumE18(true),
-    getterFacetContract.getAumE18(false),
-    plpTokenContract.totalSupply(),
-  ]);
-  const minPrice = minAum && plpTotalSupply ? minAum.mul(e18).div(plpTotalSupply) : Zero;
-  const maxPrice = maxAum && plpTotalSupply ? maxAum.mul(e18).div(plpTotalSupply) : Zero;
-
-  const avgPrice = minPrice.add(maxPrice).div(2);
-
-  return {
-    minPrice,
-    maxPrice,
-    avgPrice,
-    displayPrice: toFixed(ethers.utils.formatEther(avgPrice), 4),
-  };
-}
 
 export async function getTokenOraclePrice(ctx: Context, token: string): Promise<TokenPrice> {
   const { ethcall, ethcallProvider, logger } = ctx;
