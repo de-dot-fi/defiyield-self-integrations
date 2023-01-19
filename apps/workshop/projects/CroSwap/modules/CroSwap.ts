@@ -7,7 +7,8 @@ import { findToken } from '../../../../../packages/utils/array';
 import { CROSWAP_FARMS, GQL_GET_TOKENS } from '../helpers/const';
 import farmsAbi from '../abis/farms.abi.json';
 import pairAbi from '../abis/pair.abi.json';
-import { BigNumber } from 'ethers/lib/ethers';
+import { BigNumber, FixedNumber } from 'ethers/lib/ethers';
+import { formatUnits } from 'ethers/lib/utils';
 
 export const CroSwap: ModuleDefinitionInterface = {
   name: 'CroSwap',
@@ -81,34 +82,37 @@ export const CroSwap: ModuleDefinitionInterface = {
 
       const lpTokenContract = new ethcall.Contract(pool.id, pairAbi);
 
-      const [poolId, balance, reserves] = (await ethcallProvider.all([
+      const [poolId, balance, reserves, totalSupply] = (await ethcallProvider.all([
         farms.getPoolIdforLP(pool.id),
         lpTokenContract.balanceOf(user),
         lpTokenContract.getReserves(),
-      ])) as [BigNumber, BigNumber, Reserves];
+        lpTokenContract.totalSupply(),
+      ])) as [BigNumber, BigNumber, Reserves, BigNumber];
 
       const [userInfo] = (await ethcallProvider.all([farms.getUserInfo(poolId, user)])) as [
         UserInfo,
       ];
 
       // total balance of lp tokens in wallet & staked
-      const totalBalance = parseFloat(ethers.utils.formatEther(balance.add(userInfo.amount)));
+      const totalBalance = balance.add(userInfo.amount);
 
       // dont continue if no balance
-      if (totalBalance === 0) return void 0;
+      if (totalBalance.eq(0)) return void 0;
 
-      // gotta scale up so we don't lose precision
-      const scale = BigNumber.from(10).pow(18);
-      const reserve0 = reserves._reserve0;
-      const reserve1 = reserves._reserve1;
+      const reserve0 = FixedNumber.fromValue(reserves._reserve0, 18);
+      const reserve1 = FixedNumber.fromValue(reserves._reserve1, 18);
 
-      // get ratios for each side of the pool
-      const token0Ratio = parseFloat(ethers.utils.formatEther(reserve0.mul(scale).div(reserve1)));
-      const token1Ratio = 1 / token0Ratio;
+      // get ratio of total supply
+      const ratioOfTotalSupply = FixedNumber.fromValue(totalBalance).divUnsafe(
+        FixedNumber.from(totalSupply),
+      );
 
-      // calculate balance of each token based on owned lp tokens
-      const token0Balance = totalBalance * token0Ratio;
-      const token1Balance = totalBalance * token1Ratio;
+      const token0Balance = parseFloat(
+        formatUnits(reserve0.mulUnsafe(ratioOfTotalSupply).toHexString(), token0.decimals),
+      );
+      const token1Balance = parseFloat(
+        formatUnits(reserve1.mulUnsafe(ratioOfTotalSupply).toHexString(), token1.decimals),
+      );
 
       return <UserPosition>{
         id: pool.id,
