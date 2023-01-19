@@ -6,6 +6,8 @@ import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
 import * as cardano from './utils/cardano';
+import * as BufferLayout from './utils/solana';
+import * as solanaWeb3 from '@solana/web3.js';
 
 async function createProviders(rpc: string, chain: SupportedChain): Promise<ChainProvider | void> {
   try {
@@ -16,6 +18,7 @@ async function createProviders(rpc: string, chain: SupportedChain): Promise<Chai
 
     return {
       chain: chain,
+      solana: null as any,
       cardano: null as any,
       endpoint: null as any,
       ethers: ethers,
@@ -34,6 +37,7 @@ function createCardanoProviders(chain: SupportedChain): ChainProvider {
   return {
     chain: chain,
     cardano: cardano,
+    solana: null as any,
     endpoint: null as any,
     ethers: null as any,
     ethcall: null as any,
@@ -46,6 +50,23 @@ function createCosmosProviders(endpoint: string, chain: SupportedChain): ChainPr
   return {
     chain: chain,
     endpoint: endpoint,
+    solana: null as any,
+    cardano: null as any,
+    ethers: null as any,
+    ethcall: null as any,
+    provider: null as any,
+    ethcallProvider: null as any,
+  };
+}
+
+function createSolanaProviders(endpoint: string, chain: SupportedChain): ChainProvider {
+  return {
+    chain: chain,
+    endpoint: endpoint,
+    solana: {
+      BufferLayout: BufferLayout,
+      web3: solanaWeb3,
+    },
     cardano: null as any,
     ethers: null as any,
     ethcall: null as any,
@@ -95,6 +116,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     crescent,
     agoric,
     terra2,
+    solana,
   ] = await Promise.all([
     createProviders(config.rpcs.arbitrum, 'arbitrum'),
     createProviders(config.rpcs.aurora, 'aurora'),
@@ -135,6 +157,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     createCosmosProviders(config.rpcs.crescent, 'crescent'),
     createCosmosProviders(config.rpcs.agoric, 'agoric'),
     createCosmosProviders(config.rpcs['terra-2'], 'terra-2'),
+    createSolanaProviders(config.rpcs.solana, 'solana'),
   ]);
 
   const providerOptions: Record<SupportedChain, ChainProvider | void> = {
@@ -177,6 +200,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     crescent,
     agoric,
     'terra-2': terra2,
+    solana,
   };
 
   return createMap(providerOptions) as ProviderMap;
