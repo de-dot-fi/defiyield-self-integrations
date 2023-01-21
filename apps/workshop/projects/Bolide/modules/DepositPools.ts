@@ -1,6 +1,5 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { createMulticallChunker, findToken } from '@defiyield/utils/array';
-import { formatUnits } from 'ethers/lib/utils';
 
 import { STORAGE_ABI } from '../abis/storage-abi';
 import { getApy, getTvl } from '../helpers/provider';
@@ -93,7 +92,7 @@ export const DepositPools: ModuleDefinitionInterface = {
    * @param ctx Context
    * @returns UserPosition[]
    */
-  async fetchUserPositions({ pools, user, ethcall, ethcallProvider }) {
+  async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
     const groupedMulticaller = createMulticallChunker(ethcallProvider);
 
     const results = await groupedMulticaller(pools, (pool) => {
@@ -118,7 +117,7 @@ export const DepositPools: ModuleDefinitionInterface = {
       const supplied = pool.supplied
         ? pool.supplied.map((item, index) => ({
             ...item,
-            balance: parseFloat(formatUnits(deposited[index], item.token.decimals)),
+            balance: parseFloat(ethers.utils.formatUnits(deposited[index], item.token.decimals)),
           }))
         : [];
 
@@ -127,7 +126,7 @@ export const DepositPools: ModuleDefinitionInterface = {
           ? [
               {
                 ...pool.rewarded[0],
-                balance: parseFloat(formatUnits(earned, pool.rewarded[0].token.decimals)),
+                balance: parseFloat(ethers.utils.formatUnits(earned, pool.rewarded[0].token.decimals)),
               },
             ]
           : [];

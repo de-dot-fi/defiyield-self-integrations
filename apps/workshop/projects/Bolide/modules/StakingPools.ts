@@ -1,6 +1,5 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import type { BigNumber } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
 import { getApy, getTvl } from '../helpers/provider';
@@ -64,7 +63,7 @@ export const StakingPools: ModuleDefinitionInterface = {
    * @param ctx Context
    * @returns UserPosition[]
    */
-  async fetchUserPositions({ pools, user, ethcall, ethcallProvider }) {
+  async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
     const pool = pools[0];
 
     if (!pool || !pool.supplied || pool.supplied.length === 0) {
@@ -82,7 +81,7 @@ export const StakingPools: ModuleDefinitionInterface = {
     const supplied = [
       {
         ...pool.supplied[0],
-        balance: parseFloat(formatUnits(amount, blidToken.decimals)),
+        balance: parseFloat(ethers.utils.formatUnits(amount, blidToken.decimals)),
       },
     ];
 
@@ -91,7 +90,7 @@ export const StakingPools: ModuleDefinitionInterface = {
         ? [
             {
               ...pool.rewarded[0],
-              balance: parseFloat(formatUnits(rewardDebt, blidToken.decimals)),
+              balance: parseFloat(ethers.utils.formatUnits(rewardDebt, blidToken.decimals)),
             },
           ]
         : [];

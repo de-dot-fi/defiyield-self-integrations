@@ -1,7 +1,6 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { findToken } from '@defiyield/utils/array';
 import type { BigNumber } from 'ethers';
-import { formatUnits } from 'ethers/lib/utils';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
 import { getApy, getTvl } from '../helpers/provider';
@@ -68,7 +67,7 @@ export const FarmingPools: ModuleDefinitionInterface = {
    * @param ctx Context
    * @returns UserPosition[]
    */
-  async fetchUserPositions({ pools, user, ethcall, ethcallProvider }) {
+  async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
     const contract = new ethcall.Contract(MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 1;
     const [[amount, rewardDebt]] = (await ethcallProvider.all([
@@ -87,14 +86,14 @@ export const FarmingPools: ModuleDefinitionInterface = {
     const supplied = [
       {
         ...pool.supplied[0],
-        balance: parseFloat(formatUnits(amount, lpToken.decimals)),
+        balance: parseFloat(ethers.utils.formatUnits(amount, lpToken.decimals)),
       },
     ];
 
     const rewarded = [
       {
         ...pool.rewarded[0],
-        balance: parseFloat(formatUnits(rewardDebt, blidToken.decimals)),
+        balance: parseFloat(ethers.utils.formatUnits(rewardDebt, blidToken.decimals)),
       },
     ];
 
