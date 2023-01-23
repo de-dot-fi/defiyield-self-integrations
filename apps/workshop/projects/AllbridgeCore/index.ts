@@ -1,5 +1,5 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
-import {getAllbridgeModule} from './modules/AllbridgePool'
+import { getAllbridgeModule } from './modules/AllbridgePool';
 
 const project: ProjectDefinitionInterface = {
   name: 'Allbridge core',
@@ -12,9 +12,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/Allbridge_io',
     github: '',
   },
-  modules: [ getAllbridgeModule('ETH'), getAllbridgeModule('BSC') ],
+  modules: [getAllbridgeModule('ETH'), getAllbridgeModule('BSC')],
 };
 
 export default project;
-
-
