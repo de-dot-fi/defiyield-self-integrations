@@ -10,7 +10,7 @@ import type {
 import {getTokenInfos} from '../helpers/token-info';
 import poolAbi from '../abis/pool-abi.json'
 import {ChainSymbol, chainSymbolToSupportedChain} from '../helpers/chain';
-import {BigNumber} from 'ethers';
+import type {BigNumber} from 'ethers';
 
 const SYSTEM_PRECISION = 1e3;
 
@@ -110,7 +110,7 @@ export function getAllbridgeModule(chainSymbol: ChainSymbol): ModuleDefinitionIn
       const userInfos = await ctx.ethcallProvider.all<{ lpAmount: BigNumber }>(calls);
 
       for (const pool of pools) {
-        const userInfo = userInfos.shift() || {lpAmount: BigNumber.from(0)}
+        const userInfo = userInfos.shift() || {lpAmount: new ctx.BigNumber(0)}
         const lpBalance = +userInfo.lpAmount / SYSTEM_PRECISION;
         const userPosition: UserPosition = {
           id: pool.pool.id,
