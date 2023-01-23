@@ -1,7 +1,7 @@
-import type { Context } from "@defiyield/sandbox";
-import {ChainSymbol} from './chain';
+import type { Context } from '@defiyield/sandbox';
+import { ChainSymbol } from './chain';
 
-export type ChainInfo = Record<ChainSymbol, {tokens: TokenInfo[]}>;
+export type ChainInfo = Record<ChainSymbol, { tokens: TokenInfo[] }>;
 
 export interface TokenInfo {
   symbol: string;
@@ -20,9 +20,13 @@ export async function getTokenInfos(ctx: Context, chainSymbol: ChainSymbol): Pro
   return tokenInfos[chainSymbol].tokens;
 }
 
-export async function getTokenInfo(ctx: Context, chainSymbol: ChainSymbol, tokenAddress: string): Promise<TokenInfo | undefined> {
+export async function getTokenInfo(
+  ctx: Context,
+  chainSymbol: ChainSymbol,
+  tokenAddress: string,
+): Promise<TokenInfo | undefined> {
   const tokenInfos = await getTokenInfos(ctx, chainSymbol);
-  return tokenInfos.find(info => info.tokenAddress.toLowerCase() === tokenAddress.toLowerCase());
+  return tokenInfos.find((info) => info.tokenAddress.toLowerCase() === tokenAddress.toLowerCase());
 }
 
 async function getChainInfos(ctx: Context): Promise<ChainInfo> {
