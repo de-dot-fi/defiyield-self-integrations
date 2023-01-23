@@ -4,11 +4,17 @@ import { subgraph } from '../helpers/gql';
 import { FetchPoolsContext, TokenExtra, UserPosition } from '../../../../sandbox/src/types/module';
 import { Pool } from '@defiyield/sandbox';
 import { findToken } from '../../../../../packages/utils/array';
-import { CROSWAP_FARMS, GQL_GET_TOKENS } from '../helpers/const';
+import {
+  CROSWAP_FARMS,
+  GQL_GET_TOKENS,
+  CROSWAP_FARMS_URL,
+  CROSWAP_SUBGRAPH_URL,
+} from '../helpers/const';
 import farmsAbi from '../abis/farms.abi.json';
 import pairAbi from '../abis/pair.abi.json';
 import { BigNumber, FixedNumber } from 'ethers/lib/ethers';
 import { formatUnits } from 'ethers/lib/utils';
+import { fetchPoolsFromUrl, preloadTokensFromUrl } from '../helpers/util';
 
 export const CroSwap: ModuleDefinitionInterface = {
   name: 'CroSwap',
@@ -22,9 +28,7 @@ export const CroSwap: ModuleDefinitionInterface = {
    * @returns Address[]
    */
   async preloadTokens(ctx) {
-    return await subgraph<CroSwapTokens>(ctx, 'getTokens', GQL_GET_TOKENS).then((cst) => {
-      return cst.tokens.map((token: any) => token.id);
-    });
+    return await preloadTokensFromUrl(ctx, CROSWAP_SUBGRAPH_URL);
   },
 
   /**
@@ -33,39 +37,8 @@ export const CroSwap: ModuleDefinitionInterface = {
    * @param context
    * @returns Pool[]
    */
-  async fetchPools({ tokens, axios }: FetchPoolsContext) {
-    const finder = findToken(tokens);
-
-    return await axios({
-      url: 'https://api.croswap.com/v2/farms',
-      method: 'GET',
-    }).then((response: { data: any }) => {
-      const pools = [];
-
-      const entries = Object.entries<CroSwapFarms>(response.data);
-
-      for (const [, value] of entries) {
-        pools.push(<Pool>{
-          id: value.pair.pairAddress,
-          supplied: [
-            {
-              token: finder(value.pair.address0),
-              tvl: parseFloat(value.pair.reserve0USD),
-            },
-            {
-              token: finder(value.pair.address1),
-              tvl: parseFloat(value.pair.reserve1USD),
-            },
-          ],
-          rewarded: [
-            {
-              token: finder(value.emittedTokenAddress),
-            },
-          ],
-        });
-      }
-      return pools;
-    });
+  async fetchPools(ctx: FetchPoolsContext) {
+    return await fetchPoolsFromUrl(ctx, ctx.tokens, CROSWAP_FARMS_URL);
   },
 
   /**

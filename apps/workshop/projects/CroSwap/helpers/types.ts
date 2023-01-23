@@ -34,11 +34,13 @@ export interface CroSwapFarms {
 
 export interface CroSwapToken {
   id: string;
-  tokenDayData: {
-    priceUSD: string;
-  }[];
+  tokenDayData: TokenDayData[];
   decimals: string;
   totalSupply: string;
+}
+
+export interface TokenDayData {
+  priceUSD: string;
 }
 
 export interface CroSwapTokens {

@@ -1,7 +1,7 @@
 import { CROSWAP_SUBGRAPH_URL } from './const';
 import { Context } from '../../../../sandbox/src/types/module';
 
-const headers = {
+export const GQL_HEADERS = {
   'Content-Type': 'application/json',
 };
 
@@ -14,11 +14,11 @@ export class GraphQLQuery {
     this.variables = variables;
   }
 
-  execute(ctx: Context, operationName = '') {
+  execute(ctx: Context, url: string, operationName = '') {
     return ctx.axios({
-      url: CROSWAP_SUBGRAPH_URL,
+      url: url,
       method: 'POST',
-      headers,
+      headers: GQL_HEADERS,
       data: {
         query: this.query,
         variables: this.variables,
@@ -33,8 +33,9 @@ export function subgraph<T>(
   operationName: string,
   query: string,
   variables: any | null = null,
+  url: string = CROSWAP_SUBGRAPH_URL,
 ): Promise<T> {
-  return new GraphQLQuery(query, variables).execute(ctx, operationName).then((data) => {
+  return new GraphQLQuery(query, variables).execute(ctx, url, operationName).then((data) => {
     if (data.data.errors) throw new Error(data.data.errors[0].message);
     return data.data.data;
   });
