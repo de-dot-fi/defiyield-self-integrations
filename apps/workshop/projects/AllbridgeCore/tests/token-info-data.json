@@ -1,0 +1,72 @@
+{
+  "BSC": {
+    "tokens": [
+      {
+        "name": "BUSD Token",
+        "poolAddress": "0x179aaD597399B9ae078acFE2B746C09117799ca0",
+        "tokenAddress": "0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56",
+        "decimals": 18,
+        "symbol": "BUSD",
+        "poolInfo": {
+          "aValue": "20",
+          "dValue": "267867557",
+          "tokenBalance": "135464411",
+          "vUsdBalance": "132403573",
+          "totalLpAmount": "133931935",
+          "accRewardPerShareP": "71602410336573345917958668726",
+          "p": 52
+        },
+        "feeShare": "0.0005",
+        "apr": "0.03038815491544026259",
+        "lpRate": "1.00001449243602729999"
+      },
+      {
+        "name": "Tether USD",
+        "poolAddress": "0xB19Cd6AB3890f18B662904fd7a40C003703d2554",
+        "tokenAddress": "0x55d398326f99059fF775485246999027B3197955",
+        "decimals": 18,
+        "symbol": "USDT",
+        "poolInfo": {
+          "aValue": "20",
+          "dValue": "162304215",
+          "tokenBalance": "81368265",
+          "vUsdBalance": "80935965",
+          "totalLpAmount": "81151425",
+          "accRewardPerShareP": "29077372187277759617698414259",
+          "p": 52
+        },
+        "feeShare": "0.0005",
+        "apr": "0.03047598966064612925",
+        "lpRate": "1.00000841636483894152"
+      }
+    ],
+    "chainId": 2,
+    "bridgeAddress": "0x7E6c2522fEE4E74A0182B9C6159048361BC3260A",
+    "swapAddress": "0x749Cf83EBD327A71bfbD16515Ff39f6c0610EAEA",
+    "txTime": {
+      "allbridge": {
+        "in": 60000,
+        "out": 180000
+      },
+      "wormhole": {
+        "in": 120000,
+        "out": 480000
+      }
+    },
+    "transferTime": {
+      "ETH": {
+        "allbridge": 120000,
+        "wormhole": 120000
+      },
+      "TRX": {
+        "allbridge": 120000,
+        "wormhole": null
+      },
+      "SOL": {
+        "allbridge": 4980000,
+        "wormhole": 13320000
+      }
+    },
+    "confirmations": 15
+  }
+}
