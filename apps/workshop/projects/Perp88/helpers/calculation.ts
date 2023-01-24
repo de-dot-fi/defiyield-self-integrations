@@ -29,9 +29,11 @@ export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
   const { tokens,ethcall, ethcallProvider, logger } = ctx;
 
   const plpToken = tokens && tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
-  if(!plpToken || !plpToken.price)throw new Error(`PLP Price is invalid`)
+  const usdcToken = tokens && tokens.find(i=> i.address.toLowerCase()=== COMPOSITION_TOKENS.USDC.toLowerCase())
+  if(!plpToken || !plpToken.price || !usdcToken || !usdcToken.price)throw new Error(`Unable to get price of PLP or USDC`)
 
   const plpPriceBN = parseEther(plpToken.price.toString())
+  const usdcPriceBN = parseEther(usdcToken.price.toString())
 
   const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
   const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);
@@ -43,11 +45,9 @@ export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
 
   const rewardRateE18 = rewardRate.mul(10 ** 12); //usdc is 1e6
 
-  const price = await getTokenOraclePrice(ctx, COMPOSITION_TOKENS.USDC);
-  
   const secondsInYearBN = e18.mul(secondsInYear); //e18
   const rewardRatePerYear = secondsInYearBN.mul(rewardRateE18).div(e18);
-  const rewardPricePerYear = rewardRatePerYear.mul(price.avgPrice).div(e18);
+  const rewardPricePerYear = rewardRatePerYear.mul(usdcPriceBN).div(e18);
   const totalRewardToken = totalShare.mul(plpPriceBN).div(e18);
 
   if (totalRewardToken.isZero()) throw new Error(`_calAPR totalReward is 0`);
@@ -55,25 +55,6 @@ export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
   const apr = ethers.utils.formatEther(rewardPricePerYear.mul(e18).div(totalRewardToken).mul(100));
 
   return apr;
-}
-
-// PRICES
-
-export async function getTokenOraclePrice(ctx: Context, token: string): Promise<TokenPrice> {
-  const { ethcall, ethcallProvider, logger } = ctx;
-  const oracleContract = new ethcall.Contract(CHAINLINK_ORACLE_ADDR, PoolOracleAbi);
-  const [maxPrice, minPrice]: BigNumber[] = await ethcallProvider.all([
-    oracleContract.getMaxPrice(token),
-    oracleContract.getMinPrice(token),
-  ]);
-  const avgPrice = maxPrice && minPrice ? maxPrice.add(minPrice).div(2).div(1e12) : Zero; //18
-
-  return {
-    maxPrice,
-    minPrice,
-    avgPrice,
-    displayPrice: toFixed(ethers.utils.formatEther(avgPrice), 4),
-  };
 }
 
 export function toFixed(numberString: string, decimalPlaces = decimalPlaceDefault): string {
