@@ -1,9 +1,7 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
-import { CroSwapFarms, CroSwapTokens, CroSwapToken, Reserves, UserInfo } from '../helpers/types';
+import { CroSwapTokens, CroSwapToken, Reserves, UserInfo } from '../helpers/types';
 import { subgraph } from '../helpers/gql';
 import { FetchPoolsContext, TokenExtra, UserPosition } from '../../../../sandbox/src/types/module';
-import { Pool } from '@defiyield/sandbox';
-import { findToken } from '../../../../../packages/utils/array';
 import {
   CROSWAP_FARMS,
   GQL_GET_TOKENS,
@@ -12,8 +10,7 @@ import {
 } from '../helpers/const';
 import farmsAbi from '../abis/farms.abi.json';
 import pairAbi from '../abis/pair.abi.json';
-import { BigNumber, FixedNumber } from 'ethers/lib/ethers';
-import { formatUnits } from 'ethers/lib/utils';
+import { BigNumber } from 'ethers/lib/ethers';
 import { fetchPoolsFromUrl, preloadTokensFromUrl } from '../helpers/util';
 
 export const CroSwap: ModuleDefinitionInterface = {
@@ -78,19 +75,25 @@ export const CroSwap: ModuleDefinitionInterface = {
       // dont continue if no balance
       if (totalBalance.eq(0)) return void 0;
 
-      const reserve0 = FixedNumber.fromValue(reserves._reserve0, 18);
-      const reserve1 = FixedNumber.fromValue(reserves._reserve1, 18);
+      const reserve0 = ethers.FixedNumber.fromValue(reserves._reserve0, 18);
+      const reserve1 = ethers.FixedNumber.fromValue(reserves._reserve1, 18);
 
       // get ratio of total supply
-      const ratioOfTotalSupply = FixedNumber.fromValue(totalBalance).divUnsafe(
-        FixedNumber.from(totalSupply),
+      const ratioOfTotalSupply = ethers.FixedNumber.fromValue(totalBalance).divUnsafe(
+        ethers.FixedNumber.from(totalSupply),
       );
 
       const token0Balance = parseFloat(
-        formatUnits(reserve0.mulUnsafe(ratioOfTotalSupply).toHexString(), token0.decimals),
+        ethers.utils.formatUnits(
+          reserve0.mulUnsafe(ratioOfTotalSupply).toHexString(),
+          token0.decimals,
+        ),
       );
       const token1Balance = parseFloat(
-        formatUnits(reserve1.mulUnsafe(ratioOfTotalSupply).toHexString(), token1.decimals),
+        ethers.utils.formatUnits(
+          reserve1.mulUnsafe(ratioOfTotalSupply).toHexString(),
+          token1.decimals,
+        ),
       );
 
       return <UserPosition>{
@@ -111,7 +114,7 @@ export const CroSwap: ModuleDefinitionInterface = {
           {
             token: pool.rewarded?.[0].token,
             //sucks this is a number
-            balance: parseFloat(formatUnits(pending, 18)),
+            balance: parseFloat(ethers.utils.formatUnits(pending, 18)),
           },
         ],
       };
