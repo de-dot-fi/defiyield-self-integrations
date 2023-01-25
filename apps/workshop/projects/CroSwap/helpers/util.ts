@@ -39,8 +39,8 @@ export async function fetchPoolsFromUrl(
   });
 }
 
-export async function preloadTokensFromUrl(ctx: Context, url: string): Promise<string[]> {
-  return await subgraph<CroSwapTokens>(ctx, 'getTokens', GQL_GET_TOKENS, null, url).then((cst) => {
+export function preloadTokensFromUrl(ctx: Context, url: string): Promise<string[]> {
+  return subgraph<CroSwapTokens>(ctx, 'getTokens', GQL_GET_TOKENS, null, url).then((cst) => {
     return cst.tokens.map((token: any) => token.id);
   });
 }
