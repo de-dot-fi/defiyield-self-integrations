@@ -31,6 +31,9 @@ export async function fetchPoolsFromUrl(
         rewarded: [
           {
             token: finder(value.emittedTokenAddress),
+            apr: {
+              year: value.apr,
+            },
           },
         ],
       });
