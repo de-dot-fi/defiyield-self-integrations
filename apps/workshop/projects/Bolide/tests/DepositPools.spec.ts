@@ -77,12 +77,8 @@ describe('#project #pool #bolide', () => {
 
       const rewarded = pool.rewarded[0];
 
-      expect(rewarded.token.address.toLowerCase()).toEqual(
-        BLID_ADDRESS.toLowerCase(),
-      );
-      expect(rewarded.apr.year).toEqual(
-        testAprResponse.strategiesApy[index].apy / 100,
-      );
+      expect(rewarded.token.address.toLowerCase()).toEqual(BLID_ADDRESS.toLowerCase());
+      expect(rewarded.apr.year).toEqual(testAprResponse.strategiesApy[index].apy / 100);
     }
   });
 
@@ -98,9 +94,7 @@ describe('#project #pool #bolide', () => {
       expect(pool.supplied.length).toEqual(vault.tokens.length);
 
       const supplied = pool.supplied[0];
-      expect(supplied.tvl).toEqual(
-        testTvlResponse.strategiesTvl[index].tokensTvl.fake.tvl,
-      );
+      expect(supplied.tvl).toEqual(testTvlResponse.strategiesTvl[index].tokensTvl.fake.tvl);
     }
   });
 });

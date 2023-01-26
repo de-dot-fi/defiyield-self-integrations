@@ -31,9 +31,7 @@ export const getApy = async (axios: any): Promise<AprInfo | null> => {
     if (response.data) {
       return response.data;
     }
-  } catch (error) {
-    console.error(error);
-  }
+  } catch {}
 
   return null;
 };
@@ -45,9 +43,7 @@ export const getTvl = async (axios: any): Promise<TvlInfo | null> => {
     if (response.data) {
       return response.data;
     }
-  } catch (error) {
-    console.error(error);
-  }
+  } catch {}
 
   return null;
 };

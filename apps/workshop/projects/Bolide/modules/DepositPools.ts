@@ -126,7 +126,9 @@ export const DepositPools: ModuleDefinitionInterface = {
           ? [
               {
                 ...pool.rewarded[0],
-                balance: parseFloat(ethers.utils.formatUnits(earned, pool.rewarded[0].token.decimals)),
+                balance: parseFloat(
+                  ethers.utils.formatUnits(earned, pool.rewarded[0].token.decimals),
+                ),
               },
             ]
           : [];

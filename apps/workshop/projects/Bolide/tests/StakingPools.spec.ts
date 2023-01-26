@@ -57,9 +57,7 @@ describe('#project #pool #bolide', () => {
     const pool = pools[0];
     const rewarded = pool.rewarded[0];
 
-    expect(rewarded.token.address.toLowerCase()).toEqual(
-      BLID_ADDRESS.toLowerCase(),
-    );
+    expect(rewarded.token.address.toLowerCase()).toEqual(BLID_ADDRESS.toLowerCase());
     expect(rewarded.apr.year).toEqual(testAprResponse.stakingApy / 100);
   });
 
@@ -73,9 +71,7 @@ describe('#project #pool #bolide', () => {
     const pool = pools[0];
     const supplied = pool.supplied[0];
 
-    expect(supplied.token.address.toLowerCase()).toEqual(
-      BLID_ADDRESS.toLowerCase(),
-    );
+    expect(supplied.token.address.toLowerCase()).toEqual(BLID_ADDRESS.toLowerCase());
     expect(supplied.tvl).toEqual(testTvlResponse.stakingTvl);
   });
 });

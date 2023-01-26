@@ -1,3 +1,5 @@
+const TYPE_CONTRACT_IERC20 = 'contract IERC20';
+
 export const MASTER_CHEF_ABI = [
   {
     inputs: [
@@ -77,7 +79,7 @@ export const MASTER_CHEF_ABI = [
   {
     inputs: [
       { internalType: 'uint256', name: '_allocPoint', type: 'uint256' },
-      { internalType: 'contract IERC20', name: '_lpToken', type: 'address' },
+      { internalType: TYPE_CONTRACT_IERC20, name: '_lpToken', type: 'address' },
       { internalType: 'bool', name: '_withUpdate', type: 'bool' },
     ],
     name: 'add',
@@ -88,7 +90,7 @@ export const MASTER_CHEF_ABI = [
   {
     inputs: [],
     name: 'blid',
-    outputs: [{ internalType: 'contract IERC20', name: '', type: 'address' }],
+    outputs: [{ internalType: TYPE_CONTRACT_IERC20, name: '', type: 'address' }],
     stateMutability: 'view',
     type: 'function',
   },
@@ -189,7 +191,7 @@ export const MASTER_CHEF_ABI = [
     inputs: [{ internalType: 'uint256', name: '', type: 'uint256' }],
     name: 'poolInfo',
     outputs: [
-      { internalType: 'contract IERC20', name: 'lpToken', type: 'address' },
+      { internalType: TYPE_CONTRACT_IERC20, name: 'lpToken', type: 'address' },
       { internalType: 'uint256', name: 'allocPoint', type: 'uint256' },
       { internalType: 'uint256', name: 'lastRewardBlock', type: 'uint256' },
       { internalType: 'uint256', name: 'accBlidPerShare', type: 'uint256' },
