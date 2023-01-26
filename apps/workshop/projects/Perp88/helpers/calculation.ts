@@ -1,21 +1,16 @@
 import { Context } from '@defiyield/sandbox';
-import { BigNumber, ethers } from 'ethers';
+import {BigNumber} from 'ethers'
 import {
-  CHAINLINK_ORACLE_ADDR,
   COMPOSITION_TOKENS,
   PLP_STAKING_ADDR,
   PLP_STAKING_REVENUE_ADDR,
   PLP_TOKEN_ADDR,
-  POOL_DIAMOND_ADDR,
   } from './config';
-import GetterFacetAbi from '../abis/GetterFacet.json';
+
 import FeedableRewarderAbi from '../abis/FeedableRewarder.json';
 import PLPStakingAbi from '../abis/PLPStaking.json';
-import PoolOracleAbi from '../abis/PoolOracle.json';
-import ERC20Abi from '../abis/ERC20.json';
-import { e18, secondsInYear, Zero } from './constant';
+import {  secondsInYear } from './constant';
 import { FetchPoolsContext } from '../../../../sandbox/src/types/module';
-import { parseEther } from 'ethers/lib/utils';
 
 interface TokenPrice {
   minPrice: BigNumber;
@@ -26,14 +21,15 @@ interface TokenPrice {
 
 const decimalPlaceDefault = 2;
 export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
-  const { tokens,ethcall, ethcallProvider, logger } = ctx;
+  const { tokens,ethcall, ethcallProvider,ethers } = ctx;
+  const e18 = ethers.utils.parseEther('1')
 
   const plpToken = tokens && tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
   const usdcToken = tokens && tokens.find(i=> i.address.toLowerCase()=== COMPOSITION_TOKENS.USDC.toLowerCase())
   if(!plpToken || !plpToken.price || !usdcToken || !usdcToken.price)throw new Error(`Unable to get price of PLP or USDC`)
 
-  const plpPriceBN = parseEther(plpToken.price.toString())
-  const usdcPriceBN = parseEther(usdcToken.price.toString())
+  const plpPriceBN =  ethers.utils.parseEther(plpToken.price.toString())
+  const usdcPriceBN =  ethers.utils.parseEther(usdcToken.price.toString())
 
   const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
   const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);

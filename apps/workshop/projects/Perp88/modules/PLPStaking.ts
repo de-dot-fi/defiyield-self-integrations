@@ -2,14 +2,11 @@ import {
   FetchUserPositionsContext,
   TokenUnderlying,
   UserPosition,
-  UserSupplied,
   PoolSupplied,
   PoolRewarded,
 } from './../../../../sandbox/src/types/module';
-import { Zero } from './../helpers/constant';
 
 import {
-  CHAINLINK_ORACLE_ADDR,
   COMPOSITION_TOKENS,
   PLP_STAKING_ADDR,
   PLP_STAKING_REVENUE_ADDR,
@@ -22,12 +19,8 @@ import { tokenAddresses } from '../helpers/config';
 import GetterFacetAbi from '../abis/GetterFacet.json';
 import PLPStakingAbi from '../abis/PLPStaking.json';
 import FeedableRewarderAbi from '../abis/FeedableRewarder.json';
-import PoolOracleAbi from '../abis/PoolOracle.json';
 
-import { parseEther, parseUnits } from 'ethers/lib/utils';
-import { BigNumber, ethers } from 'ethers';
-
-import { e18 } from '../helpers/constant';
+import type {BigNumber} from 'ethers'
 import { calAPR, toFixed } from '../helpers/calculation';
 
 export const PLPStaking: ModuleDefinitionInterface = {
@@ -52,7 +45,10 @@ export const PLPStaking: ModuleDefinitionInterface = {
    * @returns Pool[]
    */
   async fetchPools(ctx: FetchPoolsContext) {
-    const { tokens, ethcall, ethcallProvider, logger } = ctx;
+    const { tokens, ethcall, ethcallProvider, ethers } = ctx;
+    const e18 = ethers.utils.parseEther('1')
+    const Zero = ethers.BigNumber.from('0')
+
     const filteredTokens = tokens.filter((i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR.toLowerCase());
 
     const multiCall = createMulticallChunker(ethcallProvider);
@@ -96,10 +92,10 @@ export const PLPStaking: ModuleDefinitionInterface = {
       ? plpToken.underlying.reduce((accum, curr) => {
           if (!curr.reserve || !curr.price) return accum;
 
-          const tvlBN = parseEther(curr.reserve.toString())
-            .mul(parseEther(curr.price.toString()))
+          const tvlBN = ethers.utils.parseEther(curr.reserve.toString())
+            .mul(ethers.utils.parseEther(curr.price.toString()))
             .div(e18)
-            .div(parseUnits('1', curr.decimals));
+            .div(ethers.utils.parseUnits('1', curr.decimals));
 
           return accum.add(tvlBN);
         }, Zero)
@@ -137,7 +133,7 @@ export const PLPStaking: ModuleDefinitionInterface = {
    * @returns UserPosition[]
    */
   async fetchUserPositions(ctx: FetchUserPositionsContext): Promise<(UserPosition | void)[]> {
-    const { ethcall, ethcallProvider, user, logger, pools } = ctx;
+    const { ethcall, ethcallProvider, user, pools, ethers } = ctx;
 
     const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);
     const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
