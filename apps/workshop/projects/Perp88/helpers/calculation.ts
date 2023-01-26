@@ -1,35 +1,30 @@
-import { Context } from '@defiyield/sandbox';
-import {BigNumber} from 'ethers'
+import { BigNumber } from 'ethers';
 import {
   COMPOSITION_TOKENS,
   PLP_STAKING_ADDR,
   PLP_STAKING_REVENUE_ADDR,
   PLP_TOKEN_ADDR,
-  } from './config';
+} from './config';
 
 import FeedableRewarderAbi from '../abis/FeedableRewarder.json';
 import PLPStakingAbi from '../abis/PLPStaking.json';
-import {  secondsInYear } from './constant';
+import { secondsInYear } from './constant';
 import { FetchPoolsContext } from '../../../../sandbox/src/types/module';
-
-interface TokenPrice {
-  minPrice: BigNumber;
-  maxPrice: BigNumber;
-  avgPrice: BigNumber;
-  displayPrice: string;
-}
 
 const decimalPlaceDefault = 2;
 export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
-  const { tokens,ethcall, ethcallProvider,ethers } = ctx;
-  const e18 = ethers.utils.parseEther('1')
+  const { tokens, ethcall, ethcallProvider, ethers } = ctx;
+  const e18 = ethers.utils.parseEther('1');
 
-  const plpToken = tokens && tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
-  const usdcToken = tokens && tokens.find(i=> i.address.toLowerCase()=== COMPOSITION_TOKENS.USDC.toLowerCase())
-  if(!plpToken || !plpToken.price || !usdcToken || !usdcToken.price)throw new Error(`Unable to get price of PLP or USDC`)
+  const plpToken =
+    tokens && tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
+  const usdcToken =
+    tokens && tokens.find((i) => i.address.toLowerCase() === COMPOSITION_TOKENS.USDC.toLowerCase());
+  if (!plpToken || !plpToken.price || !usdcToken || !usdcToken.price)
+    throw new Error(`Unable to get price of PLP or USDC`);
 
-  const plpPriceBN =  ethers.utils.parseEther(plpToken.price.toString())
-  const usdcPriceBN =  ethers.utils.parseEther(usdcToken.price.toString())
+  const plpPriceBN = ethers.utils.parseEther(plpToken.price.toString());
+  const usdcPriceBN = ethers.utils.parseEther(usdcToken.price.toString());
 
   const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
   const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);

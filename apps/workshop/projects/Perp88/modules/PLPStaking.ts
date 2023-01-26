@@ -20,7 +20,7 @@ import GetterFacetAbi from '../abis/GetterFacet.json';
 import PLPStakingAbi from '../abis/PLPStaking.json';
 import FeedableRewarderAbi from '../abis/FeedableRewarder.json';
 
-import type {BigNumber} from 'ethers'
+import type { BigNumber } from 'ethers';
 import { calAPR, toFixed } from '../helpers/calculation';
 
 export const PLPStaking: ModuleDefinitionInterface = {
@@ -46,10 +46,12 @@ export const PLPStaking: ModuleDefinitionInterface = {
    */
   async fetchPools(ctx: FetchPoolsContext) {
     const { tokens, ethcall, ethcallProvider, ethers } = ctx;
-    const e18 = ethers.utils.parseEther('1')
-    const Zero = ethers.BigNumber.from('0')
+    const e18 = ethers.utils.parseEther('1');
+    const Zero = ethers.BigNumber.from('0');
 
-    const filteredTokens = tokens.filter((i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR.toLowerCase());
+    const filteredTokens = tokens.filter(
+      (i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR.toLowerCase(),
+    );
 
     const multiCall = createMulticallChunker(ethcallProvider);
 
@@ -71,18 +73,17 @@ export const PLPStaking: ModuleDefinitionInterface = {
       mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i];
     }
 
-    const _plpToken = tokens.find(i=> i.address.toLowerCase()=== PLP_TOKEN_ADDR.toLowerCase())
+    const _plpToken = tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
     let plpToken = {
       ..._plpToken,
-      underlying : filteredTokens.map(
+      underlying: filteredTokens.map(
         (i) =>
           ({
             reserve: mapAddrWithResult[i.address.toLowerCase()],
             ...i,
           } as unknown as TokenUnderlying),
       ),
-    }
-    
+    };
 
     const usdcToken = tokens.find(
       (i) => i.address.toLowerCase() === COMPOSITION_TOKENS.USDC.toLowerCase(),
@@ -92,7 +93,8 @@ export const PLPStaking: ModuleDefinitionInterface = {
       ? plpToken.underlying.reduce((accum, curr) => {
           if (!curr.reserve || !curr.price) return accum;
 
-          const tvlBN = ethers.utils.parseEther(curr.reserve.toString())
+          const tvlBN = ethers.utils
+            .parseEther(curr.reserve.toString())
             .mul(ethers.utils.parseEther(curr.price.toString()))
             .div(e18)
             .div(ethers.utils.parseUnits('1', curr.decimals));
