@@ -27,9 +27,8 @@ export const AdaxLiquidity: ModuleDefinitionInterface = {
     return void 0;
   },
 
-  async fetchMissingTokenPrices({ assets, axios, BigNumber, allAssets }) {
+  async fetchMissingTokenPrices({ assets, axios, BigNumber }) {
     const pools = await getPools({ axios });
-    const adaToken = allAssets.find((token) => token.address === CARDANO_COIN_ADDRESS);
     const poolMap = new Map(pools.map((pool) => [`${ADAX_POLICY}.${pool.pool_nft_name}`, pool]));
 
     return assets
@@ -40,17 +39,19 @@ export const AdaxLiquidity: ModuleDefinitionInterface = {
           return pools;
         }
         const secondTokenAddress = `${pool.asset_b.symbol}.${pool.asset_b.name}`;
-        const secondToken = allAssets.find((token) => token.address === secondTokenAddress);
+        const underlyingA = token.underlying.find((t) => t.address === CARDANO_COIN_ADDRESS);
+        const underlyingB = token.underlying.find((t) => t.address === secondTokenAddress);
 
-        if (adaToken?.price && secondToken?.price) {
+        if (underlyingA?.price && underlyingB?.price) {
           let price = new BigNumber(0);
           let tvl = new BigNumber(0);
+
           const amountA = new BigNumber(pool.asset_a.amount) //
             .div(10 ** pool.asset_a.metadata.metadata_decimals);
           const amountB = new BigNumber(pool.asset_b.amount) //
             .div(10 ** pool.asset_b.metadata.metadata_decimals);
 
-          tvl = amountA.times(adaToken.price).plus(amountB.times(secondToken.price));
+          tvl = amountA.times(underlyingA.price).plus(amountB.times(underlyingB.price));
           price = tvl.div(pool.pool_lp_amount);
 
           pools.push({
@@ -58,11 +59,11 @@ export const AdaxLiquidity: ModuleDefinitionInterface = {
             price: price.toNumber(),
             underlying: [
               {
-                address: CARDANO_COIN_ADDRESS,
+                address: underlyingA.address,
                 reserve: Number(pool.asset_a.amount).toString(),
               },
               {
-                address: secondTokenAddress,
+                address: underlyingB.address,
                 reserve: Number(pool.asset_b.amount).toString(),
               },
             ],
