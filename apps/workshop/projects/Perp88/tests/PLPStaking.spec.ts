@@ -16,7 +16,7 @@ import {
 } from '../helpers/config';
 import { PLPStaking } from '../modules/PLPStaking';
 
-const Zero = BigNumber.from('0')
+const Zero = BigNumber.from('0');
 const mockContracts: MockContracts = {
   [PLP_STAKING_REVENUE_ADDR]: {
     rewardRate: () => BigNumber.from('218'),
@@ -92,13 +92,11 @@ describe('#project #Perp88 #staking', () => {
         apr: undefined,
       }),
     );
-    
-  
   });
 
   test('fetches user balances', async ({ project }) => {
     const pools = await project.fetchUserPositions('0x-chentang88158');
-    
+
     expect(pools.length).toEqual(1);
     expect(pools[0].id).toEqual('PLP POOL User Staking');
     expect(pools[0].supplied?.length).toEqual(1);
