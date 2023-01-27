@@ -6,6 +6,7 @@ import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
 import * as cardano from './utils/cardano';
+export { ethers } from 'ethers'
 
 async function createProviders(rpc: string, chain: SupportedChain): Promise<ChainProvider | void> {
   try {

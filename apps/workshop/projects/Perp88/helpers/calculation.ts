@@ -1,4 +1,4 @@
-import { BigNumber } from 'ethers';
+import type { BigNumber } from 'ethers';
 import {
   COMPOSITION_TOKENS,
   PLP_STAKING_ADDR,

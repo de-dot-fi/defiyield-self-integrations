@@ -1,4 +1,5 @@
 import type { ChainProvider, Context, ProviderMap } from '@defiyield/sandbox';
+import { ethers as libEthers } from '../../../apps/sandbox/src/providers';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { createMock } from './createMock';
@@ -7,6 +8,15 @@ import MockAdapter from 'axios-mock-adapter';
 
 export function createMockProvider(contracts: MockContracts): ChainProvider {
   const ethers = createMock({
+    utils: {
+      parseEther: (str: string) => libEthers.utils.parseEther(str),
+      parseUnits: (str: string, dec: number) => libEthers.utils.parseUnits(str),
+      formatEther: (bn: libEthers.BigNumber) => libEthers.utils.formatEther(bn),
+      formatUnits: (bn: libEthers.BigNumber, dec: number) => libEthers.utils.formatUnits(bn, dec),
+    },
+    BigNumber: {
+      from: (str: string) => libEthers.BigNumber.from(str),
+    },
     Contract: (address: string) => contracts[address] || contracts['fallback'],
   });
 
