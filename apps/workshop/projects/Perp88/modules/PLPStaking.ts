@@ -68,13 +68,13 @@ export const PLPStaking: ModuleDefinitionInterface = {
       throw new Error(`Invalid Multicall Result`);
     }
 
-    let mapAddrWithResult: Record<string, BigNumber> = {};
+    const mapAddrWithResult: Record<string, BigNumber> = {};
     for (let i = 0; i < Object.values(COMPOSITION_TOKENS).length; i++) {
       mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i];
     }
 
     const _plpToken = tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
-    let plpToken = {
+    const plpToken = {
       ..._plpToken,
       underlying: filteredTokens.map(
         (i) =>

@@ -43,9 +43,7 @@ export async function calAPR(ctx: FetchPoolsContext): Promise<string> {
 
   if (totalRewardToken.isZero()) throw new Error(`_calAPR totalReward is 0`);
 
-  const apr = ethers.utils.formatEther(rewardPricePerYear.mul(e18).div(totalRewardToken).mul(100));
-
-  return apr;
+  return ethers.utils.formatEther(rewardPricePerYear.mul(e18).div(totalRewardToken).mul(100));
 }
 
 export function toFixed(numberString: string, decimalPlaces = decimalPlaceDefault): string {
