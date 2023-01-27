@@ -1,5 +1,5 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
-import { veSIS } from './modules/veSIS'
+import { veSIS } from './modules/veSIS';
 
 const project: ProjectDefinitionInterface = {
   name: 'Symbiosis Finance',
@@ -12,9 +12,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/intent/follow?screen_name=symbiosis_fi',
     github: 'https://github.com/symbiosis-finance',
   },
-  modules: [ veSIS ],
+  modules: [veSIS],
 };
 
 export default project;
-
-

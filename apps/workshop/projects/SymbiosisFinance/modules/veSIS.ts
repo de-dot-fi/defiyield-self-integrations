@@ -1,8 +1,8 @@
-import type {ModuleDefinitionInterface} from "@defiyield/sandbox";
-import {ADDRESS} from "../helpers/constants";
-import {Address, Pool} from "@defiyield/sandbox";
-import erc20Abi from "../../../../../packages/abis/erc20.abi.json";
-import veSISAbi from "../abis/veSIS.json";
+import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
+import { ADDRESS } from '../helpers/constants';
+import { Address, Pool } from '@defiyield/sandbox';
+import erc20Abi from '../../../../../packages/abis/erc20.abi.json';
+import veSISAbi from '../abis/veSIS.json';
 
 export const veSIS: ModuleDefinitionInterface = {
   name: 'veSIS',
@@ -16,7 +16,7 @@ export const veSIS: ModuleDefinitionInterface = {
    * @returns Address[]
    */
   async preloadTokens(ctx): Promise<Address[]> {
-    return [ADDRESS.SIS]
+    return [ADDRESS.SIS];
   },
 
   /**
@@ -25,20 +25,17 @@ export const veSIS: ModuleDefinitionInterface = {
    * @param context
    * @returns Pool[]
    */
-  async fetchPools({
-                     tokens,
-                     BigNumber,
-                     ethcall,
-                     ethcallProvider
-                   }): Promise<(Pool | void)[]> {
+  async fetchPools({ tokens, BigNumber, ethcall, ethcallProvider }): Promise<(Pool | void)[]> {
     const [token] = tokens;
     const sisContract = new ethcall.Contract(ADDRESS.SIS, erc20Abi);
-    const [locked] = await ethcallProvider.all<typeof BigNumber>([sisContract.balanceOf(ADDRESS.veSIS)]);
+    const [locked] = await ethcallProvider.all<typeof BigNumber>([
+      sisContract.balanceOf(ADDRESS.veSIS),
+    ]);
 
-    const sisPrice = new BigNumber(token?.price || 0)
-    const sisDelimiter = new BigNumber(10).pow(token?.decimals)
-    const sisLocked = new BigNumber(locked.toString()).div(sisDelimiter)
-    const tvl = sisLocked.multipliedBy(sisPrice)
+    const sisPrice = new BigNumber(token?.price || 0);
+    const sisDelimiter = new BigNumber(10).pow(token?.decimals);
+    const sisLocked = new BigNumber(locked.toString()).div(sisDelimiter);
+    const tvl = sisLocked.multipliedBy(sisPrice);
 
     return [
       {
@@ -49,8 +46,8 @@ export const veSIS: ModuleDefinitionInterface = {
             tvl: tvl.toNumber(),
           },
         ],
-      }
-    ]
+      },
+    ];
   },
 
   /**
@@ -59,15 +56,17 @@ export const veSIS: ModuleDefinitionInterface = {
    * @param ctx Context
    * @returns UserPosition[]
    */
-  async fetchUserPositions({pools, user, ethcall, ethcallProvider, BigNumber}) {
+  async fetchUserPositions({ pools, user, ethcall, ethcallProvider, BigNumber }) {
     const [pool] = pools;
-    const {token} = pool.supplied?.[0] || {};
+    const { token } = pool.supplied?.[0] || {};
     if (!token) return [];
 
     const veSisContract = new ethcall.Contract(ADDRESS.veSIS, veSISAbi);
-    const [[locked]] = await ethcallProvider.all<typeof BigNumber[][]>([veSisContract.locked(user)]);
-    const sisDelimiter = new BigNumber(10).pow(token?.decimals)
-    const position = new BigNumber(locked.toString()).div(sisDelimiter)
+    const [[locked]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
+      veSisContract.locked(user),
+    ]);
+    const sisDelimiter = new BigNumber(10).pow(token?.decimals);
+    const position = new BigNumber(locked.toString()).div(sisDelimiter);
 
     return [
       {

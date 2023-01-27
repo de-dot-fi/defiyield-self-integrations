@@ -1,16 +1,12 @@
-import {
-  createMockContext,
-  createTestProject,
-  MockContracts
-} from '@defiyield/testing';
+import { createMockContext, createTestProject, MockContracts } from '@defiyield/testing';
 import { join } from 'path';
 import { describe, test, expect, beforeEach } from 'vitest';
-import {ADDRESS} from "../helpers/constants";
-import {veSIS} from "../modules/veSIS";
-import {Pool} from "../../../../sandbox";
+import { ADDRESS } from '../helpers/constants';
+import { veSIS } from '../modules/veSIS';
+import { Pool } from '../../../../sandbox';
 
 const TVL = 2000;
-const POSITION = 10000
+const POSITION = 10000;
 
 const TEST_TOKEN = {
   address: '0x0000000000000000000000000000000000000000',
@@ -79,14 +75,16 @@ describe('#project #SymbiosisFinance #veSIS', () => {
 
     const positions = await veSIS.fetchUserPositions({
       user: '0x0000000000000000000000000000000000000000',
-      pools: [{
-        id: 'veSIS',
-        supplied: [
-          {
-            token: TEST_TOKEN
-          }
-        ]
-      }],
+      pools: [
+        {
+          id: 'veSIS',
+          supplied: [
+            {
+              token: TEST_TOKEN,
+            },
+          ],
+        },
+      ],
       ...mockContext,
     });
 
@@ -102,5 +100,3 @@ describe('#project #SymbiosisFinance #veSIS', () => {
     ]);
   });
 });
-
-
