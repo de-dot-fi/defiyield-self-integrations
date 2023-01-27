@@ -3,6 +3,7 @@ import { ADDRESS } from '../helpers/constants';
 import { Address, Pool } from '@defiyield/sandbox';
 import erc20Abi from '../../../../../packages/abis/erc20.abi.json';
 import veSISAbi from '../abis/veSIS.json';
+import { getVeSISApr } from '../helpers/utils';
 
 export const veSIS: ModuleDefinitionInterface = {
   name: 'veSIS',
@@ -37,6 +38,8 @@ export const veSIS: ModuleDefinitionInterface = {
     const sisLocked = new BigNumber(locked.toString()).div(sisDelimiter);
     const tvl = sisLocked.multipliedBy(sisPrice);
 
+    const apr = await getVeSISApr({ ethcall, ethcallProvider });
+
     return [
       {
         id: 'veSIS',
@@ -44,6 +47,7 @@ export const veSIS: ModuleDefinitionInterface = {
           {
             token,
             tvl: tvl.toNumber(),
+            apr: { year: apr.toNumber() },
           },
         ],
       },
