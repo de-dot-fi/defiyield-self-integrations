@@ -9,7 +9,7 @@ const project: ProjectDefinitionInterface = {
     url: 'https://symbiosis.finance/',
     discord: 'https://discord.com/invite/YHgDSJ42eG',
     telegram: 'https://t.me/symbiosis_finance',
-    twitter: 'https://twitter.com/intent/follow?screen_name=symbiosis_fi',
+    twitter: 'https://twitter.com/symbiosis_fi',
     github: 'https://github.com/symbiosis-finance',
   },
   modules: [veSIS],

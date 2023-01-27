@@ -70,7 +70,7 @@ export const veSIS: ModuleDefinitionInterface = {
 
     return [
       {
-        id: 'veSIS',
+        id: pool.id,
         supplied: [
           {
             token,
