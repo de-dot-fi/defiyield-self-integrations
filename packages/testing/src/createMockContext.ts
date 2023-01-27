@@ -10,17 +10,24 @@ import * as solanaWeb3 from '@solana/web3.js';
 
 export function createMockProvider(contracts: MockContracts): ChainProvider {
   const ethers = createMock({
-    utils: {
-      parseEther: (str: string) => libEthers.utils.parseEther(str),
-      parseUnits: (str: string, dec: number) => libEthers.utils.parseUnits(str),
-      formatEther: (bn: libEthers.BigNumber) => libEthers.utils.formatEther(bn),
-      formatUnits: (bn: libEthers.BigNumber, dec: number) => libEthers.utils.formatUnits(bn, dec),
-    },
-    BigNumber: {
-      from: (str: string) => libEthers.BigNumber.from(str),
-    },
+    utils: { ...libEthers.utils },
+    BigNumber: { ...libEthers.BigNumber },
+    FixedNumber: { ...libEthers.FixedNumber },
     Contract: (address: string) => contracts[address] || contracts['fallback'],
-  });
+  }) as Context['ethers'];
+
+  const provider = createMock() as Context['provider'];
+
+  const ethcall = createMock({
+    Contract: (address: string) => contracts[address] || contracts['fallback'],
+  }) as Context['ethcall'];
+
+  const ethcallProvider = createMock({
+    all: (args: unknown[]) => args,
+    tryAll: (args: unknown[]) => args,
+    tryEach: (args: unknown[]) => args,
+    getEthBalance: (args: unknown[]) => args,
+  }) as Context['ethcallProvider'];
 
   return {
     cardano: {
@@ -32,15 +39,10 @@ export function createMockProvider(contracts: MockContracts): ChainProvider {
     },
     chain: null as any,
     endpoint: null as any,
-    ethers: ethers as Context['ethers'],
-    ethcall: ethers as Context['ethcall'],
-    provider: createMock() as Context['provider'],
-    ethcallProvider: createMock({
-      all: (args: unknown[]) => args,
-      tryAll: (args: unknown[]) => args,
-      tryEach: (args: unknown[]) => args,
-      getEthBalance: (args: unknown[]) => args,
-    }) as Context['ethcallProvider'],
+    ethers,
+    ethcall,
+    provider,
+    ethcallProvider,
   };
 }
 
