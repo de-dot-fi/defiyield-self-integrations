@@ -92,7 +92,7 @@ export type Token = {
 };
 
 export interface TokenUnderlying extends Token {
-  reserve?: number;
+  reserve?: string;
 }
 
 type RewardRate = {

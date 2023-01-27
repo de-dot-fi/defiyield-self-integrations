@@ -70,7 +70,7 @@ export const PLPStaking: ModuleDefinitionInterface = {
 
     const mapAddrWithResult: Record<string, BigNumber> = {};
     for (let i = 0; i < Object.values(COMPOSITION_TOKENS).length; i++) {
-      mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i];
+      mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i]?.[0]?.toString();
     }
 
     const _plpToken = tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
