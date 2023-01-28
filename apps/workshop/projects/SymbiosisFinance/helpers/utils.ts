@@ -19,5 +19,11 @@ export async function getVeSISApr({
       distributorContract.token_last_balance(),
     ]);
 
-  return distributorBalance.sub(lastTokenBalance).mul(WEEKS_IN_YEAR).mul(100).div(lockedBalance);
+  const apr = distributorBalance
+    .sub(lastTokenBalance)
+    .mul(WEEKS_IN_YEAR)
+    .mul(100)
+    .div(lockedBalance);
+
+  return apr.mul(100).toNumber() / 100;
 }

@@ -1,5 +1,6 @@
 import { createMockContext, createTestProject, MockContracts } from '@defiyield/testing';
 import { join } from 'path';
+import { BigNumber } from 'ethers';
 import { describe, test, expect, beforeEach } from 'vitest';
 import { ADDRESS } from '../helpers/constants';
 import { veSIS } from '../modules/veSIS';
@@ -7,6 +8,7 @@ import { Pool } from '../../../../sandbox';
 
 const TVL = 2000;
 const POSITION = 10000;
+const multiplier = BigNumber.from(10).pow(18);
 
 const TEST_TOKEN = {
   address: '0x0000000000000000000000000000000000000000',
@@ -17,10 +19,13 @@ const TEST_TOKEN = {
 
 const mockContracts: MockContracts = {
   [ADDRESS.SIS]: {
-    balanceOf: () => TVL * 1e18,
+    balanceOf: () => BigNumber.from(TVL).mul(multiplier),
   },
   [ADDRESS.veSIS]: {
-    locked: () => [POSITION * 1e18],
+    locked: () => [BigNumber.from(POSITION).mul(multiplier)],
+  },
+  [ADDRESS.veSISDistributor]: {
+    token_last_balance: () => [0],
   },
   fallback: {
     //
@@ -66,6 +71,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
       expect.objectContaining({
         token: TEST_TOKEN,
         tvl: 1000, // 2000 * 0.5
+        apr: { year: expect.any(Number) },
       }),
     ]);
   });
