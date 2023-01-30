@@ -1,6 +1,7 @@
 import {
   FetchUserPositionsContext,
   TokenUnderlying,
+  UserSupplied,
   UserPosition,
   PoolSupplied,
   PoolRewarded,
@@ -144,13 +145,22 @@ export const PLPStaking: ModuleDefinitionInterface = {
       plpStakingContract.getUserTokenAmount(PLP_TOKEN_ADDR, user),
       rewardContract.pendingReward(user),
     ])) as BigNumber[];
-    const plpPoolSupplied =
-      pools.length === 0 || pools[0].supplied?.length === 0
-        ? undefined
-        : {
-            ...pools[0].supplied![0],
-            balance: parseFloat(ethers.utils.formatEther(plpBalance)),
-          };
+
+    let plpPoolSupplied: UserSupplied | undefined;
+    if (pools[0] != null && pools[0].supplied?.[0] != null) {
+      plpPoolSupplied = {
+        ...pools[0].supplied[0],
+        token: {
+          ...pools[0].supplied[0].token,
+          underlying: (pools[0].supplied?.[0]?.token?.underlying || []).map((underlying) => ({
+            ...underlying,
+            // TODO should be rewrited to display datailed balance for each underlying token
+            balance: '0',
+          })),
+        },
+        balance: parseFloat(ethers.utils.formatEther(plpBalance)),
+      };
+    }
 
     const plpPoolRewarded =
       pools.length === 0 || pools[0].rewarded?.length === 0
