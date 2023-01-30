@@ -8,7 +8,7 @@ import { BLID_ADDRESS, DEPOSIT_VAULTS } from '../helpers/vaults';
 export const DepositPools: ModuleDefinitionInterface = {
   name: 'DepositPools',
   chain: 'binance',
-  type: 'pools',
+  type: 'staking',
 
   /**
    * Fetches the addresses of all involved tokens (supplied, rewards, borrowed, etc)
