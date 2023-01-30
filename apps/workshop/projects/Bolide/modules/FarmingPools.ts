@@ -9,7 +9,7 @@ import { BLID_ADDRESS, LP_BLID_USDT_ADDRESS, MASTER_CHEF_ADDRESS } from '../help
 export const FarmingPools: ModuleDefinitionInterface = {
   name: 'FarmingPools',
   chain: 'binance',
-  type: 'pools',
+  type: 'staking',
 
   /**
    * Fetches the addresses of all involved tokens (supplied, rewards, borrowed, etc)
