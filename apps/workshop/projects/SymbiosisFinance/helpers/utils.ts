@@ -1,29 +1,28 @@
 import { Context } from '@defiyield/sandbox';
-
 import { ADDRESS, WEEKS_IN_YEAR } from './constants';
 import erc20Abi from '../../../../../packages/abis/erc20.abi.json';
 import veSISDistributorAbi from '../abis/veSISDistributor.json';
-import { BigNumber } from 'ethers';
 
 export async function getVeSISApr({
   ethcall,
   ethcallProvider,
-}: Pick<Context, 'ethcall' | 'ethcallProvider'>) {
+  BigNumber,
+}: Pick<Context, 'ethcall' | 'ethcallProvider' | 'BigNumber'>) {
   const sisContract = new ethcall.Contract(ADDRESS.SIS, erc20Abi);
   const distributorContract = new ethcall.Contract(ADDRESS.veSISDistributor, veSISDistributorAbi);
 
-  const [distributorBalance, lockedBalance, lastTokenBalance] =
-    await ethcallProvider.all<BigNumber>([
-      sisContract.balanceOf(ADDRESS.veSISDistributor),
-      sisContract.balanceOf(ADDRESS.veSIS),
-      distributorContract.token_last_balance(),
-    ]);
+  const [distributorBalance, lockedBalance, lastTokenBalance] = await ethcallProvider.all<
+    typeof BigNumber
+  >([
+    sisContract.balanceOf(ADDRESS.veSISDistributor),
+    sisContract.balanceOf(ADDRESS.veSIS),
+    distributorContract.token_last_balance(),
+  ]);
 
-  const apr = distributorBalance
-    .sub(lastTokenBalance)
-    .mul(WEEKS_IN_YEAR)
-    .mul(100)
-    .div(lockedBalance);
-
-  return apr.mul(100).toNumber() / 100;
+  return new BigNumber(distributorBalance.toString())
+    .minus(lastTokenBalance.toString())
+    .multipliedBy(WEEKS_IN_YEAR)
+    .multipliedBy(100)
+    .div(lockedBalance.toString())
+    .toNumber();
 }
