@@ -7,6 +7,7 @@ import { Pool } from '../../../../sandbox';
 
 const TVL = 2000;
 const POSITION = 10000;
+const UNLOCK_TIME = 1675146310;
 const multiplier = 1e18;
 
 const TEST_TOKEN = {
@@ -21,7 +22,7 @@ const mockContracts: MockContracts = {
     balanceOf: () => TVL * multiplier,
   },
   [ADDRESS.veSIS]: {
-    locked: () => [POSITION * multiplier],
+    locked: () => [POSITION * multiplier, UNLOCK_TIME],
   },
   [ADDRESS.veSISDistributor]: {
     token_last_balance: () => [0],
@@ -101,6 +102,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
       expect.objectContaining({
         balance: POSITION,
         token: TEST_TOKEN,
+        unlockTime: UNLOCK_TIME * 1000,
       }),
     ]);
   });
