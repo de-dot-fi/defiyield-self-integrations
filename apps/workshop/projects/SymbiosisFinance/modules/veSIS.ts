@@ -65,11 +65,13 @@ export const veSIS: ModuleDefinitionInterface = {
     if (!token) return [];
 
     const veSisContract = new ethcall.Contract(ADDRESS.veSIS, veSISAbi);
-    const [[locked]] = await ethcallProvider.all<typeof BigNumber[][]>([
+    const [[locked, end]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
       veSisContract.locked(user),
     ]);
     const sisDelimiter = new BigNumber(10).pow(token?.decimals);
     const position = new BigNumber(locked.toString()).div(sisDelimiter);
+
+    const unlockTime = new BigNumber(end.toString()).multipliedBy(1000);
 
     return [
       {
@@ -78,6 +80,7 @@ export const veSIS: ModuleDefinitionInterface = {
           {
             token,
             balance: position.toNumber(),
+            unlockTime: unlockTime.toNumber(),
           },
         ],
       },
