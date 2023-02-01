@@ -32,7 +32,7 @@ export async function fetchPoolsFromUrl(
           {
             token: finder(value.emittedTokenAddress),
             apr: {
-              year: value.apr,
+              year: value.apr / 100,
             },
           },
         ],
