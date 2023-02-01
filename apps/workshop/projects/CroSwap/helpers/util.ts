@@ -4,6 +4,8 @@ import { findToken } from '../../../../../packages/utils/array';
 import { Context, Token } from '../../../../sandbox/src/types/module';
 import { GQL_GET_TOKENS } from './const';
 import { subgraph } from './gql';
+import pairAbi from '../abis/pair.abi.json';
+import type * as ethcall from 'ethcall';
 
 export async function fetchPoolsFromUrl(
   context: Context,
@@ -12,20 +14,31 @@ export async function fetchPoolsFromUrl(
 ): Promise<Pool[]> {
   const finder = findToken(tokens);
 
-  return await context.axios.get(url).then((response: { data: any }) => {
+  return await context.axios.get(url).then(async (response: { data: any }) => {
     const pools = [];
+    const { ethcall, ethcallProvider } = context;
     const entries = Object.entries<CroSwapFarms>(response.data);
     for (const [, value] of entries) {
+      const contract = new ethcall.Contract(value.pair.pairAddress, pairAbi);
+
+      const [name, symbol, decimals] = (await ethcallProvider.all([
+        contract.name(),
+        contract.symbol(),
+        contract.decimals(),
+      ])) as [string, string, number];
+
       pools.push(<Pool>{
         id: value.pair.pairAddress,
         supplied: [
           {
-            token: finder(value.pair.address0),
-            tvl: parseFloat(value.pair.reserve0USD),
-          },
-          {
-            token: finder(value.pair.address1),
-            tvl: parseFloat(value.pair.reserve1USD),
+            token: {
+              address: value.pair.pairAddress,
+              name: name,
+              symbol: symbol,
+              decimals: decimals,
+              underlying: [finder(value.pair.address0), finder(value.pair.address1)],
+            },
+            tvl: parseFloat(value.totalStakedUSD),
           },
         ],
         rewarded: [
