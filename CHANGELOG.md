@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.2.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.1.0...v1.2.0) (2023-02-01)
+
+
+### Features
+
+* added unlockTime prop to user's position object ([#19](https://github.com/defiyield-app/defiyield-self-integrations/issues/19)) ([31810e8](https://github.com/defiyield-app/defiyield-self-integrations/commit/31810e81d1b3da5f68501ca61439bd6d4dc7f5de))
+* **perp88:** init ([#13](https://github.com/defiyield-app/defiyield-self-integrations/issues/13)) ([76e204a](https://github.com/defiyield-app/defiyield-self-integrations/commit/76e204ac0d013e100057bb84764fe2368e5cb484)), closes [#3](https://github.com/defiyield-app/defiyield-self-integrations/issues/3)
+
+
+### Bug Fixes
+
+* **perp88:** reserve value ([#15](https://github.com/defiyield-app/defiyield-self-integrations/issues/15)) ([4e492d3](https://github.com/defiyield-app/defiyield-self-integrations/commit/4e492d3eba7e8b825f10cf7a7460695cfde17789))
+* projects & ci updates  ([#18](https://github.com/defiyield-app/defiyield-self-integrations/issues/18)) ([b3094ef](https://github.com/defiyield-app/defiyield-self-integrations/commit/b3094ef488180df0161e359584f527a0a2321038))
+
 ## 1.1.0 (2023-01-26)
 
 
