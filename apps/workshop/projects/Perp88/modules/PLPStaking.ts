@@ -1,9 +1,9 @@
 import {
   FetchUserPositionsContext,
-  TokenUnderlying,
   UserPosition,
   PoolSupplied,
   PoolRewarded,
+  UserSupplied,
 } from './../../../../sandbox/src/types/module';
 
 import {
@@ -46,13 +46,9 @@ export const PLPStaking: ModuleDefinitionInterface = {
    */
   async fetchPools(ctx: FetchPoolsContext) {
     const { tokens, ethcall, ethcallProvider, ethers } = ctx;
-    const e18 = ethers.utils.parseEther('1');
     const Zero = ethers.BigNumber.from('0');
 
-    const filteredTokens = tokens.filter(
-      (i) => i.address.toLowerCase() !== PLP_TOKEN_ADDR.toLowerCase(),
-    );
-
+ 
     const multiCall = createMulticallChunker(ethcallProvider);
 
     const apr = await calAPR(ctx);
@@ -68,40 +64,33 @@ export const PLPStaking: ModuleDefinitionInterface = {
       throw new Error(`Invalid Multicall Result`);
     }
 
-    let mapAddrWithResult: Record<string, BigNumber> = {};
+    let mapAddrWithResult: Record<string,BigNumber> = {};
     for (let i = 0; i < Object.values(COMPOSITION_TOKENS).length; i++) {
-      mapAddrWithResult[tokenAddrs[i].toLowerCase()] = multiCallRes[i];
+      mapAddrWithResult[tokenAddrs[i].toLowerCase()] = ethers.BigNumber.from(multiCallRes[i].toString());
     }
 
-    const _plpToken = tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
-    let plpToken = {
-      ..._plpToken,
-      underlying: filteredTokens.map(
-        (i) =>
-          ({
-            reserve: mapAddrWithResult[i.address.toLowerCase()],
-            ...i,
-          } as unknown as TokenUnderlying),
-      ),
-    };
-
+    const plpToken = tokens.find((i) => i.address.toLowerCase() === PLP_TOKEN_ADDR.toLowerCase());
+    
     const usdcToken = tokens.find(
       (i) => i.address.toLowerCase() === COMPOSITION_TOKENS.USDC.toLowerCase(),
     );
 
-    const tvlBN = plpToken.underlying
-      ? plpToken.underlying.reduce((accum, curr) => {
-          if (!curr.reserve || !curr.price) return accum;
 
-          const tvlBN = ethers.utils
-            .parseEther(curr.reserve.toString())
-            .mul(ethers.utils.parseEther(curr.price.toString()))
-            .div(e18)
-            .div(ethers.utils.parseUnits('1', curr.decimals));
+    const tvlBN = Object.keys(mapAddrWithResult).reduce((accum, addr) => {
+      const _token = tokens.find(i => i.address.toLowerCase() === addr)
 
-          return accum.add(tvlBN);
-        }, Zero)
-      : Zero;
+      if (!_token || !_token.price || !_token.decimals) {
+        throw new Error(`Invalid Token data`)
+      }
+      
+      
+      const tvlTokenBN = mapAddrWithResult[addr]
+      .mul(ethers.utils.parseEther(_token.price.toString()))
+        .div(ethers.utils.parseUnits('1', _token.decimals));
+
+      return accum.add(tvlTokenBN)
+
+    }, Zero)
 
     const poolSupplied: PoolSupplied[] = [
       {
@@ -140,25 +129,35 @@ export const PLPStaking: ModuleDefinitionInterface = {
     const plpStakingContract = new ethcall.Contract(PLP_STAKING_ADDR, PLPStakingAbi);
     const rewardContract = new ethcall.Contract(PLP_STAKING_REVENUE_ADDR, FeedableRewarderAbi);
 
-    const [plpBalance, pendingReward]: BigNumber[] = (await ethcallProvider.all([
+
+    const multiCallRes: BigNumber[] = (await ethcallProvider.all([
       plpStakingContract.getUserTokenAmount(PLP_TOKEN_ADDR, user),
       rewardContract.pendingReward(user),
-    ])) as BigNumber[];
-    const plpPoolSupplied =
-      pools.length === 0 || pools[0].supplied?.length === 0
-        ? undefined
-        : {
-            ...pools[0].supplied![0],
-            balance: parseFloat(ethers.utils.formatEther(plpBalance)),
-          };
+      ])) as BigNumber[];
+
+
+    const [plpBalance, pendingReward]= multiCallRes;
+
+
+    let plpPoolSupplied: UserSupplied | undefined;
+    if (pools[0] != null && pools[0].supplied?.[0] != null) {
+      plpPoolSupplied = {
+        ...pools[0].supplied[0],
+        token: {
+          ...pools[0].supplied[0].token,
+          underlying: []
+        },
+        balance: parseFloat(ethers.utils.formatEther(plpBalance)),
+      };
+    }
 
     const plpPoolRewarded =
       pools.length === 0 || pools[0].rewarded?.length === 0
         ? undefined
         : {
-            ...pools[0].rewarded![0],
-            balance: parseFloat(ethers.utils.formatUnits(pendingReward, 6)), //USDC REWARD
-          };
+          ...pools[0].rewarded![0],
+          balance: parseFloat(ethers.utils.formatUnits(pendingReward, 6)), //USDC REWARD
+        };
 
     return [
       {
