@@ -27,9 +27,9 @@ export const FarmingPools: ModuleDefinitionInterface = {
    * @param context
    * @returns Pool[]
    */
-  async fetchPools({ tokens, axios }) {
-    const tvlData = await getTvl(axios);
-    const aprData = await getApy(axios);
+  async fetchPools({ tokens, axios, logger }) {
+    const tvlData = await getTvl(axios, logger);
+    const aprData = await getApy(axios, logger);
 
     const tokenFinder = findToken(tokens);
 
