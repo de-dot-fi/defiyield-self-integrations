@@ -101,6 +101,8 @@ export async function fetchUserPositions({
   ethcallProvider,
 }: FetchUserPositionsContext) {
   const [pool] = pools;
+  const suppliedToken = pool?.supplied?.[0]?.token;
+  if (!suppliedToken) throw new Error(`Missing Supplied Token for pool/${pool?.id}`);
 
   const rewarders = await getExtraRewarders({ ethcall, ethcallProvider });
 
@@ -120,7 +122,7 @@ export async function fetchUserPositions({
       id: pool.id,
       supplied: [
         {
-          token: pool.supplied?.[0]?.token as Token,
+          token: suppliedToken,
           balance: Number(balance.toString()) / 10 ** 18,
         },
       ],
