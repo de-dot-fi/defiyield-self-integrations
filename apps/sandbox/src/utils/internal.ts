@@ -40,6 +40,10 @@ const internalChainIds: Record<SupportedChain, number> = {
   agoric: 39,
   crescent: 43,
   'terra-2': 40,
+  'boba-bnb': 56288,
+  'boba-avax': 43288,
+  telos: 42,
+  solana: 44,
 };
 
 export function getInternalChainId(chain: SupportedChain): number {

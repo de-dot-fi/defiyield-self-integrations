@@ -144,13 +144,6 @@ export default convict({
       env: 'KAVA_EVM_URL',
       arg: 'kava-evm',
     },
-    klaytn: {
-      doc: 'Klaytn RPC url',
-      format: String,
-      default: 'https://klaytn02.fandom.finance',
-      env: 'KLAYTN_URL',
-      arg: 'klaytn',
-    },
     kucoin: {
       doc: 'KuCoin RPC url',
       format: String,
@@ -325,6 +318,27 @@ export default convict({
       default: 'http://api.mainnet-beta.solana.com/',
       env: 'SOLANA_RPC',
       arg: 'solana',
+    },
+    'boba-bnb': {
+      doc: 'BOBA BNB RPC url',
+      format: String,
+      default: 'https://bnb.boba.network',
+      env: 'BOBA_BNB_URL',
+      arg: 'boba-bnb',
+    },
+    'boba-avax': {
+      doc: 'BOBA AVAX RPC url',
+      format: String,
+      default: 'https://avax.boba.network',
+      env: 'BOBA_AVAX_URL',
+      arg: 'boba-avax',
+    },
+    telos: {
+      doc: 'Telos RPC url',
+      format: String,
+      default: 'https://mainnet.telos.net/evm',
+      env: 'TELOS_URL',
+      arg: 'telos',
     },
   },
 })

@@ -4,4 +4,6 @@ export const ADDRESS = {
   veSISDistributor: '0x67438161883F71255Acfbba3C2F1A582780B05CB',
 };
 
+export const BOBA_BNB_RPC = 'https://bnb.boba.network';
+
 export const WEEKS_IN_YEAR = 52;

@@ -6,7 +6,7 @@ import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
 import * as cardano from './utils/cardano';
-export { ethers } from 'ethers'
+export { ethers } from 'ethers';
 import * as BufferLayout from './utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
 
@@ -118,6 +118,9 @@ export async function initializeProviders(): Promise<ProviderMap> {
     agoric,
     terra2,
     solana,
+    telos,
+    bobaBnb,
+    bobaAvax,
   ] = await Promise.all([
     createProviders(config.rpcs.arbitrum, 'arbitrum'),
     createProviders(config.rpcs.aurora, 'aurora'),
@@ -159,6 +162,9 @@ export async function initializeProviders(): Promise<ProviderMap> {
     createCosmosProviders(config.rpcs.agoric, 'agoric'),
     createCosmosProviders(config.rpcs['terra-2'], 'terra-2'),
     createSolanaProviders(config.rpcs.solana, 'solana'),
+    createProviders(config.rpcs.telos, 'telos'),
+    createProviders(config.rpcs['boba-bnb'], 'boba-bnb'),
+    createProviders(config.rpcs['boba-avax'], 'boba-avax'),
   ]);
 
   const providerOptions: Record<SupportedChain, ChainProvider | void> = {
@@ -202,6 +208,9 @@ export async function initializeProviders(): Promise<ProviderMap> {
     agoric,
     'terra-2': terra2,
     solana,
+    telos,
+    'boba-bnb': bobaBnb,
+    'boba-avax': bobaAvax,
   };
 
   return createMap(providerOptions) as ProviderMap;

@@ -26,3 +26,22 @@ export async function getVeSISApr({
     .div(lockedBalance.toString())
     .toNumber();
 }
+
+export async function getPoolApr(context: Context, chainId: number): Promise<number> {
+  const aprData = await context.axios.get('https://api-v2.symbiosis.finance/farming/v1/apr');
+
+  let apr = null;
+  for (let j = 0; j < aprData.data.length; j++) {
+    const item = aprData.data[j];
+    for (let i = 0; i < item.pools.length; i++) {
+      if (item.pools[i].chainId === chainId) {
+        apr = item.pools[i].apr * 100;
+        break;
+      }
+    }
+    if (apr) {
+      break;
+    }
+  }
+  return apr || 0;
+}

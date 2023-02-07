@@ -46,7 +46,10 @@ export type SupportedChain =
   | 'crescent'
   | 'agoric'
   | 'terra-2'
-  | 'solana';
+  | 'solana'
+  | 'boba-bnb'
+  | 'boba-avax'
+  | 'telos';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
 
