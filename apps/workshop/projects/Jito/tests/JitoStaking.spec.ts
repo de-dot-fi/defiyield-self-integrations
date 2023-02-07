@@ -10,6 +10,7 @@ describe('#project #staking #jito', () => {
       name: 'JitoStaking',
       path: join(__dirname, '../index.ts'),
       modules: [JitoStaking],
+      contracts: {},
     });
   });
 
