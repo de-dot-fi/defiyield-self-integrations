@@ -58,8 +58,8 @@ export default class LockAura implements ModuleDefinitionInterface {
     const [pool] = pools;
     // 0xe6a0d1bbdd7ed02ff15adb30314edbca6b1f8be0
     // TODO: Fetch User Positions
-    const suppliedToken = pool.supplied?.[0]?.token;
-    if (!suppliedToken) throw new Error('Missing Supplied Token');
+    const suppliedToken = pool?.supplied?.[0]?.token;
+    if (!suppliedToken) throw new Error(`Missing Supplied Token for pool/${pool?.id}`);
 
     const contract = new ethcall.Contract(pool.id, auraLockerAbi);
 
