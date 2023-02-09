@@ -9,7 +9,7 @@
     "test": "vitest run",
     "lint": "eslint . --ext .ts",
     "ls": "node -e \"console.log('\\x1b[36m%s\\x1b[0m', fs.readdirSync('projects').join('\\n'))\"",
-    "format": "prettier --check '**/*{.ts,.json}'",
+    "format": "prettier --config \"../../packages/prettier-config/index.js\" --check \"**/*{.ts,.json}\"",
     "make": "hygen project-generator new --project=$0",
     "build": "rollup --config rollup.config.js"
   },
