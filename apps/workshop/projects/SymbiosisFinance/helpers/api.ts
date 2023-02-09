@@ -24,20 +24,8 @@ export async function getUserPosition(
 }
 
 export async function getPoolApr(context: Context, pool: Pool): Promise<number> {
-  const aprData = await context.axios.get(`${BASE_API_URL}/farming/v1/apr`);
-
-  let apr = null;
-  for (let j = 0; j < aprData.data.length; j++) {
-    const item = aprData.data[j];
-    for (let i = 0; i < item.pools.length; i++) {
-      if (item.pools[i].chainId === pool.chainId) {
-        apr = item.pools[i].apr;
-        break;
-      }
-    }
-    if (apr) {
-      break;
-    }
-  }
-  return apr || 0;
+  const {
+    data: { apr },
+  } = await context.axios.get(`${BASE_API_URL}/crosschain/v1/pool-apr/${pool.chainId}`);
+  return apr;
 }

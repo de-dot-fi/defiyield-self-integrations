@@ -61,8 +61,7 @@ export function getPool(chain: SupportedChain): ModuleDefinitionInterface {
 
       const [pool] = pools;
 
-      const { token } = pool.supplied?.[0] || {};
-      if (!token) return [];
+      if (!pool.supplied) return [];
 
       const balance = await getUserPosition(context, currentPool, user);
 
@@ -71,7 +70,7 @@ export function getPool(chain: SupportedChain): ModuleDefinitionInterface {
           id: pool.id,
           supplied: [
             {
-              token,
+              ...pool.supplied[0],
               balance,
             },
           ],

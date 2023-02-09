@@ -61,11 +61,13 @@ export const veSIS: ModuleDefinitionInterface = {
    */
   async fetchUserPositions({ pools, user, ethcall, ethcallProvider, BigNumber }) {
     const [pool] = pools;
-    const { token } = pool.supplied?.[0] || {};
-    if (!token) return [];
+
+    if (!pool.supplied) return [];
+
+    const { token } = pool.supplied[0];
 
     const veSisContract = new ethcall.Contract(ADDRESS.veSIS, veSISAbi);
-    const [[locked, end]] = await ethcallProvider.all<typeof BigNumber[][]>([
+    const [[locked, end]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
       veSisContract.locked(user),
     ]);
     const sisDelimiter = new BigNumber(10).pow(token?.decimals);
@@ -78,7 +80,7 @@ export const veSIS: ModuleDefinitionInterface = {
         id: pool.id,
         supplied: [
           {
-            token,
+            ...pool.supplied[0],
             balance: position.toNumber(),
             unlockTime: unlockTime.toNumber(),
           },
