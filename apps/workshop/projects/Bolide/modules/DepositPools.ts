@@ -32,13 +32,13 @@ export const DepositPools: ModuleDefinitionInterface = {
    * @param context
    * @returns Pool[]
    */
-  async fetchPools({ tokens, axios }) {
+  async fetchPools({ tokens, axios, logger }) {
     const pools = [];
 
     const tokenFinder = findToken(tokens);
 
-    const tvlData = await getTvl(axios);
-    const aprData = await getApy(axios);
+    const tvlData = await getTvl(axios, logger);
+    const aprData = await getApy(axios, logger);
 
     for (const vault of DEPOSIT_VAULTS) {
       const vaultAddress = vault.address;

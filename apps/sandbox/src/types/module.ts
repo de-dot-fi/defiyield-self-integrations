@@ -48,7 +48,7 @@ export type SupportedChain =
   | 'terra-2'
   | 'solana';
 
-export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
+export type SupportedProtocolType = 'staking' | 'lending' | 'pools' | 'claimable';
 
 export interface LoggerInterface {
   debug: (msg: string) => void;

@@ -3,10 +3,11 @@
   "version": "1.2.0",
   "packageManager": "yarn@3.2.4",
   "private": true,
+  "prettier": "./packages/prettier-config",
   "lint-staged": {
-    "*.json": "yarn prettier --write",
+    "*.json": "yarn ci:format",
     "*.ts": [
-      "yarn prettier --write",
+      "yarn ci:format",
       "yarn lint"
     ]
   },
@@ -18,7 +19,8 @@
     "workshop": "yarn workspace @defiyield/workshop",
     "sandbox": "yarn workspace @defiyield/sandbox",
     "postinstall": "husky install",
-    "format": "prettier \"**/*.(json|ts)\" --write",
+    "format": "prettier --config \"./packages/prettier-config/index.js\" --write \"**/*.(json|ts)\"",
+    "ci:format": "prettier --config \"./packages/prettier-config/index.js\" --write",
     "lint": "eslint --fix"
   },
   "devDependencies": {
