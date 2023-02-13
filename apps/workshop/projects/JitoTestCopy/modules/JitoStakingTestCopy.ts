@@ -2,7 +2,7 @@ import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { getBalance, jitoStats, jitoToken, solToken } from '../helpers';
 
 export const JitoStakingTestCopy: ModuleDefinitionInterface = {
-  name: 'JitoStaking',
+  name: 'JitoStakingTestCopy',
   chain: 'solana',
   type: 'staking',
 
