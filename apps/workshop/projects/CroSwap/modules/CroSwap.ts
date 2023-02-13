@@ -58,12 +58,12 @@ export const CroSwap: ModuleDefinitionInterface = {
 
       const lpTokenContract = new ethcall.Contract(pool.id, pairAbi);
 
-      const [poolId, balance /*reserves, totalSupply*/] = (await ethcallProvider.all([
+      const [poolId, balance] = (await ethcallProvider.all([
         farms.getPoolIdforLP(pool.id),
         lpTokenContract.balanceOf(user),
         lpTokenContract.getReserves(),
         lpTokenContract.totalSupply(),
-      ])) as [BigNumber, BigNumber /*Reserves, BigNumber*/];
+      ])) as [BigNumber, BigNumber];
 
       const [userInfo, pending] = (await ethcallProvider.all([
         farms.getUserInfo(poolId, user),
@@ -73,43 +73,17 @@ export const CroSwap: ModuleDefinitionInterface = {
       // total balance of lp tokens in wallet & staked
       const totalBalance = balance.add(userInfo.amount);
 
-      // // dont continue if no balance
-      // if (totalBalance.eq(0)) return void 0;
-
-      // const reserve0 = ethers.FixedNumber.fromValue(reserves._reserve0, 18);
-      // const reserve1 = ethers.FixedNumber.fromValue(reserves._reserve1, 18);
-
-      // // get ratio of total supply
-      // const ratioOfTotalSupply = ethers.FixedNumber.fromValue(totalBalance).divUnsafe(
-      //   ethers.FixedNumber.from(totalSupply),
-      // );
-
-      // const token0Balance = parseFloat(
-      //   ethers.utils.formatUnits(
-      //     reserve0.mulUnsafe(ratioOfTotalSupply).toHexString(),
-      //     token0.decimals,
-      //   ),
-      // );
-      // const token1Balance = parseFloat(
-      //   ethers.utils.formatUnits(
-      //     reserve1.mulUnsafe(ratioOfTotalSupply).toHexString(),
-      //     token1.decimals,
-      //   ),
-      // );
-
       return <UserPosition>{
         id: pool.id,
         supplied: [
           {
             token: pool.supplied?.[0].token,
-            //sucks this is a number
             balance: parseFloat(ethers.utils.formatUnits(totalBalance, 18)),
           },
         ],
         rewarded: [
           {
             token: pool.rewarded?.[0].token,
-            //sucks this is a number
             balance: parseFloat(ethers.utils.formatUnits(pending, 18)),
           },
         ],
