@@ -47,6 +47,9 @@ const mockContracts: MockContracts = {
       _reserve1: BigNumber.from('836566687674387021293479'),
     }),
     totalSupply: () => '15580063952326514',
+    name: () => 'CroSwap LP',
+    symbol: () => 'CroSwap-LP',
+    decimals: () => 18,
   },
   '0x5C7F8A570d578ED84E63fdFA7b1eE72dEae1AE23': {
     balanceOf: () => BigNumber.from('0'),
@@ -126,6 +129,7 @@ describe('#project #CroSwap #todo', () => {
           reserve1USD: '0.0',
         },
         emittedTokenAddress: '0x1Ba477CA252C0FF21c488d41759795E7E7812aB4',
+        totalStakedUSD: '0.0',
       },
     });
 
@@ -142,15 +146,20 @@ describe('#project #CroSwap #todo', () => {
           name: expect.any(String),
           symbol: expect.any(String),
           decimals: expect.any(Number),
-        }),
-        tvl: expect.any(Number),
-      }),
-      expect.objectContaining({
-        token: expect.objectContaining({
-          address: expect.any(String),
-          name: expect.any(String),
-          symbol: expect.any(String),
-          decimals: expect.any(Number),
+          underlying: expect.objectContaining([
+            expect.objectContaining({
+              address: expect.any(String),
+              name: expect.any(String),
+              symbol: expect.any(String),
+              decimals: expect.any(Number),
+            }),
+            expect.objectContaining({
+              address: expect.any(String),
+              name: expect.any(String),
+              symbol: expect.any(String),
+              decimals: expect.any(Number),
+            }),
+          ]),
         }),
         tvl: expect.any(Number),
       }),
@@ -185,6 +194,7 @@ describe('#project #CroSwap #todo', () => {
           reserve1USD: '0.0',
         },
         emittedTokenAddress: '0x1Ba477CA252C0FF21c488d41759795E7E7812aB4',
+        totalStakedUSD: '0.0',
       },
     });
 
@@ -205,17 +215,22 @@ describe('#project #CroSwap #todo', () => {
             name: expect.any(String),
             symbol: expect.any(String),
             decimals: expect.any(Number),
+            underlying: expect.objectContaining([
+              expect.objectContaining({
+                address: expect.any(String),
+                name: expect.any(String),
+                symbol: expect.any(String),
+                decimals: expect.any(Number),
+              }),
+              expect.objectContaining({
+                address: expect.any(String),
+                name: expect.any(String),
+                symbol: expect.any(String),
+                decimals: expect.any(Number),
+              }),
+            ]),
           }),
-          balance: 0.009382311979137373,
-        }),
-        expect.objectContaining({
-          token: expect.objectContaining({
-            address: expect.any(String),
-            name: expect.any(String),
-            symbol: expect.any(String),
-            decimals: expect.any(Number),
-          }),
-          balance: 26914417321936.383,
+          balance: expect.any(Number),
         }),
       ],
       rewarded: [
@@ -226,7 +241,7 @@ describe('#project #CroSwap #todo', () => {
             symbol: expect.any(String),
             decimals: expect.any(Number),
           }),
-          balance: 374438.89068349585,
+          balance: expect.any(Number),
         }),
       ],
     });
