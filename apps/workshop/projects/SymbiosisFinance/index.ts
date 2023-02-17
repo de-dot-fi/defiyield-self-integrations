@@ -1,5 +1,6 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
 import { veSIS } from './modules/veSIS';
+import { getPool } from './modules/pools';
 
 const project: ProjectDefinitionInterface = {
   name: 'Symbiosis Finance',
@@ -12,7 +13,14 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/symbiosis_fi',
     github: 'https://github.com/symbiosis-finance',
   },
-  modules: [veSIS],
+  modules: [
+    veSIS,
+    getPool('ethereum'),
+    getPool('binance'),
+    getPool('avalanche'),
+    getPool('polygon'),
+    getPool('boba'),
+  ],
 };
 
 export default project;
