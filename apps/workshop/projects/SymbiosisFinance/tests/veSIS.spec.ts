@@ -26,6 +26,7 @@ const mockContracts: MockContracts = {
   },
   [ADDRESS.veSISDistributor]: {
     token_last_balance: () => [0],
+    last_token_time: () => [0],
   },
   fallback: {
     //
