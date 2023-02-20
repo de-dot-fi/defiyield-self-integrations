@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [1.3.1](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.3.0...v1.3.1) (2023-02-20)
+
+
+### Bug Fixes
+
+* **bolide:** url fix ([b73eef3](https://github.com/defiyield-app/defiyield-self-integrations/commit/b73eef3987c00dc2e2f0465aef03baed8922d347))
+
 ## [1.3.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.2.1...v1.3.0) (2023-02-20)
 
 
