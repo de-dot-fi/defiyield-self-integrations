@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.3.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.2.1...v1.3.0) (2023-02-20)
+
+
+### Features
+
+* add pool modules to symbiosis finance ([#28](https://github.com/defiyield-app/defiyield-self-integrations/issues/28)) ([48a1f2f](https://github.com/defiyield-app/defiyield-self-integrations/commit/48a1f2fd3e276454a7b3efbf86a00b6b2d5ec4c3))
+
+
+### Bug Fixes
+
+* **CroSwap:** underlying assets & user positions ([#31](https://github.com/defiyield-app/defiyield-self-integrations/issues/31)) ([7e0a4a7](https://github.com/defiyield-app/defiyield-self-integrations/commit/7e0a4a7f720f71f4ccb205ef270834dce6f73528))
+* **workshop,aurafinance:** change claimable type ([#30](https://github.com/defiyield-app/defiyield-self-integrations/issues/30)) ([3aeca1a](https://github.com/defiyield-app/defiyield-self-integrations/commit/3aeca1a640acb3215c519ce3244f5e039b98c5a3))
+
 ## [1.2.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.1.0...v1.2.0) (2023-02-01)
 
 
