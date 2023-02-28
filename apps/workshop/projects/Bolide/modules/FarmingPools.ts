@@ -70,9 +70,10 @@ export const FarmingPools: ModuleDefinitionInterface = {
   async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
     const contract = new ethcall.Contract(MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 1;
-    const [[amount, rewardDebt]] = (await ethcallProvider.all([
+    const [[amount], pendingBlid] = (await ethcallProvider.all([
       contract.userInfo(pid, user),
-    ])) as BigNumber[][];
+      contract.pendingBlid(pid, user),
+    ])) as [BigNumber[], BigNumber];
 
     const pool = pools[0];
 
@@ -93,7 +94,7 @@ export const FarmingPools: ModuleDefinitionInterface = {
     const rewarded = [
       {
         ...pool.rewarded[0],
-        balance: parseFloat(ethers.utils.formatUnits(rewardDebt, blidToken.decimals)),
+        balance: parseFloat(ethers.utils.formatUnits(pendingBlid, blidToken.decimals)),
       },
     ];
 
