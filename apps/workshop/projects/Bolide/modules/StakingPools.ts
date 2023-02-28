@@ -72,9 +72,10 @@ export const StakingPools: ModuleDefinitionInterface = {
 
     const contract = new ethcall.Contract(MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 0;
-    const [[amount, rewardDebt]] = (await ethcallProvider.all([
+    const [[amount], pendingBlid] = (await ethcallProvider.all([
       contract.userInfo(pid, user),
-    ])) as BigNumber[][];
+      contract.pendingBlid(pid, user),
+    ])) as [BigNumber[], BigNumber];
 
     const blidToken = pool.supplied[0].token;
 
@@ -90,7 +91,7 @@ export const StakingPools: ModuleDefinitionInterface = {
         ? [
             {
               ...pool.rewarded[0],
-              balance: parseFloat(ethers.utils.formatUnits(rewardDebt, blidToken.decimals)),
+              balance: parseFloat(ethers.utils.formatUnits(pendingBlid, blidToken.decimals)),
             },
           ]
         : [];
