@@ -20,6 +20,7 @@ const project: ProjectDefinitionInterface = {
     getPool('avalanche'),
     getPool('polygon'),
     getPool('boba'),
+    getPool('kava-evm'),
   ],
 };
 
