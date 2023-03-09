@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.4.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.3.1...v1.4.0) (2023-03-09)
+
+
+### Features
+
+* symbiosis adds kava-evm pools ([#35](https://github.com/defiyield-app/defiyield-self-integrations/issues/35)) ([731165a](https://github.com/defiyield-app/defiyield-self-integrations/commit/731165af9472e631881a1bb33757862e3c424124))
+* symbiosis adds vesis on bnb chain ([#36](https://github.com/defiyield-app/defiyield-self-integrations/issues/36)) ([3c5fc81](https://github.com/defiyield-app/defiyield-self-integrations/commit/3c5fc81d7421fd138e9d5c2b353ff387ccf3068c))
+
+
+### Bug Fixes
+
+* **bolide:** farming rewards amount ([#34](https://github.com/defiyield-app/defiyield-self-integrations/issues/34)) ([e24bf94](https://github.com/defiyield-app/defiyield-self-integrations/commit/e24bf94c233acd8d67e2ff60ef7c4cf0b78cb164))
+
 ### [1.3.1](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.3.0...v1.3.1) (2023-02-20)
 
 
