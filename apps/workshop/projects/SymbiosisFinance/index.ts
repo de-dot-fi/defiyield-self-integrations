@@ -14,7 +14,8 @@ const project: ProjectDefinitionInterface = {
     github: 'https://github.com/symbiosis-finance',
   },
   modules: [
-    veSIS,
+    veSIS('ethereum'),
+    veSIS('binance'),
     getPool('ethereum'),
     getPool('binance'),
     getPool('avalanche'),
