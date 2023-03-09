@@ -1,20 +1,24 @@
 import { Context } from '@defiyield/sandbox';
-import { ADDRESS, SECONDS_IN_WEEK, WEEKS_IN_YEAR } from './constants';
+import { SECONDS_IN_WEEK, WEEKS_IN_YEAR } from './constants';
 import erc20Abi from '../../../../../packages/abis/erc20.abi.json';
 import veSISDistributorAbi from '../abis/veSISDistributor.json';
+import { VeConfig } from './config';
 
-export async function getVeSISApr({
-  ethcall,
-  ethcallProvider,
-  BigNumber,
-}: Pick<Context, 'ethcall' | 'ethcallProvider' | 'BigNumber'>) {
-  const sisContract = new ethcall.Contract(ADDRESS.SIS, erc20Abi);
-  const distributorContract = new ethcall.Contract(ADDRESS.veSISDistributor, veSISDistributorAbi);
+export async function getVeSISApr(
+  {
+    ethcall,
+    ethcallProvider,
+    BigNumber,
+  }: Pick<Context, 'ethcall' | 'ethcallProvider' | 'BigNumber'>,
+  veConfig: VeConfig,
+) {
+  const sisContract = new ethcall.Contract(veConfig.sis, erc20Abi);
+  const distributorContract = new ethcall.Contract(veConfig.veSISDistributor, veSISDistributorAbi);
 
   const [distributorBalance, lockedBalance, lastTokenBalance, lastTokenTime] =
     await ethcallProvider.all<typeof BigNumber>([
-      sisContract.balanceOf(ADDRESS.veSISDistributor),
-      sisContract.balanceOf(ADDRESS.veSIS),
+      sisContract.balanceOf(veConfig.veSISDistributor),
+      sisContract.balanceOf(veConfig.veSis),
       distributorContract.token_last_balance(),
       distributorContract.last_token_time(),
     ]);
