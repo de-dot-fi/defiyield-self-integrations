@@ -201,7 +201,7 @@ export type ProjectCategories =
   | 'Yield Aggregator'
   | 'Cross Chain'
   | 'Liquid Staking'
-  | 'POS Staking'
+  | 'dPOS Staking'
   | 'Derivatives'
   | 'Algo-stable'
   | 'Insurance'
