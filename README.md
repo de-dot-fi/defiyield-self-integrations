@@ -252,7 +252,7 @@ Below are the currently supported categories. If your project doesn't fit into o
 - **Yield Aggregator**: `Yield Aggregator`
 - **Cross Chain**: `Cross Chain`
 - **Liquid Staking**: `Liquid Staking`
-- **POS Staking**: `POS Staking`
+- **dPOS Staking**: `dPOS Staking`
 - **Derivatives**: `Derivatives`
 - **Algo-stable**: `Algo-stable`
 - **Insurance**: `Insurance`
