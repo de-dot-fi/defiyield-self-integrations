@@ -14,7 +14,7 @@ import { addresses } from '../helpers/constants';
 export default class LockAuraClaimable implements ModuleDefinitionInterface {
   name = 'Locked AURA (Claimable)' as const;
   chain = 'ethereum' as const;
-  type = 'staking' as const;
+  type = 'claimable' as const;
 
   /**
    * Fetches the addresses of all involved tokens (supplied, rewards, borrowed, etc)
@@ -58,8 +58,8 @@ export default class LockAuraClaimable implements ModuleDefinitionInterface {
   async fetchUserPositions({ user, pools, ethcall, ethcallProvider }: FetchUserPositionsContext) {
     const [pool] = pools;
 
-    const rewardToken = pool.rewarded?.[0]?.token;
-    if (!rewardToken) throw new Error('Missing Rewarded Token');
+    const rewardToken = pool?.rewarded?.[0]?.token;
+    if (!rewardToken) throw new Error(`Missing Rewarded Token for pool/${pool?.id}`);
 
     const contract = new ethcall.Contract(addresses.voteLockedAura, auraLockerAbi);
 

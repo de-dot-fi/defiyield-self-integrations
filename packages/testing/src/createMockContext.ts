@@ -1,25 +1,48 @@
 import type { ChainProvider, Context, ProviderMap } from '@defiyield/sandbox';
+import { ethers as libEthers } from '../../../apps/sandbox/src/providers';
 import axios from 'axios';
 import BigNumber from 'bignumber.js';
 import { createMock } from './createMock';
 import type { MockContracts } from './interfaces/MockContract';
 import MockAdapter from 'axios-mock-adapter';
+import * as BufferLayout from 'buffer-layout';
+import * as solanaWeb3 from '@solana/web3.js';
 
 export function createMockProvider(contracts: MockContracts): ChainProvider {
   const ethers = createMock({
+    utils: { ...libEthers.utils },
+    BigNumber: { ...libEthers.BigNumber },
+    FixedNumber: { ...libEthers.FixedNumber },
     Contract: (address: string) => contracts[address] || contracts['fallback'],
-  });
+  }) as Context['ethers'];
+
+  const provider = createMock() as Context['provider'];
+
+  const ethcall = createMock({
+    Contract: (address: string) => contracts[address] || contracts['fallback'],
+  }) as Context['ethcall'];
+
+  const ethcallProvider = createMock({
+    all: (args: unknown[]) => args,
+    tryAll: (args: unknown[]) => args,
+    tryEach: (args: unknown[]) => args,
+    getEthBalance: (args: unknown[]) => args,
+  }) as Context['ethcallProvider'];
 
   return {
-    ethers: ethers as Context['ethers'],
-    ethcall: ethers as Context['ethcall'],
-    provider: createMock() as Context['provider'],
-    ethcallProvider: createMock({
-      all: (args: unknown[]) => args,
-      tryAll: (args: unknown[]) => args,
-      tryEach: (args: unknown[]) => args,
-      getEthBalance: (args: unknown[]) => args,
-    }) as Context['ethcallProvider'],
+    cardano: {
+      getStakeAddress: () => '',
+    },
+    solana: {
+      BufferLayout: BufferLayout,
+      web3: solanaWeb3,
+    },
+    chain: null as any,
+    endpoint: null as any,
+    ethers,
+    ethcall,
+    provider,
+    ethcallProvider,
   };
 }
 
@@ -37,6 +60,7 @@ export function createMockProviderMap(contracts: MockContracts): ProviderMap {
 
 export function createMockContextForProvider(chain: ChainProvider): Context {
   return {
+    solana: chain.solana,
     chain: chain.chain,
     endpoint: chain.endpoint,
     cardano: chain.cardano,

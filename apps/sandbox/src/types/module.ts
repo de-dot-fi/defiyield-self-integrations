@@ -3,6 +3,8 @@ import type BigNumber from 'bignumber.js';
 import type * as ethcall from 'ethcall';
 import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
+import * as BufferLayout from '../utils/solana/';
+import * as solanaWeb3 from '@solana/web3.js';
 
 export type SupportedChain =
   | 'arbitrum'
@@ -43,9 +45,10 @@ export type SupportedChain =
   | 'evmos'
   | 'crescent'
   | 'agoric'
-  | 'terra-2';
+  | 'terra-2'
+  | 'solana';
 
-export type SupportedProtocolType = 'staking' | 'lending' | 'pools';
+export type SupportedProtocolType = 'staking' | 'lending' | 'pools' | 'claimable';
 
 export interface LoggerInterface {
   debug: (msg: string) => void;
@@ -59,6 +62,10 @@ export type Context = {
   chain: SupportedChain;
   ethers: typeof ethers;
   cardano: typeof cardano;
+  solana: {
+    BufferLayout: typeof BufferLayout;
+    web3: typeof solanaWeb3;
+  };
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: ethcall.Provider;
@@ -85,7 +92,7 @@ export type Token = {
 };
 
 export interface TokenUnderlying extends Token {
-  reserve?: number;
+  reserve?: string;
 }
 
 type RewardRate = {
@@ -194,7 +201,7 @@ export type ProjectCategories =
   | 'Yield Aggregator'
   | 'Cross Chain'
   | 'Liquid Staking'
-  | 'POS Staking'
+  | 'dPOS Staking'
   | 'Derivatives'
   | 'Algo-stable'
   | 'Insurance'

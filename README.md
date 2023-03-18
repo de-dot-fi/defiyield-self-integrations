@@ -225,6 +225,21 @@ export interface ModuleDefinitionInterface {
 - **Okx**: `okx`
 - **Optimism**: `optimism`
 - **Polygon**: `polygon`
+- **Solana**: `solana`
+- **Cosmos**: `cosmos`
+- **Juno**: `juno`
+- **Kava**: `kava`
+- **Osmosis**: `osmosis`
+- **Secret**: `secret`
+- **Thor**: `thor`
+- **Sifchain**: `sifchain`
+- **Stargaze**: `stargaze`
+- **Akash**: `akash`
+- **Kujira**: `kujira`
+- **Evmos**: `evmos`
+- **Crescent**: `crescent`
+- **Agoric**: `agoric`
+- **Terra2**: `terra-2`
 
 # Supported Project Categories
 
@@ -237,7 +252,7 @@ Below are the currently supported categories. If your project doesn't fit into o
 - **Yield Aggregator**: `Yield Aggregator`
 - **Cross Chain**: `Cross Chain`
 - **Liquid Staking**: `Liquid Staking`
-- **POS Staking**: `POS Staking`
+- **dPOS Staking**: `dPOS Staking`
 - **Derivatives**: `Derivatives`
 - **Algo-stable**: `Algo-stable`
 - **Insurance**: `Insurance`

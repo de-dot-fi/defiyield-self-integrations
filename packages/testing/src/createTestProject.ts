@@ -29,7 +29,7 @@ export async function createTestProject(
     // eslint-disable-next-line no-console
     console.warn(
       '\x1b[33m\x1b[4m%s\x1b[0m', // yellow, underlined
-      `No mock contracts in place. Using live network results in test`,
+      `[${name}] No mock contracts in place. Using live network results in test`,
     );
   }
 
