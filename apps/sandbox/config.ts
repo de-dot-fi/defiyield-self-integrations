@@ -31,7 +31,7 @@ export default convict({
     endpoint: {
       doc: 'The log level to report.',
       format: String,
-      default: 'https://public-api.defiyield.app/graphql',
+      default: 'https://public-api.de.fi/graphql',
       env: 'DEFIYIELD_GRAPHQL_ENDPOINT',
       arg: 'endpoint',
     },

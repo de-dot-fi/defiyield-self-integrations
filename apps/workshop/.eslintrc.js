@@ -4,5 +4,6 @@ module.exports = {
   extends: ['@defiyield'],
   rules: {
     'no-empty': ['error', { 'allowEmptyCatch': true }],
+    'sonarjs/cognitive-complexity': ['off'],
   },
 };
