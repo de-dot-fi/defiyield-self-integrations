@@ -6,7 +6,7 @@ import { ChainProvider, ProviderMap } from './types/provider';
 import config from '../config';
 import logger from './utils/logger';
 import * as cardano from './utils/cardano';
-export { ethers } from 'ethers'
+export { ethers } from 'ethers';
 import * as BufferLayout from './utils/solana';
 import * as solanaWeb3 from '@solana/web3.js';
 

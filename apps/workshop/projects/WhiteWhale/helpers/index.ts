@@ -1,7 +1,6 @@
 import { Context, FetchPoolsContext, FetchUserPositionsContext } from '@defiyield/sandbox';
 
-export const factory = 'juno14m9rd2trjytvxvu4ldmqvru50ffxsafs8kequmfky7jh97uyqrxqs5xrnx';
-export const coinHallEndpoint = 'https://api.coinhall.org/api/v1/pairs';
+const coinHallEndpoint = 'https://api.coinhall.org/api/v1/pairs';
 
 interface IPairsResponse {
   data: {
@@ -58,9 +57,9 @@ const join = (...parts: string[]): string =>
     .join('/')
     .replace(/(http(s?)):\//, '$1://');
 
-export async function getContracts({ axios, endpoint }: Context) {
+export async function getContracts(contract: string, { axios, endpoint }: Context) {
   const message = { pairs: {} };
-  const segment = getMessageUrl(factory, message);
+  const segment = getMessageUrl(contract, message);
 
   const url = join(endpoint, segment);
   const { data } = await axios.get<IPairsResponse>(url);
