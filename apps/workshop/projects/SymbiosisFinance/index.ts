@@ -1,6 +1,7 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
 import { veSIS } from './modules/veSIS';
 import { getPool } from './modules/pools';
+import { lpFarm } from './modules/lpFarm';
 
 const project: ProjectDefinitionInterface = {
   name: 'Symbiosis Finance',
@@ -22,6 +23,9 @@ const project: ProjectDefinitionInterface = {
     getPool('polygon'),
     getPool('boba'),
     getPool('kava-evm'),
+    lpFarm('ethereum'),
+    lpFarm('arbitrum'),
+    lpFarm('binance'),
   ],
 };
 

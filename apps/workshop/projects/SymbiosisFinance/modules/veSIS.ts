@@ -47,7 +47,7 @@ export function veSIS(chain: SupportedChain): ModuleDefinitionInterface {
 
       return [
         {
-          id: 'veSIS',
+          id: `veSIS-${chain}`,
           supplied: [
             {
               token,
