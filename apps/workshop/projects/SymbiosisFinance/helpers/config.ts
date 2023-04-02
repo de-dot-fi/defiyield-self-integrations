@@ -65,3 +65,35 @@ export const VESIS: VeConfigs = {
     veSISDistributor: '0xB79A4F5828eb55c10D7abF4bFe9a9f5d11aA84e0',
   },
 };
+
+export type LpFarmConfig = {
+  masterChef: Address;
+  lpToken: Address;
+  index: number;
+  secondsPerBlock: number;
+};
+
+type LpFarmConfigs = {
+  readonly [chainId in SupportedChain]?: LpFarmConfig;
+};
+
+export const LP_FARM: LpFarmConfigs = {
+  ethereum: {
+    masterChef: '0xE05DE631122d95eF347f6fCA85d1bB149Fcc6Df2',
+    lpToken: '0x33d39eA02D1A569ECc77FBFcbBDCD4300fA0b010',
+    index: 0,
+    secondsPerBlock: 13.5,
+  },
+  arbitrum: {
+    masterChef: '0xd38BB40815d2B0c2d2c866e0c72c5728ffC76dd9',
+    lpToken: '0xe235E8dFa8ea3b7fFFF1C922fA4928bFB7ad964a',
+    index: 0,
+    secondsPerBlock: 13.5,
+  },
+  binance: {
+    masterChef: '0xf02bBC9de6e443eFDf3FC41851529C2c3B9E5e0C',
+    lpToken: '0xbCA9057666872B7b7CfC9718E68C96c64d69E1Ad',
+    index: 0,
+    secondsPerBlock: 3,
+  },
+};
