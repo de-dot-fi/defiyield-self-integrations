@@ -46,17 +46,11 @@ export async function fetchMissingTokenPricesForAsset(
 }
 function findAsset(info: PoolInfo, address: string) {
   return info.assets.find((t) => {
-    if (isNativeTokenAssetInfo(t.info)) {
-      return t.info.native_token.denom === address;
-    } else if (isTokenAssetInfo(t.info)) {
-      return t.info.token.contract_addr === address;
-    }
-    return undefined;
+    const contract = isNativeTokenAssetInfo(t.info)
+      ? t.info?.native_token?.denom
+      : t.info?.token?.contract_addr;
+    return contract === address;
   });
-}
-
-function isTokenAssetInfo(obj: any): obj is TokenAssetInfo {
-  return 'token' in obj;
 }
 
 function isNativeTokenAssetInfo(obj: any): obj is NativeTokenAssetInfo {
