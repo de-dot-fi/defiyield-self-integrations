@@ -30,4 +30,4 @@ jobs:
         run: yarn workshop lint
 
       - name: "Run Prettier"
-        run: yarn workshop format
+        run: yarn format:check
