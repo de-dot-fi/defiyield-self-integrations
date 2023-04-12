@@ -326,6 +326,13 @@ export default convict({
       env: 'SOLANA_RPC',
       arg: 'solana',
     },
+    tezos: {
+      doc: 'Tezos RPC',
+      format: String,
+      default: 'https://mainnet.api.tez.ie',
+      env: 'TEZOS_RPC',
+      arg: 'tezos',
+    },
   },
 })
   .validate({ allowed: 'strict' })
