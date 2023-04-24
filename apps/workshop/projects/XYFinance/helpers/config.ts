@@ -11,9 +11,9 @@ export type YPool = {
 export type YPoolTokenSymbol = 'USDC' | 'USDT' | 'ETH';
 
 type YPools = {
-  USDC: Record<string, YPool>;
-  USDT: Record<string, YPool>;
-  ETH: Record<string, YPool>;
+  USDC: Record<SupportedChain, YPool>;
+  USDT: Record<SupportedChain, YPool>;
+  ETH: Record<SupportedChain, YPool>;
 };
 
 export const YPOOLS: YPools = {
