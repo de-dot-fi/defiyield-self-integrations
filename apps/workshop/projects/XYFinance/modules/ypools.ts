@@ -45,13 +45,15 @@ export function YPool(
       const [totalSupply] = await ethcallProvider.all<typeof BigNumber>([contract.totalSupply()]);
       const tvl = (Number(totalSupply.toString()) / 10 ** 18) * (token?.price || 0);
 
+      let apr = 0;
       const BASE_API_URL = 'https://api.xy.finance';
-      const resp = await axios.get(`${BASE_API_URL}/ypool/stats/eachVault`);
-      const apr = resp.data.eachYpoolVault[ypoolTokenSymbol].weekAPY / 100;
+      try {
+        const resp = await axios.get(`${BASE_API_URL}/ypool/stats/eachVault`);
+        apr = resp.data.eachYpoolVault[ypoolTokenSymbol].weekAPY / 100;
+      } catch {}
 
       return [
         {
-          // id: ypool.ypoolToken,
           id: `YPoolVault-${ypoolTokenSymbol}-${chain}`,
           supplied: [
             {
@@ -68,7 +70,7 @@ export function YPool(
      * Returns user positions for all pools
      *
      * @param context Context
-     * @returns UserPosition[]
+     * @returns UserPosition[]1
      */
     async fetchUserPositions(context) {
       const { ethcall, ethcallProvider, BigNumber, pools, user, axios } = context;
@@ -82,10 +84,13 @@ export function YPool(
 
       const BASE_API_URL = 'https://api.xy.finance';
       const dummyWithdrawAmount = 100 * 10 ** 18;
-      const resp = await axios.get(
-        `${BASE_API_URL}/ypool/withdraw/${ypoolTokenSymbol}/${ypool.chainId}/${dummyWithdrawAmount}`,
-      );
-      const ypoolYield = Number(resp.data.receiveAmount) / 100;
+      let ypoolYield = 1.0;
+      try {
+        const resp = await axios.get(
+          `${BASE_API_URL}/ypool/withdraw/${ypoolTokenSymbol}/${ypool.chainId}/${dummyWithdrawAmount}`,
+        );
+        ypoolYield = Number(resp.data.receiveAmount) / 100;
+      } catch {}
       const balance = (Number(_balance.toString()) * ypoolYield) / 10 ** 18;
 
       return [
