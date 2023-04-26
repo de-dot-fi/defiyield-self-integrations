@@ -46,9 +46,12 @@ export function veXY(chain: SupportedChain): ModuleDefinitionInterface {
       const tvl = (Number(locked.toString()) / 10 ** 18) * (token?.price || 0);
 
       const BASE_API_URL = 'https://api.xy.finance';
-      const resp = await axios.get(`${BASE_API_URL}/ypool/vexy/lockWeekApy`);
-      const weekAPY = resp.data.apy / 100;
-      const apr = weekAPY * 104;
+      let apr = 0;
+      try {
+        const resp = await axios.get(`${BASE_API_URL}/ypool/vexy/lockWeekApy`);
+        const weekAPY = resp.data.apy / 100;
+        apr = weekAPY * 104;
+      } catch {}
 
       return [
         {
@@ -76,7 +79,7 @@ export function veXY(chain: SupportedChain): ModuleDefinitionInterface {
       if (!pool.supplied) return [];
 
       const veXYContract = new ethcall.Contract(veXY.veXY, veXYAbi);
-      const [[locked, end]] = await ethcallProvider.all<typeof BigNumber[][]>([
+      const [[locked, end]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
         veXYContract.locked(user),
       ]);
       const delimiter = new BigNumber(10).pow(18);
