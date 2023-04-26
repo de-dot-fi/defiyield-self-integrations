@@ -79,7 +79,7 @@ export function veXY(chain: SupportedChain): ModuleDefinitionInterface {
       if (!pool.supplied) return [];
 
       const veXYContract = new ethcall.Contract(veXY.veXY, veXYAbi);
-      const [[locked, end]] = await ethcallProvider.all<typeof BigNumber[][]>([
+      const [[locked, end]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
         veXYContract.locked(user),
       ]);
       const delimiter = new BigNumber(10).pow(18);
