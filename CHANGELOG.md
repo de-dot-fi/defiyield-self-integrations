@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.5.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.4.0...v1.5.0) (2023-04-26)
+
+
+### Features
+
+* **chain:** added support for tezos chain ([#41](https://github.com/defiyield-app/defiyield-self-integrations/issues/41)) ([b189ae7](https://github.com/defiyield-app/defiyield-self-integrations/commit/b189ae7607bc043b21db47fdd88dfdc1e5dda238))
+* renamed POS Staking to dPOS Staking ([#38](https://github.com/defiyield-app/defiyield-self-integrations/issues/38)) ([72e5a4e](https://github.com/defiyield-app/defiyield-self-integrations/commit/72e5a4ee0afa56cce893b20a3961a9517b170e58))
+* symbiosis adds lp farm on ethereum, bnb, arbitrum ([#37](https://github.com/defiyield-app/defiyield-self-integrations/issues/37)) ([fcabb2f](https://github.com/defiyield-app/defiyield-self-integrations/commit/fcabb2fe043d7bb98004a3650c26b9d5aca1d846))
+* **white-whale:** added new terra-2 chain ([#40](https://github.com/defiyield-app/defiyield-self-integrations/issues/40)) ([a4e638c](https://github.com/defiyield-app/defiyield-self-integrations/commit/a4e638ca1b932f8e7a186e48d6996f1a01fd5073))
+
+
+### Bug Fixes
+
+* Add protection to the API request (XY Finance) ([#43](https://github.com/defiyield-app/defiyield-self-integrations/issues/43)) ([9e2b601](https://github.com/defiyield-app/defiyield-self-integrations/commit/9e2b6016f201a053b960dbebfdf838949745361e))
+* Remove test ([#44](https://github.com/defiyield-app/defiyield-self-integrations/issues/44)) ([ef3b0d9](https://github.com/defiyield-app/defiyield-self-integrations/commit/ef3b0d9a72eb8f648cec7b3224f8e6c8431a517f))
+* **self:** public api url updated ([b0d7943](https://github.com/defiyield-app/defiyield-self-integrations/commit/b0d794338e47b7a69013b3f8b870bc17a7a818b2))
+
 ## [1.4.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.3.1...v1.4.0) (2023-03-09)
 
 
