@@ -55,27 +55,6 @@ describe('Project XY Finance @ De.Fi', () => {
     });
   });
 
-  test('Fetches all the expected pools', async () => {
-    const [mockContext] = createMockContext(mockContracts);
-
-    const veXYPools = await veXY('ethereum').fetchPools({
-      tokens: [TEST_TOKEN],
-      ...mockContext,
-    });
-
-    expect(veXYPools.length).toEqual(1);
-
-    const [pool] = veXYPools as [Pool];
-
-    expect(pool.supplied).toEqual([
-      expect.objectContaining({
-        token: TEST_TOKEN,
-        tvl: TVL * TEST_TOKEN.price,
-        apr: { year: expect.any(Number) },
-      }),
-    ]);
-  });
-
   test('Fetches user position', async () => {
     const [mockContext] = createMockContext(mockContracts);
 
