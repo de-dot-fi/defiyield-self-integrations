@@ -48,7 +48,8 @@ export type SupportedChain =
   | 'agoric'
   | 'terra-2'
   | 'solana'
-  | 'tezos';
+  | 'tezos'
+  | 'zksync_era';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools' | 'claimable';
 

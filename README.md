@@ -201,6 +201,8 @@ export interface ModuleDefinitionInterface {
 
 # Supported Chains
 
+Full list: [SupportedChain](apps/sandbox/src/types/module.ts)
+
 - **Arbitrum**: `arbitrum`
 - **Aurora**: `aurora`
 - **Avalanche**: `avalanche`
@@ -240,6 +242,8 @@ export interface ModuleDefinitionInterface {
 - **Crescent**: `crescent`
 - **Agoric**: `agoric`
 - **Terra2**: `terra-2`
+- **Tezos**: `tezos`
+- **zkSync Era**: `zksync_era`
 
 # Supported Project Categories
 
