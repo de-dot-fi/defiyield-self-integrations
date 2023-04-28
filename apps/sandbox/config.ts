@@ -333,6 +333,13 @@ export default convict({
       env: 'TEZOS_RPC',
       arg: 'tezos',
     },
+    zksync_era: {
+      doc: 'zkSync Era RPC',
+      format: String,
+      default: 'https://mainnet.era.zksync.io',
+      env: 'ZKSYNC_ERA_RPC',
+      arg: 'zksync_era',
+    },
   },
 })
   .validate({ allowed: 'strict' })

@@ -122,6 +122,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     okx,
     optimism,
     polygon,
+    zksyncEra,
     cardano,
     cosmos,
     juno,
@@ -164,6 +165,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     createProviders(config.rpcs.okx, 'okx'),
     createProviders(config.rpcs.optimism, 'optimism'),
     createProviders(config.rpcs.polygon, 'polygon'),
+    createProviders(config.rpcs.zksync_era, 'zksync_era'),
     createCardanoProviders('cardano'),
     createCosmosProviders(config.rpcs.cosmos, 'cosmos'),
     createCosmosProviders(config.rpcs.juno, 'juno'),
@@ -225,6 +227,7 @@ export async function initializeProviders(): Promise<ProviderMap> {
     'terra-2': terra2,
     solana,
     tezos,
+    zksync_era: zksyncEra,
   };
 
   return createMap(providerOptions) as ProviderMap;

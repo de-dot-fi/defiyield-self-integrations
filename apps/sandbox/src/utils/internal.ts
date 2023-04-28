@@ -42,6 +42,7 @@ const internalChainIds: Record<SupportedChain, number> = {
   'terra-2': 40,
   solana: 12,
   tezos: 46,
+  zksync_era: 47,
 };
 
 export function getInternalChainId(chain: SupportedChain): number {
