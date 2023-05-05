@@ -10,7 +10,7 @@ const project: ProjectDefinitionInterface = {
     telegram: 'https://t.me/adaxcommunity',
     discord: 'https://discord.com/invite/GxXNQ9zS8e',
     url: 'https://adax.pro/',
-    logo: 'https://defiyield-icons.s3.eu-central-1.amazonaws.com/integrations/protocols/adax.webp',
+    logo: 'https://icons.de.fi/icons/studio/protocols/adax.webp',
   },
   modules: [AdaxLiquidity],
 };

@@ -5,7 +5,7 @@ const project: ProjectDefinitionInterface = {
   name: 'Perp88',
   categories: ['Derivatives'],
   links: {
-    logo: 'https://app.perp88.com/logo512.png',
+    logo: 'https://icons.de.fi/icons/studio/protocols/perp88.webp',
     url: 'https://perp88.com/',
     discord: 'https://discord.com/invite/DDr7r7jjCv',
     telegram: 'https://t.me/Perp88',

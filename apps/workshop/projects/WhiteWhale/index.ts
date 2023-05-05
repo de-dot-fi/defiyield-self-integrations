@@ -5,7 +5,7 @@ const project: ProjectDefinitionInterface = {
   name: 'WhiteWhale',
   categories: ['Yield'],
   links: {
-    logo: 'https://app.whitewhale.money/img/logo.svg',
+    logo: 'https://icons.de.fi/icons/studio/protocols/whitewhale.webp',
     url: 'https://app.whitewhale.money/',
     discord: 'https://twitter.com/WhiteWhaleDefi',
     telegram: 'https://t.me/whitewhaleofficial',

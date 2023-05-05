@@ -5,7 +5,7 @@ const project: ProjectDefinitionInterface = {
   name: 'CroSwap',
   categories: ['DEX', 'Yield'],
   links: {
-    logo: 'https://imagedelivery.net/4JqAggdip6pa4pVpaZLoDA/croswap-black/scale',
+    logo: 'https://icons.de.fi/icons/studio/protocols/croswap.webp',
     url: 'https://croswap.com/',
     discord: 'https://discord.gg/croswap',
     telegram: 'https://t.me/CroSwapOfficial',

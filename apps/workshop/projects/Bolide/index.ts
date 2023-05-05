@@ -7,7 +7,7 @@ const project: ProjectDefinitionInterface = {
   name: 'Bolide',
   categories: ['Yield Aggregator'],
   links: {
-    logo: 'https://invest.bolide.fi/img/BLID_token_logo_2000x2000.png',
+    logo: 'https://icons.de.fi/icons/studio/protocols/bolide.webp',
     url: 'https://bolide.fi/',
     discord: 'https://discord.gg/bolide-invite',
     telegram: 'https://t.me/bolidechat',

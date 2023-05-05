@@ -6,7 +6,7 @@ const project: ProjectDefinitionInterface = {
   name: 'XY Finance',
   categories: ['Cross Chain', 'DEX'],
   links: {
-    logo: 'https://defiyield-icons.s3.eu-central-1.amazonaws.com/studio/protocols/xy-finance.webp',
+    logo: 'https://icons.de.fi/icons/studio/protocols/xy-finance.webp',
     url: 'https://app.xy.finance',
     discord: 'https://discord.com/invite/zHKxJYZ52P',
     telegram: 'https://t.me/xyfinance',

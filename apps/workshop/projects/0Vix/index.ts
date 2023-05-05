@@ -6,8 +6,7 @@ export default {
   categories: ['Lending'],
   links: {
     url: 'https://www.0vix.com/',
-    // TODO should be changed
-    logo: 'https://defiyield-icons.s3.eu-central-1.amazonaws.com/studio/protocols/0vix.webp',
+    logo: 'https://icons.de.fi/icons/studio/protocols/0vix.webp',
     discord: 'https://discord.gg/VxW9Vg6krk',
     telegram: 'https://t.me/OVIXProtocol',
     twitter: 'https://twitter.com/0vixProtocol',
