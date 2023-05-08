@@ -9,5 +9,6 @@ module.exports = {
   rules: {
     eqeqeq: ["error", "smart"],
     "no-console": ["error"],
+    "sonarjs/cognitive-complexity": ["error", 16]
   },
 };
