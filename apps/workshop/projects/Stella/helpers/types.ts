@@ -90,6 +90,26 @@ export interface getTvlProps {
     | undefined;
 }
 
+export interface getDualRewardRoiPerYearProps {
+  ctx: Context;
+  farmID: number;
+  token: Token;
+  staticTokenData: POOL_TYPE;
+  tradingFeeAPRsOfDualFarms: Record<string, number>;
+  tradingFeeAPRsOfStableDualFarms: Record<string, number>;
+  stellaDualDistributor:
+    | {
+        lpToken: string;
+        totalLp: number;
+        allocPoint: number;
+        stellaPerSec: number;
+      }
+    | undefined;
+  totalAllocPoint: BigNumber;
+  stellaPerSec: BigNumber;
+  tvl: number;
+}
+
 export interface getAprProps {
   ctx: Context;
   farmID: number;

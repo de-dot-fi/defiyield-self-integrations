@@ -11,6 +11,7 @@ import {
 import { subgraph } from './gql';
 import {
   getAprProps,
+  getDualRewardRoiPerYearProps,
   getFarmIDProps,
   getFetchPoolsPromisesProps,
   getPoolsProps,
@@ -249,6 +250,72 @@ const getTVL = ({
   return (+totalLp / 10 ** token.decimals) * lpPrice;
 };
 
+const getDualRewardRoiPerYear = async ({
+  ctx,
+  farmID,
+  token,
+  staticTokenData,
+  tradingFeeAPRsOfDualFarms,
+  tradingFeeAPRsOfStableDualFarms,
+  stellaDualDistributor,
+  totalAllocPoint,
+  stellaPerSec,
+  tvl,
+}: getDualRewardRoiPerYearProps) => {
+  const { ethcallProvider, ethcall } = ctx;
+
+  const stellaDualDistributorContract = new ethcall.Contract(
+    CONTRACTS.STELLA_DUAL_DISTRIBUTOR,
+    STELLA_DUAL_DISTRIBUTOR_ABI,
+  );
+
+  const tradingFeeApr = staticTokenData?.stableContract
+    ? tradingFeeAPRsOfStableDualFarms?.[token.address.toLowerCase()]
+    : tradingFeeAPRsOfDualFarms?.[token.address.toLowerCase()] || 0;
+
+  const tradingAPR = +tradingFeeApr || 0;
+
+  const rewards = await ethcallProvider.all<{
+    addresses: string[];
+    symbols: string[];
+    decimals: BigNumber[];
+    rewardsPerSec: BigNumber[];
+  }>([stellaDualDistributorContract.poolRewardsPerSec(farmID)]);
+
+  const rewardsPrice = await Promise.all(
+    rewards?.[0]?.addresses?.map((el) =>
+      subgraph<{ tokenDayDatas: any }>(
+        ctx,
+        SUBGRAPH_ENDPOINTS.STELLA,
+        'getTokenPrice',
+        SUBGRAPH_QUERIES.STELLA.getTokenPrice(el.toLowerCase()),
+      ),
+    ),
+  );
+
+  const secondsInOneYear = 86400 * 365;
+  const farmAPR =
+    +(
+      rewardsPrice.reduce((acc, curr) => {
+        const rewardTokenID = curr.tokenDayDatas[0].token.id;
+        const targetIndex = rewards?.[0]?.addresses?.findIndex(
+          (el) => el.toLowerCase() === rewardTokenID.toLowerCase(),
+        );
+        const rewardsPerSec =
+          rewards?.[0]?.symbols?.[targetIndex] === 'STELLA'
+            ? ((stellaDualDistributor?.allocPoint || 0) / +totalAllocPoint) * +stellaPerSec
+            : +rewards?.[0]?.rewardsPerSec[targetIndex];
+        return (
+          acc +
+          ((rewardsPerSec * secondsInOneYear) / 10 ** +rewards?.[0]?.decimals?.[targetIndex]) *
+            +curr.tokenDayDatas[0].priceUSD
+        );
+      }, 0) / tvl
+    ) || 0;
+
+  return +tradingAPR + +farmAPR;
+};
+
 const getAPR = async ({
   ctx,
   farmID,
@@ -271,58 +338,21 @@ const getAPR = async ({
     CONTRACTS.STELLA_DISTRIBUTOR,
     STELLA_DISTRIBUTOR_ABI,
   );
-  const stellaDualDistributorContract = new ethcall.Contract(
-    CONTRACTS.STELLA_DUAL_DISTRIBUTOR,
-    STELLA_DUAL_DISTRIBUTOR_ABI,
-  );
 
   let apr = 0;
   if (farmReward === FARM_REWARD.DUAL) {
-    const tradingFeeApr = staticTokenData?.stableContract
-      ? tradingFeeAPRsOfStableDualFarms?.[token.address.toLowerCase()]
-      : tradingFeeAPRsOfDualFarms?.[token.address.toLowerCase()] || 0;
-
-    const tradingAPR = +tradingFeeApr || 0;
-
-    const rewards = await ethcallProvider.all<{
-      addresses: string[];
-      symbols: string[];
-      decimals: BigNumber[];
-      rewardsPerSec: BigNumber[];
-    }>([stellaDualDistributorContract.poolRewardsPerSec(farmID)]);
-    const rewardsPrice = await Promise.all(
-      rewards?.[0]?.addresses?.map((el) =>
-        subgraph<{ tokenDayDatas: any }>(
-          ctx,
-          SUBGRAPH_ENDPOINTS.STELLA,
-          'getTokenPrice',
-          SUBGRAPH_QUERIES.STELLA.getTokenPrice(el.toLowerCase()),
-        ),
-      ),
-    );
-
-    const secondsInOneYear = 86400 * 365;
-    const farmAPR =
-      +(
-        rewardsPrice.reduce((acc, curr) => {
-          const rewardTokenID = curr.tokenDayDatas[0].token.id;
-          const targetIndex = rewards?.[0]?.addresses?.findIndex(
-            (el) => el.toLowerCase() === rewardTokenID.toLowerCase(),
-          );
-          const rewardsPerSec =
-            rewards?.[0]?.symbols?.[targetIndex] === 'STELLA'
-              ? ((stellaDualDistributor?.allocPoint || 0) / +totalAllocPoint) * +stellaPerSec
-              : +rewards?.[0]?.rewardsPerSec[targetIndex];
-          return (
-            acc +
-            ((rewardsPerSec * secondsInOneYear) / 10 ** +rewards?.[0]?.decimals?.[targetIndex]) *
-              +curr.tokenDayDatas[0].priceUSD
-          );
-        }, 0) / tvl
-      ) || 0;
-
-    const roiPerYear = +tradingAPR + +farmAPR;
-    apr = roiPerYear;
+    apr = await getDualRewardRoiPerYear({
+      ctx,
+      farmID,
+      token,
+      staticTokenData,
+      tradingFeeAPRsOfDualFarms,
+      tradingFeeAPRsOfStableDualFarms,
+      stellaDualDistributor,
+      totalAllocPoint,
+      stellaPerSec,
+      tvl,
+    });
   } else {
     const blocksPerHour = 3600 / MOONBEAM_AVERAGE_BLOCK_TIME;
 
