@@ -1,6 +1,7 @@
 import type { ethers } from 'ethers';
 import type { Provider } from 'ethcall';
 import type * as ethcall from 'ethcall';
+import type { TezosToolkit } from '@taquito/taquito';
 import { SupportedChain } from './module';
 import * as cardano from '../utils/cardano';
 import * as BufferLayout from '../utils/solana';
@@ -18,6 +19,7 @@ export interface ChainProvider {
   provider: ethers.providers.BaseProvider;
   ethcall: typeof ethcall;
   ethcallProvider: Provider;
+  taquito: TezosToolkit;
 }
 
 export type ProviderMap = Map<SupportedChain, ChainProvider>;

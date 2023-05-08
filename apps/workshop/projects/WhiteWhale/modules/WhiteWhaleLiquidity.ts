@@ -1,137 +1,108 @@
 import type {
+  FetchPoolsContext,
+  FetchTokenDetailsContext,
+  FetchTokenPricesContext,
+  FetchUserPositionsContext,
   ModuleDefinitionInterface,
+  Pool,
+  SupportedChain,
   TokenDetail,
   TokenExtra,
   UserPosition,
 } from '@defiyield/sandbox';
-import { getContracts, getContractInfo, getPoolInfo, getBalance } from '../helpers';
+import { normalizeDecimals } from '../../../common/utils/numbers';
+import { getContracts, getContractInfo, getBalances, tradingApr } from '../helpers';
+import { fetchMissingTokenPricesForAsset } from '../helpers/calculation';
+import { WHITE_WHALE_POOLS } from '../helpers/config';
 
-export const WhiteWhaleLiquidity: ModuleDefinitionInterface = {
-  name: 'WhiteWhaleLiquidity',
-  chain: 'juno',
-  type: 'pools',
+export function WhiteWhaleLiquidity(chain: SupportedChain): ModuleDefinitionInterface {
+  const currentPool = WHITE_WHALE_POOLS[chain];
+  if (!currentPool) {
+    throw new Error('Unsupported chain');
+  }
 
-  async preloadTokens(ctx) {
-    return await getContracts(ctx);
-  },
+  return {
+    name: `WhiteWhale Liquidity: ${chain}`,
+    chain,
+    type: 'pools',
 
-  async fetchMissingTokenDetails(ctx) {
-    const info = await getContractInfo(ctx.address, ctx);
-    const underlying = info.asset_infos.map((t) => t.native_token?.denom || t.token?.contract_addr);
-    if (Array.isArray(underlying)) {
-      return <TokenDetail>{
-        decimals: 6,
-        address: ctx.address,
-        underlying,
-        metadata: {
-          contract: info.liquidity_token,
-        },
-      };
+    async preloadTokens(ctx) {
+      return await getContracts(currentPool.factory, ctx);
+    },
+
+    fetchMissingTokenDetails,
+
+    fetchMissingTokenPrices,
+
+    fetchPools,
+
+    fetchUserPositions,
+  };
+}
+
+async function fetchMissingTokenDetails(ctx: FetchTokenDetailsContext) {
+  const info = await getContractInfo(ctx.address, ctx);
+  const underlying = info.asset_infos.map(
+    (t: any) => t.native_token?.denom || t.token?.contract_addr,
+  );
+  if (Array.isArray(underlying)) {
+    return <TokenDetail>{
+      decimals: 6,
+      address: ctx.address,
+      underlying,
+      metadata: { contract: info.liquidity_token },
+    };
+  }
+  return void 0;
+}
+
+async function fetchMissingTokenPrices(ctx: FetchTokenPricesContext) {
+  const results: TokenExtra[] = [];
+
+  for await (const asset of ctx.assets) {
+    const result = await fetchMissingTokenPricesForAsset(asset, ctx);
+    if (result) {
+      results.push(result);
     }
-    return void 0;
-  },
+  }
 
-  async fetchMissingTokenPrices(ctx): Promise<TokenExtra[]> {
-    const tokens: TokenExtra[] = [];
-    const { BigNumber } = ctx;
+  return results;
+}
 
-    for await (const asset of ctx.assets) {
-      const tokenA = asset.underlying[0];
-      const tokenB = asset.underlying[1];
+async function fetchPools(ctx: FetchPoolsContext) {
+  const { BigNumber, tokens } = ctx;
+  const aprs = await tradingApr(ctx);
 
-      if (tokenA.price || tokenB.price) {
-        const info = await getPoolInfo(asset.address, ctx);
-
-        const totalSupply = new BigNumber(info.total_share) //
-          .div(10 ** asset.decimals);
-        const reserveA = info.assets.find(
-          (t) => (t.info.native_token?.denom || t.info.token?.contract_addr) === tokenA.address,
-        );
-        const reserveB = info.assets.find(
-          (t) => (t.info.native_token?.denom || t.info.token?.contract_addr) === tokenB.address,
-        );
-
-        if (reserveA?.amount && reserveB?.amount) {
-          const amountA = new BigNumber(reserveA.amount) //
-            .div(10 ** tokenA.decimals);
-          const amountB = new BigNumber(reserveB.amount) //
-            .div(10 ** tokenB.decimals);
-
-          const tvl = amountA.times(tokenA.price).plus(amountB.times(tokenB.price));
-          const price = tvl.div(totalSupply);
-
-          tokens.push({
-            address: asset.address,
-            price: price.toNumber(),
-            underlying: [
-              {
-                address: tokenA.address,
-                reserve: reserveA.amount,
-              },
-              {
-                address: tokenB.address,
-                reserve: reserveB.amount,
-              },
-            ],
-            totalSupply: info.total_share,
-          });
-        }
-      }
+  return tokens.reduce((result: Pool[], token) => {
+    if (token.underlying.length !== 2) {
+      return result;
     }
 
-    return tokens;
-  },
+    const tvl = new BigNumber(token.price ?? 0).times(token.totalSupply ?? 0).toNumber();
+    const apr = new BigNumber(aprs.get(token.address) ?? 0).div(100).toNumber();
 
-  async fetchPools({ tokens, BigNumber }) {
-    return tokens.map((token) => {
-      const totalSupply = new BigNumber(token.totalSupply || 0);
-      return {
-        id: token.address,
-        supplied: [
-          {
-            token,
-            tvl: new BigNumber(token?.price || 0).times(totalSupply).toNumber(),
-          },
-        ],
-      };
+    result.push({
+      id: token.address,
+      supplied: [{ token, tvl, apr: { year: apr } }],
     });
-  },
 
-  async fetchUserPositions(ctx) {
-    const balances = new Map<string, number>();
+    return result;
+  }, []);
+}
 
-    await Promise.all(
-      ctx.pools.map(async (pool) => {
-        const supply = pool?.supplied?.[0];
-        const contract = supply?.token?.metadata?.contract as string;
-        if (contract && supply) {
-          const balance = await getBalance(contract, ctx);
+async function fetchUserPositions(ctx: FetchUserPositionsContext): Promise<UserPosition[]> {
+  const balances: Map<string, number> = await getBalances(ctx);
 
-          if (balance > 0) {
-            balances.set(supply.token.address, balance);
-          }
-        }
-      }),
-    );
-
-    if (!balances.size) {
-      return [];
+  return ctx.pools.reduce((acc: UserPosition[], pool) => {
+    const supply = pool?.supplied?.[0];
+    const rawBalance = supply && balances.get(supply.token.address);
+    if (rawBalance && rawBalance > 0) {
+      const balance = normalizeDecimals(ctx, rawBalance, supply.token.decimals);
+      acc.push({
+        id: pool.id,
+        supplied: [Object.assign({ balance }, supply)],
+      });
     }
-
-    return ctx.pools.reduce((positions, pool) => {
-      const supply = pool?.supplied?.[0];
-      if (supply) {
-        const rawBalance = balances.get(supply.token.address);
-        if (rawBalance) {
-          const balance = new ctx.BigNumber(rawBalance).div(10 ** supply.token.decimals).toNumber();
-          positions.push({
-            id: pool.id,
-            supplied: [Object.assign({ balance }, supply)],
-          });
-        }
-      }
-
-      return positions;
-    }, [] as UserPosition[]);
-  },
-};
+    return acc;
+  }, []);
+}

@@ -12,7 +12,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/WhiteWhaleDefi',
     github: 'https://github.com/White-Whale-Defi-Platform',
   },
-  modules: [WhiteWhaleLiquidity],
+  modules: [WhiteWhaleLiquidity('juno'), WhiteWhaleLiquidity('terra-2')],
 };
 
 export default project;

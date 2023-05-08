@@ -47,7 +47,7 @@ export function veSIS(chain: SupportedChain): ModuleDefinitionInterface {
 
       return [
         {
-          id: 'veSIS',
+          id: `veSIS-${chain}`,
           supplied: [
             {
               token,
@@ -73,7 +73,7 @@ export function veSIS(chain: SupportedChain): ModuleDefinitionInterface {
       const { token } = pool.supplied[0];
 
       const veSisContract = new ethcall.Contract(veConfig.veSis, veSISAbi);
-      const [[locked, end]] = await ethcallProvider.all<typeof BigNumber[][]>([
+      const [[locked, end]] = await ethcallProvider.all<(typeof BigNumber)[][]>([
         veSisContract.locked(user),
       ]);
       const sisDelimiter = new BigNumber(10).pow(token?.decimals);

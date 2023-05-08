@@ -1,61 +1,15 @@
-import { Context, FetchUserPositionsContext } from '@defiyield/sandbox';
+import { Context, FetchPoolsContext, FetchUserPositionsContext } from '@defiyield/sandbox';
+import { join } from '../../../common/utils/urls';
+import { PairsResponse, ContractInfoResponse, PairResponse, CoinHallResponse } from './types';
 
-export const factory = 'juno14m9rd2trjytvxvu4ldmqvru50ffxsafs8kequmfky7jh97uyqrxqs5xrnx';
+const coinHallEndpoint = 'https://api.coinhall.org/api/v1/pairs';
 
-interface IPairsResponse {
-  data: {
-    pairs: IPair[];
-  };
-}
-
-interface IPair {
-  asset_infos: {
-    native_token?: {
-      denom: string;
-    };
-    token?: {
-      contract_addr: string;
-    };
-  }[];
-  contract_addr: string;
-  liquidity_token: string;
-}
-
-interface IContractInfoResponse {
-  data: IPair;
-}
-
-interface IPairResponse {
-  data: {
-    assets: {
-      info: {
-        native_token?: {
-          denom: string;
-        };
-        token?: {
-          contract_addr: string;
-        };
-      };
-      amount: string;
-    }[];
-    total_share: string;
-  };
-}
-
-const join = (...parts: string[]): string =>
-  parts
-    .join('/')
-    .split('/')
-    .filter(Boolean)
-    .join('/')
-    .replace(/(http(s?)):\//, '$1://');
-
-export async function getContracts({ axios, endpoint }: Context) {
+export async function getContracts(contract: string, { axios, endpoint }: Context) {
   const message = { pairs: {} };
-  const segment = getMessageUrl(factory, message);
+  const segment = getMessageUrl(contract, message);
 
   const url = join(endpoint, segment);
-  const { data } = await axios.get<IPairsResponse>(url);
+  const { data } = await axios.get<PairsResponse>(url);
 
   return data.data.pairs.map((pair) => pair.contract_addr);
 }
@@ -68,7 +22,7 @@ export async function getContractInfo(
   const segment = getMessageUrl(address, message);
 
   const url = join(endpoint, segment);
-  const { data } = await axios.get<IContractInfoResponse>(url);
+  const { data } = await axios.get<ContractInfoResponse>(url);
 
   return data.data;
 }
@@ -81,19 +35,49 @@ export async function getPoolInfo(
   const segment = getMessageUrl(address, message);
 
   const url = join(endpoint, segment);
-  const { data } = await axios.get<IPairResponse>(url);
+  const { data } = await axios.get<PairResponse>(url);
 
   return data.data;
 }
 
-export async function getBalance(contract: string, ctx: FetchUserPositionsContext) {
-  const message = { balance: { address: ctx.user } };
-  const segment = getMessageUrl(contract, message);
+export async function getBalances(ctx: FetchUserPositionsContext) {
+  const contracts = ctx.pools
+    .map((pool) => [
+      pool.supplied?.[0].token.address as string,
+      pool.supplied?.[0].token.metadata?.contract as string,
+    ])
+    .filter((pool) => pool[0] && pool[1]);
 
-  const url = join(ctx.endpoint, segment);
-  const { data } = await ctx.axios.get(url);
+  return await fetchBalances(ctx, contracts);
+}
 
-  return Number(data.data.balance);
+async function fetchBalances(ctx: FetchUserPositionsContext, contracts: string[][]) {
+  const promises = contracts.map((contract) => {
+    const message = { balance: { address: ctx.user } };
+    const segment = getMessageUrl(contract[1], message);
+    const url = join(ctx.endpoint, segment);
+    return ctx.axios.get(url);
+  });
+
+  const responses = await Promise.allSettled(promises);
+
+  return responses.reduce((acc, response, index) => {
+    if (response.status === 'fulfilled') {
+      const contract = contracts[index];
+      acc.set(contract[0], Number(response.value.data.data.balance));
+    }
+    return acc;
+  }, new Map<string, number>());
+}
+
+export async function tradingApr(ctx: FetchPoolsContext): Promise<Map<string, number>> {
+  const pairs = ctx.tokens.map((token) => token.address);
+
+  const { data } = await ctx.axios.get<CoinHallResponse>(coinHallEndpoint, {
+    params: { addresses: pairs.join(',') },
+  });
+
+  return new Map(data.pairs.map((pair) => [pair.pairAddress, pair.apr7d]));
 }
 
 export function getMessageUrl(contract: string, message: Record<string, any>) {
