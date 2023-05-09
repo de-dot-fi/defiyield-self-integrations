@@ -5,7 +5,7 @@ const project: ProjectDefinitionInterface = {
   name: 'Stella',
   categories: ['DEX', 'Cross Chain'],
   links: {
-    logo: 'https://app.stellaswap.com/images/tokens/stella.png',
+    logo: 'https://icons.de.fi/icons/studio/protocols/stellaswap.webp',
     url: 'https://stellaswap.com/',
     discord: 'https://discord.stellaswap.com/',
     telegram: 'https://t.me/stellaswap',
