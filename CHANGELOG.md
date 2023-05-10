@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.6.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.5.0...v1.6.0) (2023-05-10)
+
+
+### Features
+
+* **chain:** add zksync era ([#45](https://github.com/defiyield-app/defiyield-self-integrations/issues/45)) ([649d620](https://github.com/defiyield-app/defiyield-self-integrations/commit/649d62015a2074e6cd382a6e0ef2f49ab13792fa))
+
 ## [1.5.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.4.0...v1.5.0) (2023-04-26)
 
 
