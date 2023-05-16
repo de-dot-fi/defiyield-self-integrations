@@ -95,6 +95,14 @@ export const YPOOLS: YPools = {
       poolIndex: 10,
       chainId: 1285,
     },
+    zksync_era: {
+      ypoolToken: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
+      xyWrappedToken: '0xDF4700DACcbfb097204576CbbB4728D4f190FDC1',
+      ypoolVault: '0x75167284361c8D61Be7E4402f4953e2b112233cb',
+      poolIndex: 11,
+      chainId: 324,
+    },
+    // zkevm
     // thunderCore
     // astar
     // wemix
@@ -238,6 +246,20 @@ export const YPOOLS: YPools = {
       poolIndex: 7,
       chainId: 10,
     },
+    zksync_era: {
+      ypoolToken: '0x5AEa5775959fBC2557Cc8789bC1bf90A239D9a91',
+      xyWrappedToken: '0xAa0b0654E79E17332d983E2351bD926cE336B9BD',
+      ypoolVault: '0x935283A00FBF8E40fd2f8C432A488F6ADDC8dB67',
+      poolIndex: 8,
+      chainId: 324,
+    },
+    // zkevm: {
+    //   ypoolToken: '0x4F9A0e7FD2Bf6067db6994CF12E4495Df938E6e9',
+    //   xyWrappedToken: '0xa65755a01ef7c3d6D3f76C28B30103F2073E5D35',
+    //   ypoolVault: '0x9fE77412aA5c6Ba67fF3095bBc534884F9a61a38',
+    //   poolIndex: 9,
+    //   chainId: 1011,
+    // },
   },
 };
 
