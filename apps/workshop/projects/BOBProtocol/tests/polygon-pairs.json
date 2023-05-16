@@ -1,0 +1,20 @@
+[
+  {
+    "ticker_id": "BOB_USDC",
+    "base": "BOB",
+    "target": "USDC",
+    "pool_id": "bobvault_polygon"
+  },
+  {
+    "ticker_id": "BOB_USDT",
+    "base": "BOB",
+    "target": "USDT",
+    "pool_id": "bobvault_polygon"
+  },
+  {
+    "ticker_id": "USDC_USDT",
+    "base": "USDC",
+    "target": "USDT",
+    "pool_id": "bobvault_polygon"
+  }
+]

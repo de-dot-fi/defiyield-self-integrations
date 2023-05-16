@@ -34,6 +34,7 @@ type VaultTokens = {
   readonly [chainId in SupportedChain]?: TokenBySymbol;
 };
 
+// TODO: wait for BOBStats API update to get token addresses from there
 export const VAULT_TOKENS: VaultTokens = {
   polygon: {
     BOB: '0xB0B195aEFA3650A6908f15CdaC7D92F8a5791B0B',
