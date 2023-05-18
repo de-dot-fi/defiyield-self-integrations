@@ -2,6 +2,20 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.8.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.6.1...v1.8.0) (2023-05-18)
+
+
+### Features
+
+* **sandbox:** extend ethcall multicall3 ([#50](https://github.com/defiyield-app/defiyield-self-integrations/issues/50)) ([8811f92](https://github.com/defiyield-app/defiyield-self-integrations/commit/8811f920f741ef004013cef9f6da611cf303fc67))
+
+## [1.7.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.6.1...v1.7.0) (2023-05-18)
+
+
+### Features
+
+* **sandbox:** extend ethcall multicall3 ([#50](https://github.com/defiyield-app/defiyield-self-integrations/issues/50)) ([8811f92](https://github.com/defiyield-app/defiyield-self-integrations/commit/8811f920f741ef004013cef9f6da611cf303fc67))
+
 ### [1.6.1](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.6.0...v1.6.1) (2023-05-11)
 
 ## [1.6.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.5.0...v1.6.0) (2023-05-10)
