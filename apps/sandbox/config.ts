@@ -70,7 +70,7 @@ export default convict({
     boba: {
       doc: 'Boba RPC url',
       format: String,
-      default: 'https://mainnet.boba.network',
+      default: 'https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f',
       env: 'BOBA_URL',
       arg: 'boba',
     },

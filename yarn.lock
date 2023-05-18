@@ -568,7 +568,7 @@ __metadata:
     convict: ^6.2.3
     eslint: ^8.26.0
     eslint-plugin-sonarjs: ^0.16.0
-    ethcall: ^4.8.4
+    ethcall: ^4.8.13
     ethers: ^5.7.1
     graphql: ^16.6.0
     koa: ^2.13.4
@@ -4418,9 +4418,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethcall@npm:^4.8.4":
-  version: 4.8.7
-  resolution: "ethcall@npm:4.8.7"
+"ethcall@npm:^4.8.13":
+  version: 4.8.13
+  resolution: "ethcall@npm:4.8.13"
   dependencies:
     "@ethersproject/abi": ^5.0.0
     "@ethersproject/bytes": ^5.0.0
@@ -4428,7 +4428,7 @@ __metadata:
     "@ethersproject/providers": ^5.0.0
     "@types/node": ^18.6.3
     abi-coder: ^4.0.0
-  checksum: 5e1e0b5313cea653e93d08a3f7bbb9c3ce66cb21de48205bb748fc3ba4e2e6d59870e8492902b1ee1c64a9b3fe916c30e564eba643f2ba048390733eeb1c49c4
+  checksum: 3e900d66fb51bda658ddd888b2311df3d5fc5d36d403d44449312e6c7b5b82d637b63651c65fc0caf48dd5c5c4550f013c7f199500f61648e9a04eb6a32d3828
   languageName: node
   linkType: hard
 

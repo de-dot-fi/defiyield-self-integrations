@@ -1,5 +1,6 @@
 import { ethers } from 'ethers';
 import * as ethcall from 'ethcall';
+import { Provider } from './utils/ethcall-provider';
 import { SupportedChain } from './types/module';
 import { createMap } from './utils/createMap';
 import { ChainProvider, ProviderMap } from './types/provider';
@@ -15,7 +16,7 @@ async function createProviders(rpc: string, chain: SupportedChain): Promise<Chai
   try {
     const ethersProvider = new ethers.providers.JsonRpcProvider(rpc);
 
-    const ethcallProvider = new ethcall.Provider();
+    const ethcallProvider = new Provider();
     await ethcallProvider.init(ethersProvider);
 
     return {

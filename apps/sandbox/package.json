@@ -46,7 +46,7 @@
     "buffer-layout": "1.2.2",
     "classnames": "^2.3.2",
     "convict": "^6.2.3",
-    "ethcall": "^4.8.4",
+    "ethcall": "^4.8.13",
     "ethers": "^5.7.1",
     "graphql": "^16.6.0",
     "koa": "^2.13.4",
