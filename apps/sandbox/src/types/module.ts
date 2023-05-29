@@ -5,6 +5,7 @@ import type * as cardano from '../utils/cardano';
 import type { ethers } from 'ethers';
 import * as BufferLayout from '../utils/solana/';
 import * as solanaWeb3 from '@solana/web3.js';
+import { TezosToolkit } from '@taquito/taquito';
 
 export type SupportedChain =
   | 'arbitrum'
@@ -46,7 +47,9 @@ export type SupportedChain =
   | 'crescent'
   | 'agoric'
   | 'terra-2'
-  | 'solana';
+  | 'solana'
+  | 'tezos'
+  | 'zksync_era';
 
 export type SupportedProtocolType = 'staking' | 'lending' | 'pools' | 'claimable';
 
@@ -72,6 +75,7 @@ export type Context = {
   logger: LoggerInterface;
   BigNumber: typeof BigNumber;
   axios: AxiosInstance | AxiosStatic;
+  taquito: TezosToolkit;
 };
 
 export type Address = string;
@@ -201,7 +205,7 @@ export type ProjectCategories =
   | 'Yield Aggregator'
   | 'Cross Chain'
   | 'Liquid Staking'
-  | 'POS Staking'
+  | 'dPOS Staking'
   | 'Derivatives'
   | 'Algo-stable'
   | 'Insurance'

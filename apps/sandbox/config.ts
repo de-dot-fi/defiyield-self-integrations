@@ -31,7 +31,7 @@ export default convict({
     endpoint: {
       doc: 'The log level to report.',
       format: String,
-      default: 'https://public-api.defiyield.app/graphql',
+      default: 'https://public-api.de.fi/graphql',
       env: 'DEFIYIELD_GRAPHQL_ENDPOINT',
       arg: 'endpoint',
     },
@@ -70,7 +70,7 @@ export default convict({
     boba: {
       doc: 'Boba RPC url',
       format: String,
-      default: 'https://mainnet.boba.network',
+      default: 'https://boba-mainnet.gateway.pokt.network/v1/lb/623ad21b20354900396fed7f',
       env: 'BOBA_URL',
       arg: 'boba',
     },
@@ -325,6 +325,20 @@ export default convict({
       default: 'http://api.mainnet-beta.solana.com/',
       env: 'SOLANA_RPC',
       arg: 'solana',
+    },
+    tezos: {
+      doc: 'Tezos RPC',
+      format: String,
+      default: 'https://mainnet.api.tez.ie',
+      env: 'TEZOS_RPC',
+      arg: 'tezos',
+    },
+    zksync_era: {
+      doc: 'zkSync Era RPC',
+      format: String,
+      default: 'https://mainnet.era.zksync.io',
+      env: 'ZKSYNC_ERA_RPC',
+      arg: 'zksync_era',
     },
   },
 })

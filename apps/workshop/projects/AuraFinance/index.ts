@@ -8,7 +8,7 @@ const project: ProjectDefinitionInterface = {
   name: 'AuraFinance',
   categories: ['Governance', 'Yield'],
   links: {
-    logo: 'https://defiyield-icons.s3.eu-central-1.amazonaws.com/studio/protocols/aura.webp',
+    logo: 'https://icons.de.fi/icons/studio/protocols/aura.webp',
     url: 'https://aura.finance/',
     discord: 'https://discord.gg/aurafinance',
     twitter: 'https://twitter.com/aurafinance',

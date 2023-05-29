@@ -4,21 +4,13 @@ import { Context } from '../types/module';
 
 import { ChainProvider } from '../types/provider';
 import logger from './logger';
-import * as cardano from './cardano';
 
-export function createContext(chain: ChainProvider) {
+export function createContext(provider: ChainProvider) {
   const context: Context = {
-    solana: chain.solana,
-    endpoint: chain.endpoint,
-    chain: chain.chain,
-    axios: axios,
-    cardano: cardano,
     BigNumber: BigNumber,
+    axios: axios,
     logger: logger,
-    ethers: chain.ethers,
-    provider: chain.provider,
-    ethcall: chain.ethcall,
-    ethcallProvider: chain.ethcallProvider,
+    ...provider,
   };
 
   return context;

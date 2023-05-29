@@ -1,9 +1,9 @@
 import { createMockContext, createTestProject, MockContracts } from '@defiyield/testing';
+import { Pool } from '@defiyield/sandbox';
 import { join } from 'path';
 import { describe, test, expect, beforeEach } from 'vitest';
-import { ADDRESS } from '../helpers/constants';
 import { veSIS } from '../modules/veSIS';
-import { Pool } from '../../../../sandbox';
+import { VESIS } from '../helpers/config';
 
 const TVL = 2000;
 const POSITION = 10000;
@@ -17,15 +17,21 @@ const TEST_TOKEN = {
   underlying: [],
 };
 
+const veConfig = VESIS['ethereum'];
+if (!veConfig) {
+  throw new Error('Unsupported chain');
+}
+
 const mockContracts: MockContracts = {
-  [ADDRESS.SIS]: {
+  [veConfig.sis]: {
     balanceOf: () => TVL * multiplier,
   },
-  [ADDRESS.veSIS]: {
+  [veConfig.veSis]: {
     locked: () => [POSITION * multiplier, UNLOCK_TIME],
   },
-  [ADDRESS.veSISDistributor]: {
+  [veConfig.veSISDistributor]: {
     token_last_balance: () => [0],
+    last_token_time: () => [0],
   },
   fallback: {
     //
@@ -37,7 +43,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
     context.project = await createTestProject({
       name: 'SymbiosisFinance',
       path: join(__dirname, '../index.ts'),
-      modules: [veSIS],
+      modules: [veSIS('ethereum')],
       contracts: mockContracts,
     });
   });
@@ -48,7 +54,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
     expect(tokens.length).toEqual(1);
 
     expect(tokens[0]).toMatchObject({
-      address: ADDRESS.SIS,
+      address: veConfig.sis,
       name: expect.any(String),
       symbol: expect.any(String),
       decimals: expect.any(Number),
@@ -58,7 +64,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
   test('Fetches all the expected pools', async () => {
     const [mockContext] = createMockContext(mockContracts);
 
-    const veSISPools = await veSIS.fetchPools({
+    const veSISPools = await veSIS('ethereum').fetchPools({
       tokens: [TEST_TOKEN],
       ...mockContext,
     });
@@ -79,7 +85,7 @@ describe('#project #SymbiosisFinance #veSIS', () => {
   test('Fetches user position', async () => {
     const [mockContext] = createMockContext(mockContracts);
 
-    const positions = await veSIS.fetchUserPositions({
+    const positions = await veSIS('ethereum').fetchUserPositions({
       user: '0x0000000000000000000000000000000000000000',
       pools: [
         {
