@@ -2,13 +2,25 @@ import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { createMulticallChunker, findToken } from '@defiyield/utils/array';
 
 import { STORAGE_ABI } from '../abis/storage-abi';
-import { getApy, getTvl } from '../helpers/provider';
-import { BLID_ADDRESS, DEPOSIT_VAULTS } from '../helpers/vaults';
+import { getVaultList } from '../helpers/provider';
+import { getChainInfo } from '../helpers/vaults';
+import {
+  Context,
+  FetchPoolsContext,
+  FetchUserPositionsContext,
+  Pool,
+  SupportedChain,
+} from '../../../../sandbox/src/types/module';
 
-export const DepositPools: ModuleDefinitionInterface = {
-  name: 'DepositPools',
-  chain: 'binance',
-  type: 'staking',
+export class DepositPoolsBase implements ModuleDefinitionInterface {
+  name = 'DepositPools' as const;
+  type = 'staking' as const;
+
+  chain: SupportedChain;
+
+  constructor(chain: SupportedChain) {
+    this.chain = chain;
+  }
 
   /**
    * Fetches the addresses of all involved tokens (supplied, rewards, borrowed, etc)
@@ -16,15 +28,18 @@ export const DepositPools: ModuleDefinitionInterface = {
    * @param context
    * @returns Address[]
    */
-  async preloadTokens() {
-    let tokens: string[] = [BLID_ADDRESS];
+  async preloadTokens({ axios, logger }: Context) {
+    const chainInfo = getChainInfo(this.chain);
+    const vaults = await getVaultList(axios, logger, chainInfo.id);
 
-    for (const vault of DEPOSIT_VAULTS) {
-      tokens = [...tokens, ...vault.tokens];
+    let tokens: string[] = [chainInfo.BLID_ADDRESS];
+
+    for (const vault of vaults) {
+      tokens = [...tokens, ...vault.tokens.map((token: any) => token.address)];
     }
 
     return tokens;
-  },
+  }
 
   /**
    * Returns full pool list
@@ -32,46 +47,35 @@ export const DepositPools: ModuleDefinitionInterface = {
    * @param context
    * @returns Pool[]
    */
-  async fetchPools({ tokens, axios, logger }) {
-    const pools = [];
+  async fetchPools({ tokens, axios, logger }: FetchPoolsContext) {
+    const pools: Pool[] = [];
 
     const tokenFinder = findToken(tokens);
 
-    const tvlData = await getTvl(axios, logger);
-    const aprData = await getApy(axios, logger);
+    const chainInfo = getChainInfo(this.chain);
+    const vaults = await getVaultList(axios, logger, chainInfo.id);
 
-    for (const vault of DEPOSIT_VAULTS) {
-      const vaultAddress = vault.address;
+    for (const vault of vaults) {
+      if (vault.address === chainInfo.MASTER_CHEF_ADDRESS) {
+        continue;
+      }
 
-      const suppliedTokens = vault.tokens.map((address) => tokenFinder(address));
+      const rewardToken = tokenFinder(chainInfo.BLID_ADDRESS);
 
-      const index = tokens.findIndex(
-        (token) => token.address.toLowerCase() === BLID_ADDRESS.toLowerCase(),
-      );
-      const rewardToken = tokens[index];
-
-      const tvlItem = tvlData?.strategiesTvl?.find(
-        (item) => item.storageAddress.toLowerCase() === vaultAddress.toLowerCase(),
-      );
-      const supplied = suppliedTokens.map((token) => {
-        const symbol = token.symbol === 'BTCB' ? 'BTC' : token.symbol;
-
-        const tvl = tvlItem && symbol ? tvlItem.tokensTvl[symbol]?.tvl : 0;
+      const supplied = vault.tokens.map((item: any) => {
+        const token = tokenFinder(item.address);
 
         return {
           token,
-          tvl,
+          tvl: item.tvl,
         };
       });
 
-      const aprItem = aprData?.strategiesApy?.find(
-        (item) => item.storageAddress.toLowerCase() === vaultAddress.toLowerCase(),
-      );
       const rewarded = [
         {
           token: rewardToken,
           apr: {
-            year: aprItem ? aprItem.apy / 100 : 0,
+            year: vault.apy / 100,
           },
         },
       ];
@@ -84,7 +88,7 @@ export const DepositPools: ModuleDefinitionInterface = {
     }
 
     return pools;
-  },
+  }
 
   /**
    * Returns user positions for all pools
@@ -92,11 +96,22 @@ export const DepositPools: ModuleDefinitionInterface = {
    * @param ctx Context
    * @returns UserPosition[]
    */
-  async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
+  async fetchUserPositions({
+    ethers,
+    pools,
+    user,
+    ethcall,
+    ethcallProvider,
+    axios,
+    logger,
+  }: FetchUserPositionsContext) {
+    const chainInfo = getChainInfo(this.chain);
+    const vaults = await getVaultList(axios, logger, chainInfo.id);
+
     const groupedMulticaller = createMulticallChunker(ethcallProvider);
 
     const results = await groupedMulticaller(pools, (pool) => {
-      const vault = DEPOSIT_VAULTS.find((v) => v.name === pool.id);
+      const vault = vaults.find((v: any) => v.name === pool.id);
 
       if (!vault) {
         return [];
@@ -139,5 +154,5 @@ export const DepositPools: ModuleDefinitionInterface = {
         rewarded,
       };
     });
-  },
-};
+  }
+}
