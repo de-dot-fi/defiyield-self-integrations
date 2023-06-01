@@ -3,7 +3,7 @@ import { findToken } from '@defiyield/utils/array';
 import type { BigNumber } from 'ethers';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
-import { getVaultList } from '../helpers/provider';
+import { TokenInfo, VaultInfo, getVaultList } from '../helpers/provider';
 import { getChainInfo } from '../helpers/vaults';
 
 export const FarmingPools: ModuleDefinitionInterface = {
@@ -19,6 +19,9 @@ export const FarmingPools: ModuleDefinitionInterface = {
    */
   async preloadTokens() {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.LP_BLID_USDT_ADDRESS) {
+      return [];
+    }
 
     return [chainInfo.BLID_ADDRESS, chainInfo.LP_BLID_USDT_ADDRESS];
   },
@@ -31,19 +34,23 @@ export const FarmingPools: ModuleDefinitionInterface = {
    */
   async fetchPools({ tokens, axios, logger }) {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.LP_BLID_USDT_ADDRESS) {
+      return [];
+    }
+
     const vaults = await getVaultList(axios, logger, chainInfo.id);
 
     const farmingPool = vaults.find(
-      (vault: any) =>
+      (vault: VaultInfo) =>
         vault.address === chainInfo.MASTER_CHEF_ADDRESS &&
-        vault.tokens.some((token: any) => token.address === chainInfo.LP_BLID_USDT_ADDRESS),
+        vault.tokens.some((token: TokenInfo) => token.address === chainInfo.LP_BLID_USDT_ADDRESS),
     );
 
     const tokenFinder = findToken(tokens);
 
     const blidToken = tokenFinder(chainInfo.BLID_ADDRESS);
     const lpToken = tokenFinder(chainInfo.LP_BLID_USDT_ADDRESS);
-    const tvl = farmingPool.tokens[0]?.tvl;
+    const tvl = farmingPool?.tokens[0]?.tvl;
 
     const supplied = [
       {
@@ -56,7 +63,7 @@ export const FarmingPools: ModuleDefinitionInterface = {
       {
         token: blidToken,
         apr: {
-          year: farmingPool.apy / 100,
+          year: farmingPool && farmingPool.apy ? farmingPool.apy / 100 : 0,
         },
       },
     ];
@@ -78,6 +85,9 @@ export const FarmingPools: ModuleDefinitionInterface = {
    */
   async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.MASTER_CHEF_ADDRESS) {
+      return [];
+    }
 
     const contract = new ethcall.Contract(chainInfo.MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 1;

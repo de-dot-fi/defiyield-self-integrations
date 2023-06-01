@@ -1,18 +1,42 @@
+import { Context, LoggerInterface } from '../../../../sandbox/src/types/module';
+
 export const ENDPOINT_API = 'https://bolide.fi/api/v1/vaults/list';
 
+export interface TokenInfo {
+  address: string;
+
+  name: string;
+
+  tvl: number;
+}
+
+export interface VaultInfo {
+  name: string;
+
+  address: string;
+
+  chainId: number;
+
+  tvl: number;
+
+  apy: number;
+
+  tokens: TokenInfo[];
+}
+
 export const getVaultList = async (
-  axios: any,
-  logger: any,
+  axios: Context['axios'],
+  logger: LoggerInterface,
   chainId: number,
-): Promise<any | null> => {
+): Promise<VaultInfo[]> => {
   try {
     const response = await axios.get(ENDPOINT_API);
 
     if (response.data) {
-      return response.data.vaults.filter((vault: any) => vault.chainId === chainId);
+      return response.data.vaults.filter((vault: VaultInfo) => vault.chainId === chainId);
     }
   } catch (ex) {
-    logger.error(`Call to ${ENDPOINT_API} failed`, ex);
+    logger.error(ex);
   }
-  return null;
+  return [];
 };

@@ -1,6 +1,16 @@
 import { SupportedChain } from '../../../../sandbox/src/types/module';
 
-const CHAINS: Partial<Record<SupportedChain, any>> = {
+export interface ChainInfo {
+  id: number;
+
+  BLID_ADDRESS: string;
+
+  MASTER_CHEF_ADDRESS?: string;
+
+  LP_BLID_USDT_ADDRESS?: string;
+}
+
+const CHAINS: Partial<Record<SupportedChain, ChainInfo>> = {
   binance: {
     id: 56,
     BLID_ADDRESS: '0x766afcf83fd5eaf884b3d529b432ca27a6d84617',
@@ -14,6 +24,6 @@ const CHAINS: Partial<Record<SupportedChain, any>> = {
   },
 };
 
-export const getChainInfo = (chainName: SupportedChain) => {
+export const getChainInfo = (chainName: SupportedChain): ChainInfo | undefined => {
   return CHAINS[chainName];
 };

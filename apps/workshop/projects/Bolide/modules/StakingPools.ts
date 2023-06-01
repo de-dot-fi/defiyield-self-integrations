@@ -2,7 +2,7 @@ import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import type { BigNumber } from 'ethers';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
-import { getVaultList } from '../helpers/provider';
+import { TokenInfo, VaultInfo, getVaultList } from '../helpers/provider';
 import { getChainInfo } from '../helpers/vaults';
 
 export const StakingPools: ModuleDefinitionInterface = {
@@ -18,6 +18,9 @@ export const StakingPools: ModuleDefinitionInterface = {
    */
   async preloadTokens() {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
 
     return [chainInfo.BLID_ADDRESS];
   },
@@ -30,18 +33,23 @@ export const StakingPools: ModuleDefinitionInterface = {
    */
   async fetchPools({ tokens, axios, logger }) {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
     const vaults = await getVaultList(axios, logger, chainInfo.id);
 
     const stakingPool = vaults.find(
-      (vault: any) =>
+      (vault: VaultInfo) =>
         vault.address === chainInfo.MASTER_CHEF_ADDRESS &&
         vault.tokens.some(
-          (token: any) => token.address.toUpperCase() === chainInfo.BLID_ADDRESS.toUpperCase(),
+          (token: TokenInfo) =>
+            token.address.toUpperCase() === chainInfo.BLID_ADDRESS.toUpperCase(),
         ),
     );
 
     const blidToken = tokens[0];
-    const tvl = stakingPool.tokens[0]?.tvl;
+    const tvl = stakingPool?.tokens[0]?.tvl;
 
     const supplied = [
       {
@@ -54,7 +62,7 @@ export const StakingPools: ModuleDefinitionInterface = {
       {
         token: blidToken,
         apr: {
-          year: stakingPool.apy / 100,
+          year: stakingPool && stakingPool.apy ? stakingPool.apy / 100 : 0,
         },
       },
     ];
@@ -82,6 +90,9 @@ export const StakingPools: ModuleDefinitionInterface = {
     }
 
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.MASTER_CHEF_ADDRESS) {
+      return [];
+    }
 
     const contract = new ethcall.Contract(chainInfo.MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 0;

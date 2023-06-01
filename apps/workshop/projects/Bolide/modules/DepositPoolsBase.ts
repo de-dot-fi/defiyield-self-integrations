@@ -2,7 +2,7 @@ import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { createMulticallChunker, findToken } from '@defiyield/utils/array';
 
 import { STORAGE_ABI } from '../abis/storage-abi';
-import { getVaultList } from '../helpers/provider';
+import { TokenInfo, VaultInfo, getVaultList } from '../helpers/provider';
 import { getChainInfo } from '../helpers/vaults';
 import {
   Context,
@@ -30,12 +30,16 @@ export class DepositPoolsBase implements ModuleDefinitionInterface {
    */
   async preloadTokens({ axios, logger }: Context) {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
     const vaults = await getVaultList(axios, logger, chainInfo.id);
 
     let tokens: string[] = [chainInfo.BLID_ADDRESS];
 
     for (const vault of vaults) {
-      tokens = [...tokens, ...vault.tokens.map((token: any) => token.address)];
+      tokens = [...tokens, ...vault.tokens.map((token: TokenInfo) => token.address)];
     }
 
     return tokens;
@@ -53,6 +57,10 @@ export class DepositPoolsBase implements ModuleDefinitionInterface {
     const tokenFinder = findToken(tokens);
 
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
     const vaults = await getVaultList(axios, logger, chainInfo.id);
 
     for (const vault of vaults) {
@@ -62,7 +70,7 @@ export class DepositPoolsBase implements ModuleDefinitionInterface {
 
       const rewardToken = tokenFinder(chainInfo.BLID_ADDRESS);
 
-      const supplied = vault.tokens.map((item: any) => {
+      const supplied = vault.tokens.map((item: TokenInfo) => {
         const token = tokenFinder(item.address);
 
         return {
@@ -106,12 +114,16 @@ export class DepositPoolsBase implements ModuleDefinitionInterface {
     logger,
   }: FetchUserPositionsContext) {
     const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
     const vaults = await getVaultList(axios, logger, chainInfo.id);
 
     const groupedMulticaller = createMulticallChunker(ethcallProvider);
 
     const results = await groupedMulticaller(pools, (pool) => {
-      const vault = vaults.find((v: any) => v.name === pool.id);
+      const vault = vaults.find((v: VaultInfo) => v.name === pool.id);
 
       if (!vault) {
         return [];
@@ -132,7 +144,7 @@ export class DepositPoolsBase implements ModuleDefinitionInterface {
       const supplied = pool.supplied
         ? pool.supplied.map((item, index) => ({
             ...item,
-            balance: parseFloat(ethers.utils.formatUnits(deposited[index], item.token.decimals)),
+            balance: parseFloat(ethers.utils.formatUnits(deposited[index])),
           }))
         : [];
 
