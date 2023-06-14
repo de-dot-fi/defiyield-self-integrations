@@ -1,53 +1,42 @@
-export const ENDPOINT_API = 'https://bolide.fi/api';
+import { Context, LoggerInterface } from '../../../../sandbox/src/types/module';
 
-export interface AprInfo {
-  stakingApy: string;
+export const ENDPOINT_API = 'https://bolide.fi/api/v1/vaults/list';
 
-  farmingApy: string;
+export interface TokenInfo {
+  address: string;
 
-  strategiesApy: Array<{
-    storageAddress: string;
+  name: string;
 
-    apy: number;
-  }>;
+  tvl: number;
 }
 
-export interface TvlInfo {
-  stakingTvl: string;
+export interface VaultInfo {
+  name: string;
 
-  farmingTvl: string;
+  address: string;
 
-  strategiesTvl: Array<{
-    storageAddress: string;
+  chainId: number;
 
-    tokensTvl: Record<string, { tvl: number }>;
-  }>;
+  tvl: number;
+
+  apy: number;
+
+  tokens: TokenInfo[];
 }
 
-export const getApy = async (axios: any, logger: any): Promise<AprInfo | null> => {
-  const url = `${ENDPOINT_API}/apy`;
+export const getVaultList = async (
+  axios: Context['axios'],
+  logger: LoggerInterface,
+  chainId: number,
+): Promise<VaultInfo[]> => {
   try {
-    const response = await axios.get(url);
+    const response = await axios.get(ENDPOINT_API);
 
     if (response.data) {
-      return response.data;
+      return response.data.vaults.filter((vault: VaultInfo) => vault.chainId === chainId);
     }
   } catch (ex) {
-    logger.error(`Call to ${url} failed`, ex);
+    logger.error(ex);
   }
-  return null;
-};
-
-export const getTvl = async (axios: any, logger: any): Promise<TvlInfo | null> => {
-  const url = `${ENDPOINT_API}/tvl`;
-  try {
-    const response = await axios.get(url);
-
-    if (response.data) {
-      return response.data;
-    }
-  } catch (ex) {
-    logger.error(`Call to ${url} failed`, ex);
-  }
-  return null;
+  return [];
 };

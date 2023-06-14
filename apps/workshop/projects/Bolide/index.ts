@@ -1,5 +1,6 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
-import { DepositPools } from './modules/DepositPools';
+import { DepositPoolsBnb } from './modules/DepositPoolsBnb';
+import { DepositPoolsPolygon } from './modules/DepositPoolsPolygon';
 import { StakingPools } from './modules/StakingPools';
 import { FarmingPools } from './modules/FarmingPools';
 
@@ -14,7 +15,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/Bolide_fi',
     github: 'https://github.com/bolide-fi/',
   },
-  modules: [DepositPools, StakingPools, FarmingPools],
+  modules: [DepositPoolsBnb, DepositPoolsPolygon, FarmingPools, StakingPools],
 };
 
 export default project;

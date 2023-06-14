@@ -1,47 +1,29 @@
-export const BLID_ADDRESS = '0x766afcf83fd5eaf884b3d529b432ca27a6d84617';
-export const LP_BLID_USDT_ADDRESS = '0x12C35ed2405bc70721584594723351bf5Db6235C';
-export const MASTER_CHEF_ADDRESS = '0x3782C47E62b13d579fe748946AEf7142B45B2cf7';
+import { SupportedChain } from '../../../../sandbox/src/types/module';
 
-export interface Vault {
-  name: string;
+export interface ChainInfo {
+  id: number;
 
-  address: string;
+  BLID_ADDRESS: string;
 
-  tokens: string[];
+  MASTER_CHEF_ADDRESS?: string;
+
+  LP_BLID_USDT_ADDRESS?: string;
 }
 
-export const DEPOSIT_VAULTS: Vault[] = [
-  {
-    name: 'Stablecoins',
-    address: '0xf1f25A26499B023200B3f9A30a8eCEE87b031Ee1',
-    tokens: [
-      '0x55d398326f99059fF775485246999027B3197955',
-      '0xe9e7CEA3DedcA5984780Bafc599bD69ADd087D56',
-      '0x8AC76a51cc950d9822D68b83fE1Ad97B32Cd580d',
-      '0x1AF3F329e8BE154074D8769D1FFa4eE058B1DBc3',
-    ],
+const CHAINS: Partial<Record<SupportedChain, ChainInfo>> = {
+  binance: {
+    id: 56,
+    BLID_ADDRESS: '0x766afcf83fd5eaf884b3d529b432ca27a6d84617',
+    MASTER_CHEF_ADDRESS: '0x3782C47E62b13d579fe748946AEf7142B45B2cf7',
+    LP_BLID_USDT_ADDRESS: '0x12C35ed2405bc70721584594723351bf5Db6235C',
   },
-  {
-    name: 'ETH',
-    address: '0x941ef9AaF3277052e2e6c737ae9a75b229A20988',
-    tokens: ['0x2170Ed0880ac9A755fd29B2688956BD959F933F8'],
+
+  polygon: {
+    id: 137,
+    BLID_ADDRESS: '0x4b27Cd6E6a5E83d236eAD376D256Fe2F9e9f0d2E',
   },
-  {
-    name: 'BTC',
-    address: '0xed18f1CE58fED758C7937cC0b8BE66CB02Dc45c6',
-    tokens: ['0x7130d2A12B9BCbFAe4f2634d864A1Ee1Ce3Ead9c'],
-  },
-  {
-    name: 'Altcoins',
-    address: '0x5d735e9ffE9664B80c405D16921912E5B989688C',
-    tokens: [
-      '0x1D2F0da169ceB9fC7B3144628dB156f3F6c60dBE',
-      '0xcF6BB5389c92Bdda8a3747Ddb454cB7a64626C63',
-      '0x4338665CBB7B2485A8855A139b75D5e34AB0DB94',
-      '0x3EE2200Efb3400fAbB9AacF31297cBdD1d435D47',
-      '0xF8A0BF9cF54Bb92F17374d9e9A321E6a111a51bD',
-      '0x7083609fCE4d1d8Dc0C979AAb8c869Ea2C873402',
-      '0xCC42724C6683B7E57334c4E856f4c9965ED682bD',
-    ],
-  },
-];
+};
+
+export const getChainInfo = (chainName: SupportedChain): ChainInfo | undefined => {
+  return CHAINS[chainName];
+};

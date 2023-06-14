@@ -2,8 +2,8 @@ import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import type { BigNumber } from 'ethers';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
-import { getApy, getTvl } from '../helpers/provider';
-import { BLID_ADDRESS, MASTER_CHEF_ADDRESS } from '../helpers/vaults';
+import { TokenInfo, VaultInfo, getVaultList } from '../helpers/provider';
+import { getChainInfo } from '../helpers/vaults';
 
 export const StakingPools: ModuleDefinitionInterface = {
   name: 'StakingPools',
@@ -17,7 +17,12 @@ export const StakingPools: ModuleDefinitionInterface = {
    * @returns Address[]
    */
   async preloadTokens() {
-    return [BLID_ADDRESS];
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
+    return [chainInfo.BLID_ADDRESS];
   },
 
   /**
@@ -27,15 +32,29 @@ export const StakingPools: ModuleDefinitionInterface = {
    * @returns Pool[]
    */
   async fetchPools({ tokens, axios, logger }) {
-    const tvlData = await getTvl(axios, logger);
-    const aprData = await getApy(axios, logger);
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo) {
+      return [];
+    }
+
+    const vaults = await getVaultList(axios, logger, chainInfo.id);
+
+    const stakingPool = vaults.find(
+      (vault: VaultInfo) =>
+        vault.address === chainInfo.MASTER_CHEF_ADDRESS &&
+        vault.tokens.some(
+          (token: TokenInfo) =>
+            token.address.toUpperCase() === chainInfo.BLID_ADDRESS.toUpperCase(),
+        ),
+    );
 
     const blidToken = tokens[0];
+    const tvl = stakingPool?.tokens[0]?.tvl;
 
     const supplied = [
       {
         token: blidToken,
-        tvl: tvlData ? parseFloat(tvlData.stakingTvl) : 0,
+        tvl,
       },
     ];
 
@@ -43,7 +62,7 @@ export const StakingPools: ModuleDefinitionInterface = {
       {
         token: blidToken,
         apr: {
-          year: aprData ? parseFloat(aprData.stakingApy) / 100 : 0,
+          year: stakingPool && stakingPool.apy ? stakingPool.apy / 100 : 0,
         },
       },
     ];
@@ -70,7 +89,12 @@ export const StakingPools: ModuleDefinitionInterface = {
       return [];
     }
 
-    const contract = new ethcall.Contract(MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.MASTER_CHEF_ADDRESS) {
+      return [];
+    }
+
+    const contract = new ethcall.Contract(chainInfo.MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 0;
     const [[amount], pendingBlid] = (await ethcallProvider.all([
       contract.userInfo(pid, user),

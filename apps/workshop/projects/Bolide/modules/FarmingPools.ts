@@ -3,8 +3,8 @@ import { findToken } from '@defiyield/utils/array';
 import type { BigNumber } from 'ethers';
 
 import { MASTER_CHEF_ABI } from '../abis/master-chef-abi';
-import { getApy, getTvl } from '../helpers/provider';
-import { BLID_ADDRESS, LP_BLID_USDT_ADDRESS, MASTER_CHEF_ADDRESS } from '../helpers/vaults';
+import { TokenInfo, VaultInfo, getVaultList } from '../helpers/provider';
+import { getChainInfo } from '../helpers/vaults';
 
 export const FarmingPools: ModuleDefinitionInterface = {
   name: 'FarmingPools',
@@ -18,7 +18,12 @@ export const FarmingPools: ModuleDefinitionInterface = {
    * @returns Address[]
    */
   async preloadTokens() {
-    return [BLID_ADDRESS, LP_BLID_USDT_ADDRESS];
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.LP_BLID_USDT_ADDRESS) {
+      return [];
+    }
+
+    return [chainInfo.BLID_ADDRESS, chainInfo.LP_BLID_USDT_ADDRESS];
   },
 
   /**
@@ -28,18 +33,29 @@ export const FarmingPools: ModuleDefinitionInterface = {
    * @returns Pool[]
    */
   async fetchPools({ tokens, axios, logger }) {
-    const tvlData = await getTvl(axios, logger);
-    const aprData = await getApy(axios, logger);
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.LP_BLID_USDT_ADDRESS) {
+      return [];
+    }
+
+    const vaults = await getVaultList(axios, logger, chainInfo.id);
+
+    const farmingPool = vaults.find(
+      (vault: VaultInfo) =>
+        vault.address === chainInfo.MASTER_CHEF_ADDRESS &&
+        vault.tokens.some((token: TokenInfo) => token.address === chainInfo.LP_BLID_USDT_ADDRESS),
+    );
 
     const tokenFinder = findToken(tokens);
 
-    const blidToken = tokenFinder(BLID_ADDRESS);
-    const lpToken = tokenFinder(LP_BLID_USDT_ADDRESS);
+    const blidToken = tokenFinder(chainInfo.BLID_ADDRESS);
+    const lpToken = tokenFinder(chainInfo.LP_BLID_USDT_ADDRESS);
+    const tvl = farmingPool?.tokens[0]?.tvl;
 
     const supplied = [
       {
         token: lpToken,
-        tvl: tvlData ? parseFloat(tvlData.farmingTvl) : 0,
+        tvl,
       },
     ];
 
@@ -47,7 +63,7 @@ export const FarmingPools: ModuleDefinitionInterface = {
       {
         token: blidToken,
         apr: {
-          year: aprData ? parseFloat(aprData.farmingApy) / 100 : 0,
+          year: farmingPool && farmingPool.apy ? farmingPool.apy / 100 : 0,
         },
       },
     ];
@@ -68,7 +84,12 @@ export const FarmingPools: ModuleDefinitionInterface = {
    * @returns UserPosition[]
    */
   async fetchUserPositions({ ethers, pools, user, ethcall, ethcallProvider }) {
-    const contract = new ethcall.Contract(MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
+    const chainInfo = getChainInfo(this.chain);
+    if (!chainInfo || !chainInfo.MASTER_CHEF_ADDRESS) {
+      return [];
+    }
+
+    const contract = new ethcall.Contract(chainInfo.MASTER_CHEF_ADDRESS, MASTER_CHEF_ABI);
     const pid = 1;
     const [[amount], pendingBlid] = (await ethcallProvider.all([
       contract.userInfo(pid, user),

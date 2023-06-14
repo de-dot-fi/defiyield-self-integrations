@@ -3,25 +3,16 @@ import path from 'path';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ENDPOINT_API } from '../helpers/provider';
-import { BLID_ADDRESS, DEPOSIT_VAULTS } from '../helpers/vaults';
-import { DepositPools } from '../modules/DepositPools';
+import { getChainInfo } from '../helpers/vaults';
+import { DepositPoolsBnb } from '../modules/DepositPoolsBnb';
+import { testResponse } from './response';
 
-const testAprResponse = {
-  strategiesApy: DEPOSIT_VAULTS.map((vault, index) => ({
-    storageAddress: vault.address,
-    apy: index * 10 + index,
-  })),
-};
-
-const testTvlResponse = {
-  strategiesTvl: DEPOSIT_VAULTS.map((vault, index) => ({
-    storageAddress: vault.address,
-    tokensTvl: {
-      fake: {
-        tvl: index * 10 + index,
-      },
-    },
-  })),
+const filterReponse = (res, chainInfo) => {
+  return res.vaults.filter(
+    (vault) =>
+      vault.chainId === chainInfo.id &&
+      vault.address.toLowerCase() !== chainInfo.MASTER_CHEF_ADDRESS.toLowerCase(),
+  );
 };
 
 describe('#project #pool #bolide', () => {
@@ -29,18 +20,25 @@ describe('#project #pool #bolide', () => {
     context.project = await createTestProject({
       name: 'Bolide',
       path: path.join(__dirname, '../index.ts'),
-      modules: [DepositPools],
+      modules: [DepositPoolsBnb],
       contracts: {},
     });
   });
 
   test('All tokens are properly hydrated', async ({ project }) => {
+    const [, mockAxios] = createMockContext();
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
+    const chainInfo = getChainInfo('binance');
+
     const [tokens] = await project.preloadTokens();
 
     let count = 1; // BLID token
 
-    for (const vault of DEPOSIT_VAULTS) {
-      count += vault.tokens.length;
+    for (const vault of testResponse.vaults) {
+      if (vault.chainId === chainInfo.id) {
+        count += vault.tokens.length;
+      }
     }
 
     expect(tokens.length).toEqual(count);
@@ -57,18 +55,22 @@ describe('#project #pool #bolide', () => {
 
   test('Pools count is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
+    const chainInfo = getChainInfo('binance');
+    const vaults = filterReponse(testResponse, chainInfo);
 
     const [pools] = await project.fetchPools();
 
-    expect(pools.length).toEqual(4);
+    expect(pools.length).toEqual(vaults.length);
   });
 
   test('All information of pool rewarded is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200, testAprResponse);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
+    const chainInfo = getChainInfo('binance');
+    const vaults = filterReponse(testResponse, chainInfo);
 
     const [pools] = await project.fetchPools();
 
@@ -77,24 +79,27 @@ describe('#project #pool #bolide', () => {
 
       const rewarded = pool.rewarded[0];
 
-      expect(rewarded.token.address.toLowerCase()).toEqual(BLID_ADDRESS.toLowerCase());
-      expect(rewarded.apr.year).toEqual(testAprResponse.strategiesApy[index].apy / 100);
+      expect(rewarded.token.address.toLowerCase()).toEqual(chainInfo.BLID_ADDRESS.toLowerCase());
+      expect(rewarded.apr.year).toEqual(vaults[index].apy / 100);
     }
   });
 
   test('All information of pool supplied is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200, testTvlResponse);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
+    const chainInfo = getChainInfo('binance');
+    const vaults = filterReponse(testResponse, chainInfo);
 
     const [pools] = await project.fetchPools();
 
     for (const [index, pool] of pools.entries()) {
-      const vault = DEPOSIT_VAULTS[index];
+      const vault = vaults[index];
       expect(pool.supplied.length).toEqual(vault.tokens.length);
 
-      const supplied = pool.supplied[0];
-      expect(supplied.tvl).toEqual(testTvlResponse.strategiesTvl[index].tokensTvl.fake.tvl);
+      for (const [j, supplied] of pool.supplied.entries()) {
+        expect(supplied.tvl).toEqual(vault.tokens[j].tvl);
+      }
     }
   });
 });

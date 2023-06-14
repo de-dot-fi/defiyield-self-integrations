@@ -3,15 +3,17 @@ import path from 'path';
 import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ENDPOINT_API } from '../helpers/provider';
-import { BLID_ADDRESS, LP_BLID_USDT_ADDRESS } from '../helpers/vaults';
+import { getChainInfo } from '../helpers/vaults';
 import { FarmingPools } from '../modules/FarmingPools';
+import { testResponse } from './response';
 
-const testAprResponse = {
-  farmingApy: 10.12,
-};
-
-const testTvlResponse = {
-  farmingTvl: 23.45,
+const filterReponse = (res, chainInfo) => {
+  return res.vaults.filter(
+    (vault) =>
+      vault.chainId === chainInfo.id &&
+      vault.address.toLowerCase() === chainInfo.MASTER_CHEF_ADDRESS.toLowerCase() &&
+      vault.tokens[0].address.toLowerCase() === chainInfo.LP_BLID_USDT_ADDRESS.toLowerCase(),
+  );
 };
 
 describe('#project #pool #bolide', () => {
@@ -25,6 +27,9 @@ describe('#project #pool #bolide', () => {
   });
 
   test('All tokens are properly hydrated', async ({ project }) => {
+    const [, mockAxios] = createMockContext();
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
     const [tokens] = await project.preloadTokens();
 
     expect(tokens.length).toEqual(2);
@@ -41,8 +46,7 @@ describe('#project #pool #bolide', () => {
 
   test('Pools count is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
 
     const [pools] = await project.fetchPools();
 
@@ -51,29 +55,34 @@ describe('#project #pool #bolide', () => {
 
   test('All information of pool rewarded is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200, testAprResponse);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
 
+    const chainInfo = getChainInfo('binance');
+    const vaults = filterReponse(testResponse, chainInfo);
     const [pools] = await project.fetchPools();
 
     const pool = pools[0];
     const rewarded = pool.rewarded[0];
 
-    expect(rewarded.token.address.toLowerCase()).toEqual(BLID_ADDRESS.toLowerCase());
-    expect(rewarded.apr.year).toEqual(testAprResponse.farmingApy / 100);
+    expect(rewarded.token.address.toLowerCase()).toEqual(chainInfo.BLID_ADDRESS.toLowerCase());
+    expect(rewarded.apr.year).toEqual(vaults[0].apy / 100);
   });
 
   test('All information of pool supplied is correct', async ({ project }) => {
     const [, mockAxios] = createMockContext();
-    mockAxios.onGet(`${ENDPOINT_API}/apy`).reply(200);
-    mockAxios.onGet(`${ENDPOINT_API}/tvl`).reply(200, testTvlResponse);
+    mockAxios.onGet(ENDPOINT_API).reply(200, testResponse);
+
+    const chainInfo = getChainInfo('binance');
+    const vaults = filterReponse(testResponse, chainInfo);
 
     const [pools] = await project.fetchPools();
 
     const pool = pools[0];
     const supplied = pool.supplied[0];
 
-    expect(supplied.token.address.toLowerCase()).toEqual(LP_BLID_USDT_ADDRESS.toLowerCase());
-    expect(supplied.tvl).toEqual(testTvlResponse.farmingTvl);
+    expect(supplied.token.address.toLowerCase()).toEqual(
+      chainInfo.LP_BLID_USDT_ADDRESS.toLowerCase(),
+    );
+    expect(supplied.tvl).toEqual(vaults[0].tvl);
   });
 });
