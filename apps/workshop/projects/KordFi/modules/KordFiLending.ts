@@ -16,10 +16,6 @@ import {
   makeKordFiApiRequest,
 } from '../helpers/provider';
 
-interface PoolExtra {
-  prefix: KordFiPrefix;
-}
-
 export const KordFiLending: ModuleDefinitionInterface = {
   name: 'KordFi Lending',
   chain: 'tezos',

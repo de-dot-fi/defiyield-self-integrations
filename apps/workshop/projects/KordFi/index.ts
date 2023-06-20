@@ -1,5 +1,6 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
 import { KordFiLending } from './modules/KordFiLending';
+import { KordFiLeverageFarming } from './modules/KordFiLeverageFarming';
 
 const project: ProjectDefinitionInterface = {
   name: 'Kord.Fi',
@@ -11,7 +12,7 @@ const project: ProjectDefinitionInterface = {
     telegram: 'https://t.me/kord_fi',
     twitter: 'https://twitter.com/kord_fi',
   },
-  modules: [KordFiLending],
+  modules: [KordFiLending, KordFiLeverageFarming],
 };
 
 export default project;
