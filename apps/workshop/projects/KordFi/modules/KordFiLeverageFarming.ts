@@ -89,7 +89,8 @@ const calculateUserPosition = (
   );
   const borrowedIndex = poolInfo[`${pool.extra?.prefix as KordFiPrefix}GrossCreditIndex`];
 
-  const { token, apr, tvl } = pool.borrowed?.[0] || {};
+  const { token: borrowToken, apr: borrowApr, tvl: borrowTvl } = pool.borrowed?.[0] || {};
+  const { token: supplyToken, apr: supplyApr, tvl: supplyTvl } = pool.supplied?.[0] || {};
 
   const borrowedAmount = normalizeDecimals(
     ctx,
@@ -98,36 +99,30 @@ const calculateUserPosition = (
     true,
   );
 
-  const userSupplied = new ctx.BigNumber(userInfo[`${pool.extra?.prefix as KordFiPrefix}LbShares`])
-    .multipliedBy(externalInfo.lbXtzRate)
-    .minus(
-      borrowedAmount.dividedBy(pool.extra?.prefix === 'tzbtc' ? externalInfo.xtzTzbtcRate : 1),
-    );
+  const userSupplied = new ctx.BigNumber(
+    userInfo[`${pool.extra?.prefix as KordFiPrefix}LbShares`],
+  ).multipliedBy(externalInfo.lbXtzRate);
 
-  if (userBorrowed.gt(0) && token) {
+  if (userBorrowed.gt(0) && borrowToken) {
     userPosition.borrowed = [
       {
-        token,
-        apr,
-        tvl,
+        token: borrowToken,
+        apr: borrowApr,
+        tvl: borrowTvl,
         balance: borrowedAmount.toNumber(),
       },
     ];
   }
 
-  if (userSupplied.gt(0)) {
-    const { token, apr, tvl } = pool.supplied?.[0] || {};
-
-    if (token) {
-      userPosition.supplied = [
-        {
-          token,
-          apr,
-          tvl,
-          balance: userSupplied.toNumber(),
-        },
-      ];
-    }
+  if (userSupplied.gt(0) && supplyToken) {
+    userPosition.supplied = [
+      {
+        token: supplyToken,
+        apr: supplyApr,
+        tvl: supplyTvl,
+        balance: userSupplied.toNumber(),
+      },
+    ];
   }
 
   if (userPosition?.supplied?.length || userPosition?.borrowed?.length) {
