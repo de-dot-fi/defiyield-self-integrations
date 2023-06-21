@@ -51,7 +51,12 @@ export type SupportedChain =
   | 'tezos'
   | 'zksync_era';
 
-export type SupportedProtocolType = 'staking' | 'lending' | 'pools' | 'claimable';
+export type SupportedProtocolType =
+  | 'staking'
+  | 'lending'
+  | 'pools'
+  | 'claimable'
+  | 'leverageFarming';
 
 export interface LoggerInterface {
   debug: (msg: string) => void;
