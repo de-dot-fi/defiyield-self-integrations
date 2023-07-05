@@ -2,6 +2,19 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.9.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.8.0...v1.9.0) (2023-07-05)
+
+
+### Features
+
+* bolide - add polygon vault ([#53](https://github.com/defiyield-app/defiyield-self-integrations/issues/53)) ([2598ccc](https://github.com/defiyield-app/defiyield-self-integrations/commit/2598cccebb6309bc43273c483e28ccf47f6afecf))
+* **project:** Kord.Fi ([#54](https://github.com/defiyield-app/defiyield-self-integrations/issues/54)) ([58621e9](https://github.com/defiyield-app/defiyield-self-integrations/commit/58621e911e06146a57175986f3167ceca899192d))
+
+
+### Bug Fixes
+
+* **project:** KordFi wrong supply amount in leverage farming [#55](https://github.com/defiyield-app/defiyield-self-integrations/issues/55) ([8d447ed](https://github.com/defiyield-app/defiyield-self-integrations/commit/8d447ed08bc33c5e6dfa6c92a810fe356f7a7fb3))
+
 ## [1.8.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.6.1...v1.8.0) (2023-05-18)
 
 
