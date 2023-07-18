@@ -5,7 +5,7 @@ const project: ProjectDefinitionInterface = {
   name: 'Pinnako',
   categories: ['DEX'],
   links: {
-    logo: 'https://app.pinnako.io/static/media/logo.fd676d43.svg',
+    logo: 'https://raw.githubusercontent.com/pinnakoex/assert_public/main/20230718-190042.jpeg',
     url: 'https://app.pinnako.io/',
     discord: 'https://discord.com/invite/pinnakodex',
     telegram: 'https://t.me/pinnakodex',

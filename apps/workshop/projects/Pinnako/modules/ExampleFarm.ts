@@ -1,5 +1,5 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
-import { jitoStats } from '../helpers';
+import { jitoStats, plpStats } from '../helpers';
 import { Pool, TokenExtra } from '../../../../sandbox/src/types/module';
 import erc20Abi from '../abis/erc20.abi.json';
 import rewardRouterAbi from '../abis/rewardRouter.abi.json';
@@ -11,7 +11,10 @@ export const ExampleFarm: ModuleDefinitionInterface = {
   type: 'staking',
 
   async preloadTokens() {
-    return ['0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23'];
+    return [
+      '0xf8C6dA1bbdc31Ea5F968AcE76E931685cA7F9962',
+      '0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23',
+    ];
   },
 
   async fetchPools(ctx) {
@@ -19,6 +22,7 @@ export const ExampleFarm: ModuleDefinitionInterface = {
 
     const stats = await jitoStats({ axios });
     const jito = tokens.find((t) => t.address === '0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23');
+    const piko = tokens.find((t) => t.address === '0xf8C6dA1bbdc31Ea5F968AcE76E931685cA7F9962');
     const tvl = new BigNumber(stats.tvl).div(10 ** 30);
 
     let apr_PIKO_plp,
@@ -60,10 +64,23 @@ export const ExampleFarm: ModuleDefinitionInterface = {
       apr = Number(apr_PIKO_plp) + Number(apr_USDC_plp);
     } catch (error) {}
 
-    if (!jito) {
+    if (!piko || !jito) {
       return [];
     }
     const vaults: Pool[] = [
+      {
+        id: piko.address,
+        extra: {
+          exchangeRate: new BigNumber(0).toString(),
+        },
+        supplied: [
+          {
+            token: piko,
+            tvl: tvl.toNumber(),
+            apr: { year: apr },
+          },
+        ],
+      },
       {
         id: jito.address,
         extra: {
@@ -106,17 +123,24 @@ export const ExampleFarm: ModuleDefinitionInterface = {
   async fetchMissingTokenPrices(ctx) {
     const { axios } = ctx;
 
-    let PIKOPrice = 0;
+    let PIKOPrice,
+      plpPrice = 0;
     try {
       const priceResult = await axios.get(
         'https://api.dexscreener.com/latest/dex/pairs/zksync/0x2f801cc2b7213be05fd73febb80b627cfd625c9f',
       );
       PIKOPrice = priceResult.data?.pair?.priceUsd;
+      const stats = await plpStats({ axios });
+      plpPrice = Number(stats.plpPrice.toFixed(4));
     } catch (error) {}
     const TokenValue: TokenExtra[] = [
       {
-        address: '0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23',
+        address: '0xf8C6dA1bbdc31Ea5F968AcE76E931685cA7F9962',
         price: PIKOPrice,
+      },
+      {
+        address: '0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23',
+        price: plpPrice,
       },
     ];
 
