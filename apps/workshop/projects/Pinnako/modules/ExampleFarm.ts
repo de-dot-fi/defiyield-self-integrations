@@ -1,6 +1,6 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
 import { jitoStats } from '../helpers';
-import { Pool } from '../../../../sandbox/src/types/module';
+import { Pool, TokenExtra } from '../../../../sandbox/src/types/module';
 import erc20Abi from '../abis/erc20.abi.json';
 import rewardRouterAbi from '../abis/rewardRouter.abi.json';
 import plpMangerAbi from '../abis/plpManger.abi.json';
@@ -101,5 +101,25 @@ export const ExampleFarm: ModuleDefinitionInterface = {
         ],
       },
     ];
+  },
+
+  async fetchMissingTokenPrices(ctx) {
+    const { axios } = ctx;
+
+    let PIKOPrice = 0;
+    try {
+      const priceResult = await axios.get(
+        'https://api.dexscreener.com/latest/dex/pairs/zksync/0x2f801cc2b7213be05fd73febb80b627cfd625c9f',
+      );
+      PIKOPrice = priceResult.data?.pair?.priceUsd;
+    } catch (error) {}
+    const TokenValue: TokenExtra[] = [
+      {
+        address: '0x8FdF5A1880832e9043Ce35B729A1e6C850b09b23',
+        price: PIKOPrice,
+      },
+    ];
+
+    return TokenValue;
   },
 };
