@@ -5,7 +5,7 @@ import erc20Abi from '../abis/erc20.abi.json';
 import rewardRouterAbi from '../abis/rewardRouter.abi.json';
 import plpMangerAbi from '../abis/plpManger.abi.json';
 
-export const ExampleFarm: ModuleDefinitionInterface = {
+export const PikoFarm: ModuleDefinitionInterface = {
   name: 'Pinnako',
   chain: 'zksync_era',
   type: 'staking',
@@ -99,13 +99,19 @@ export const ExampleFarm: ModuleDefinitionInterface = {
   },
 
   async fetchUserPositions({ pools, user, ethcall, ethcallProvider, BigNumber }) {
-    const [pool] = pools;
-
+    const [pool, poolLp] = pools;
     if (!pool.supplied) return [];
-
+    const pikocontract = new ethcall.Contract(
+      '0xf8C6dA1bbdc31Ea5F968AcE76E931685cA7F9962',
+      erc20Abi,
+    );
     const contract = new ethcall.Contract('0x536D092230A3372030a63414f5932CAD74fC9Db6', erc20Abi);
     const [_balance] = await ethcallProvider.all<typeof BigNumber>([contract.balanceOf(user)]);
+    const [_balancePiko] = await ethcallProvider.all<typeof BigNumber>([
+      pikocontract.balanceOf(user),
+    ]);
     const balance = Number(_balance.toString()) / 10 ** 18;
+    const balancePiko = Number(_balancePiko.toString()) / 10 ** 18;
 
     return [
       {
@@ -113,6 +119,15 @@ export const ExampleFarm: ModuleDefinitionInterface = {
         supplied: [
           {
             ...pool.supplied[0],
+            balance: balancePiko,
+          },
+        ],
+      },
+      {
+        id: poolLp.id,
+        supplied: [
+          {
+            ...poolLp.supplied[0],
             balance,
           },
         ],

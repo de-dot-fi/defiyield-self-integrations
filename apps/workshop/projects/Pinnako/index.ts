@@ -1,5 +1,5 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
-import { ExampleFarm } from './modules/ExampleFarm';
+import { PikoFarm } from './modules/PikoFarm';
 
 const project: ProjectDefinitionInterface = {
   name: 'Pinnako',
@@ -12,7 +12,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/PinnakoDex',
     github: 'GitHub - pinnakoex/pinnakoes_contract: pinnakoes_contract',
   },
-  modules: [ExampleFarm],
+  modules: [PikoFarm],
 };
 
 export default project;
