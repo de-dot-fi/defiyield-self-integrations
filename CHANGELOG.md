@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.10.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.9.0...v1.10.0) (2023-07-20)
+
+
+### Features
+
+* add Single Finance lendng pools ([#59](https://github.com/defiyield-app/defiyield-self-integrations/issues/59)) ([8ef70d7](https://github.com/defiyield-app/defiyield-self-integrations/commit/8ef70d7a4624bdc05b4d1024a60c832b079a55d8))
+
 ## [1.9.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.8.0...v1.9.0) (2023-07-05)
 
 
