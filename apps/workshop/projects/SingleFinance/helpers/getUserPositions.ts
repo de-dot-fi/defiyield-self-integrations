@@ -1,0 +1,13 @@
+import { Context } from '@defiyield/sandbox';
+import { mapToChainId, API_ENDPOINT } from '../helpers/constants';
+import { SFSupportedChain, UserLendingBalance, UserPosition } from '../helpers/types';
+
+export const getUserPositions = async (
+  axios: Context['axios'],
+  chain: SFSupportedChain,
+  owner: string,
+): Promise<UserPosition[]> => {
+  return (
+    await axios.get(`${API_ENDPOINT}/positions?owner=${owner}&chainid=${mapToChainId[chain]}`)
+  ).data.data;
+};
