@@ -12,6 +12,7 @@ import { getRewardApr } from '../helpers/getRewardApr';
 import { getUserLending } from '../helpers/getUserLending';
 import { isSFSupportedChain, SFSupportedChain } from '../helpers/types';
 import { secondToYearlyInterestRate } from '../helpers/secondToYearlyInterestRate';
+import { isSameAddr } from '../helpers/isSameAddress';
 
 export const LendingPools = (chain: SFSupportedChain): ModuleDefinitionInterface => ({
   name: 'SingleFinance',
@@ -180,19 +181,43 @@ export const LendingPools = (chain: SFSupportedChain): ModuleDefinitionInterface
     });
   },
 
-  async fetchUserPositions({ pools, user, axios, BigNumber }) {
+  async fetchUserPositions({ pools, user, axios, BigNumber, ethcall, ethcallProvider }) {
+    const multiCall = createMulticallChunker(ethcallProvider);
     const positions = await getUserLending(axios, chain, user);
-    return positions.map(({ ibAmount, stakeAmount, pendingSingle, vault }) => {
+
+    const multiCallRes = await (async () => {
+      const result: [BigNumber, BigNumber][] = await multiCall(pools, (pool) => {
+        const vault = new ethcall.Contract(pool.id, VaultABI);
+
+        return [vault.totalSupply(), vault.totalToken()];
+      });
+      return result.map(([totalSupply, totalUnderlyingSupplied]) => ({
+        totalSupply,
+        totalUnderlyingSupplied,
+      }));
+    })();
+
+    return positions.map(({ ibAmount, stakeAmount, pendingSingle, vault, isCapitalProtected }) => {
       const pool = findPoolByAddress(pools, vault.address);
       if (!pool) return undefined;
       const decimals = vault.decimals;
+
+      const { totalSupply, totalUnderlyingSupplied } =
+        multiCallRes[pools.findIndex((p) => isSameAddr(p.id, vault.address))];
+
+      const conversionRate =
+        totalSupply && Number(totalSupply) > 0
+          ? Number(totalUnderlyingSupplied) / Number(totalSupply)
+          : 1;
+
       return {
         id: pool.id,
         supplied: pool.supplied
           ? pool.supplied.map((p) => ({
               ...p,
               balance: new BigNumber(ibAmount)
-                .plus(stakeAmount)
+                .plus(isCapitalProtected ? 0 : stakeAmount)
+                .times(conversionRate)
                 .dividedBy(10 ** decimals)
                 .toNumber(),
             }))

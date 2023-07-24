@@ -195,3 +195,30 @@ export const BigBangABI = [
     type: 'function',
   },
 ];
+
+export const WMasterChefABI = [
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'collId',
+        type: 'uint256',
+      },
+      {
+        internalType: 'uint256',
+        name: 'collSize',
+        type: 'uint256',
+      },
+    ],
+    name: 'collSizeToLpBalance',
+    outputs: [
+      {
+        internalType: 'uint256',
+        name: 'balance',
+        type: 'uint256',
+      },
+    ],
+    stateMutability: 'view',
+    type: 'function',
+  },
+];
