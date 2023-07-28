@@ -4,7 +4,7 @@ import { beforeEach, describe, expect, test } from 'vitest';
 
 import { ENDPOINT_API } from '../helpers/provider';
 import { getChainInfo } from '../helpers/vaults';
-import { DepositPoolsBnb } from '../modules/DepositPoolsBnb';
+import { DepositPoolsBase } from '../modules/DepositPoolsBase';
 import { testResponse } from './response';
 
 const filterReponse = (res, chainInfo) => {
@@ -20,7 +20,7 @@ describe('#project #pool #bolide', () => {
     context.project = await createTestProject({
       name: 'Bolide',
       path: path.join(__dirname, '../index.ts'),
-      modules: [DepositPoolsBnb],
+      modules: [new DepositPoolsBase('binance')],
       contracts: {},
     });
   });
