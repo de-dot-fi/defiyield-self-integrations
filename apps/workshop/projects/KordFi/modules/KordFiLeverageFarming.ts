@@ -45,7 +45,6 @@ export const KordFiLeverageFarming: ModuleDefinitionInterface = {
   },
 
   async fetchUserPositions(ctx) {
-    const { BigNumber } = ctx;
     const userPositions: UserPosition[] = [];
 
     const response = await makeKordFiApiRequest<KordFiLendingUserInfo>(
@@ -103,18 +102,26 @@ const calculateUserPosition = (
     userInfo[`${pool.extra?.prefix as KordFiPrefix}LbShares`],
   ).multipliedBy(externalInfo.lbXtzRate);
 
-  if (userBorrowed.gt(0) && borrowToken) {
+  if ((userBorrowed.gt(0) || userSupplied.gt(0)) && borrowToken && supplyToken) {
+    const borrowValue = normalizeDecimals(
+      ctx,
+      userBorrowed,
+      borrowToken.decimals,
+      true,
+    ).multipliedBy(borrowToken.price ?? 0);
+    const supplyValue = userSupplied.multipliedBy(supplyToken.price ?? 0);
+    const debtRatio = new ctx.BigNumber(borrowValue).dividedBy(supplyValue).toNumber();
+
     userPosition.borrowed = [
       {
         token: borrowToken,
         apr: borrowApr,
         tvl: borrowTvl,
         balance: borrowedAmount.toNumber(),
+        debtRatio: Math.max(debtRatio, 0),
       },
     ];
-  }
 
-  if (userSupplied.gt(0) && supplyToken) {
     userPosition.supplied = [
       {
         token: supplyToken,
