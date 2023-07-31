@@ -114,7 +114,7 @@ export type PoolBorrowed = { token: Token; tvl?: number; apr?: RewardRate };
 
 export type UserSupplied = PoolSupplied & { balance: number; isCollateral?: boolean };
 export type UserRewarded = PoolRewarded & { balance: number };
-export type UserBorrowed = PoolBorrowed & { balance: number };
+export type UserBorrowed = PoolBorrowed & { balance: number; debtRatio?: number };
 
 type GenericPool<TSupplied, TRewarded, TBorrowed> = {
   id: string;
