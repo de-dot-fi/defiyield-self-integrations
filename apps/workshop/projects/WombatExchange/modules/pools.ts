@@ -34,11 +34,11 @@ async function processAsset(
   pool: DefiyieldPool,
   positions: UserPosition[],
 ) {
-  const { user, ethcall, ethcallProvider, ethers } = context;
+  const { user, ethcall, ethcallProvider, ethers, BigNumber } = context;
   const lpTokenContract = new ethcall.Contract(asset.id, pairAbi);
-  const [balance] = (await ethcallProvider.all([lpTokenContract.balanceOf(user)])) as [BigNumber];
+  const [balance] = await ethcallProvider.all<typeof BigNumber>([lpTokenContract.balanceOf(user)]);
 
-  if (balance.gt(BigNumber.from(0))) {
+  if (new BigNumber(balance.toString()).toNumber() > 0) {
     const supply = pool.supplied
       ? pool.supplied.find(
           (t) => t.token.address.toLowerCase() === asset.underlyingToken.id.toLowerCase(),
@@ -60,7 +60,7 @@ async function processAsset(
       supplied: [
         {
           token,
-          balance: parseFloat(ethers.utils.formatUnits(balance, 18)),
+          balance: parseFloat(ethers.utils.formatUnits(balance.toString(), 18)),
         } as UserSupplied,
       ],
     } as UserPosition);
@@ -165,7 +165,6 @@ export function getPools(chain: SupportedChain): ModuleDefinitionInterface {
      */
     async fetchUserPositions(context): Promise<(void | UserPosition)[]> {
       const positions: UserPosition[] = [];
-      const { pools, user, ethcall, ethcallProvider, ethers } = context;
 
       const poolsData = await getPoolsData(context, chain);
 
