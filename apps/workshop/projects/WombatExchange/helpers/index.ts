@@ -1,5 +1,5 @@
 import { Context } from '@defiyield/sandbox';
-import { poolsQuery, tokensQuery } from './queries';
+import { assetsQuery, poolsQuery, tokensQuery } from './queries';
 
 type ApiEndpoints = {
   [key: string]: string;
@@ -37,7 +37,7 @@ export interface Pool {
   assets: Asset[];
 }
 
-interface Asset {
+export interface Asset {
   id: string;
   symbol: string;
   poolAddress: string;
@@ -48,7 +48,12 @@ interface Asset {
 
 interface PoolResponse {
   data: {
-    pools: [];
+    pools: Pool[];
+  };
+}
+
+interface AssetResponse {
+  data: {
     assets: Asset[];
   };
 }
@@ -77,6 +82,18 @@ export async function getPoolsData(context: Context, chain: string): Promise<Poo
     });
     const pools: Pool[] = response.data.data.pools;
     return pools;
+  }
+
+  return [];
+}
+
+export async function getAssetsData(context: Context, chain: string): Promise<Asset[]> {
+  if (chain in apiEndpoints) {
+    const response = await context.axios.post<AssetResponse>(apiEndpoints[chain], {
+      query: assetsQuery,
+    });
+    const assets: Asset[] = response.data.data.assets;
+    return assets;
   }
 
   return [];

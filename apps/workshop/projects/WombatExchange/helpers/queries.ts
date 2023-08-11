@@ -30,3 +30,21 @@ export const poolsQuery = `
       }
     }
 `;
+
+export const assetsQuery = `
+    query {
+      assets {
+        id
+        symbol
+        poolAddress
+        underlyingToken {
+          id
+          name
+          decimals
+          price
+        }
+        womBaseApr
+        tvlUSD
+      }
+    }
+`;
