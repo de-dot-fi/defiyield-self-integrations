@@ -182,7 +182,7 @@ const StakeBalancerTokens: ModuleDefinitionInterface = {
         supplied: [
           {
             token: token,
-            balance: Number(balance.toString()) / 10 ** token.decimals,
+            balance: Number(balance?.toString()) / 10 ** token.decimals,
           },
         ],
         rewarded: pool.rewarded?.map((reward, idx) => {
