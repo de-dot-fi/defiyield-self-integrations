@@ -15,17 +15,17 @@ const project: ProjectDefinitionInterface = {
     github: 'https://github.com/symbiosis-finance',
   },
   modules: [
-    veSIS('ethereum'),
-    veSIS('binance'),
+    // veSIS('ethereum'),
+    // veSIS('binance'),
     getPool('ethereum'),
     getPool('binance'),
     getPool('avalanche'),
     getPool('polygon'),
     getPool('boba'),
     getPool('kava-evm'),
-    lpFarm('ethereum'),
-    lpFarm('arbitrum'),
-    lpFarm('binance'),
+    // lpFarm('ethereum'),
+    // lpFarm('arbitrum'),
+    // lpFarm('binance'),
   ],
 };
 

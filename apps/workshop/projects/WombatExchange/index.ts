@@ -1,5 +1,5 @@
 import type { ProjectDefinitionInterface } from '@defiyield/sandbox';
-import { getPool } from './modules/pools';
+import { getPools } from './modules/pools';
 
 const project: ProjectDefinitionInterface = {
   name: 'Wombat Exchange',
@@ -12,7 +12,7 @@ const project: ProjectDefinitionInterface = {
     twitter: 'https://twitter.com/WombatExchange',
     github: 'https://github.com/wombat-exchange/',
   },
-  modules: [getPool('binance')],
+  modules: [getPools('ethereum'), getPools('binance'), getPools('arbitrum')],
 };
 
 export default project;
