@@ -1,4 +1,4 @@
-import { Context, Pool, Token as DefiYeildToken } from '@defiyield/sandbox';
+import { Context } from '@defiyield/sandbox';
 import { poolsQuery, tokensQuery } from './queries';
 
 type ApiEndpoints = {
@@ -32,6 +32,11 @@ interface UnderlyingToken {
   price: string;
 }
 
+export interface Pool {
+  id: string;
+  assets: Asset[];
+}
+
 interface Asset {
   id: string;
   symbol: string;
@@ -43,6 +48,7 @@ interface Asset {
 
 interface PoolResponse {
   data: {
+    pools: [];
     assets: Asset[];
   };
 }
@@ -64,34 +70,13 @@ export async function getTokensData(context: Context, chain: string): Promise<st
   return result;
 }
 
-export async function getAssetsData(context: Context, chain: string): Promise<Asset[]> {
-  // const pools: Pool[] = [];
-
+export async function getPoolsData(context: Context, chain: string): Promise<Pool[]> {
   if (chain in apiEndpoints) {
     const response = await context.axios.post<PoolResponse>(apiEndpoints[chain], {
       query: poolsQuery,
     });
-    const assets: Asset[] = response.data.data.assets;
-    return assets;
-
-    // assets.map((a) => {
-    //   pools.push({
-    //     id: a.id,
-    //     supplied: [
-    //       {
-    //         token: {
-    //             address: a.underlyingToken.id,
-    //             displayName: a.underlyingToken.name,
-    //             decimals: Number(a.underlyingToken.decimals),
-    //             price: Number(a.underlyingToken.price),
-    //             underlying: [],
-    //         } as DefiYeildToken,
-    //         tvl: Number(a.tvlUSD),
-    //         apr: { year: Number(a.womBaseApr) },
-    //       },
-    //     ],
-    //   });
-    // });
+    const pools: Pool[] = response.data.data.pools;
+    return pools;
   }
 
   return [];

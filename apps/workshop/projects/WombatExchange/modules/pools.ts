@@ -1,6 +1,6 @@
 import type { ModuleDefinitionInterface } from '@defiyield/sandbox';
-import { Address, Pool, SupportedChain, Token } from '@defiyield/sandbox';
-import { getTokensData, getAssetsData } from '../helpers/index';
+import { Address, Pool as DefiyieldPool, SupportedChain, Token } from '@defiyield/sandbox';
+import { getTokensData, getPoolsData, Pool } from '../helpers/index';
 export function getPools(chain: SupportedChain): ModuleDefinitionInterface {
   return {
     name: `Wombat pool: ${chain}`,
@@ -22,36 +22,44 @@ export function getPools(chain: SupportedChain): ModuleDefinitionInterface {
      * @param context
      * @returns Pool[]
      */
-    async fetchPools(context): Promise<Pool[]> {
+    async fetchPools(context): Promise<DefiyieldPool[]> {
       const { tokens } = context;
-      const pools: Pool[] = [];
+      const pools: DefiyieldPool[] = [];
 
-      const assets = await getAssetsData(context, chain);
+      const poolsData = await getPoolsData(context, chain);
 
-      assets.map((a) => {
-        const _token = tokens.find(
-          (t) => t.address.toLowerCase() === a.underlyingToken.id.toLowerCase(),
-        );
-        const token =
-          _token ??
-          ({
-            address: a.underlyingToken.id,
-            displayName: a.underlyingToken.name,
-            decimals: Number(a.underlyingToken.decimals),
-            price: Number(a.underlyingToken.price),
-            underlying: [],
-          } as Token);
+      poolsData.map((p: Pool) => {
+        const assets = p.assets;
+        const suppliedTokens = [];
 
-        pools.push({
-          id: a.id,
-          supplied: [
-            {
+        if (assets.length) {
+          for (let i = 0; i < assets.length; i++) {
+            const asset = assets[i];
+            const _token = tokens.find(
+              (t: Token) => t.address.toLowerCase() === asset.underlyingToken.id.toLowerCase(),
+            );
+            const token =
+              _token ??
+              ({
+                address: asset.underlyingToken.id,
+                displayName: asset.underlyingToken.name,
+                decimals: Number(asset.underlyingToken.decimals),
+                price: Number(asset.underlyingToken.price),
+                underlying: [],
+              } as Token);
+
+            suppliedTokens.push({
               token,
-              tvl: Number(a.tvlUSD),
-              apr: { year: Number(a.womBaseApr) },
-            },
-          ],
-        });
+              tvl: Number(asset.tvlUSD),
+              apr: { year: Number(asset.womBaseApr) },
+            });
+          }
+
+          pools.push({
+            id: p.id,
+            supplied: suppliedTokens,
+          });
+        }
       });
 
       return pools;

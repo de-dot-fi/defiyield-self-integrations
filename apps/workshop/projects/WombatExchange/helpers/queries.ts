@@ -12,18 +12,21 @@ export const tokensQuery = `
 
 export const poolsQuery = `
     query {
-      assets {
+      pools {
         id
-        symbol
-        poolAddress
-        underlyingToken {
+        assets {
           id
-          name
-          decimals
-          price
+          symbol
+          poolAddress
+          underlyingToken {
+            id
+            name
+            decimals
+            price
+          }
+          womBaseApr
+          tvlUSD
         }
-        womBaseApr
-        tvlUSD
       }
     }
 `;
