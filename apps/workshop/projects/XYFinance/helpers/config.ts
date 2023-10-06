@@ -11,9 +11,9 @@ export type YPool = {
 export type YPoolTokenSymbol = 'USDC' | 'USDT' | 'ETH';
 
 type YPools = {
-  USDC: Record<SupportedChain, YPool>;
-  USDT: Record<SupportedChain, YPool>;
-  ETH: Record<SupportedChain, YPool>;
+  USDC: Partial<Record<SupportedChain, YPool>>;
+  USDT: Partial<Record<SupportedChain, YPool>>;
+  ETH: Partial<Record<SupportedChain, YPool>>;
 };
 
 export const YPOOLS: YPools = {
@@ -53,13 +53,6 @@ export const YPOOLS: YPools = {
       poolIndex: 4,
       chainId: 250,
     },
-    kucoin: {
-      ypoolToken: '0x980a5AfEf3D17aD98635F6C5aebCBAedEd3c3430',
-      xyWrappedToken: '0x3D2d1ce29B8bC997733D318170B68E63150C6586',
-      ypoolVault: '0xa274931559Fb054bF60e0C44355D3558bB8bC2E6',
-      poolIndex: 5,
-      chainId: 321,
-    },
     arbitrum: {
       ypoolToken: '0xFF970A61A04b1cA14834A43f5dE4533eBDDB5CC8',
       xyWrappedToken: '0x1e4992E1Be86c9d8ed7dcBFcF3665FE568dE98Ab',
@@ -80,20 +73,6 @@ export const YPOOLS: YPools = {
       ypoolVault: '0x1e4992E1Be86c9d8ed7dcBFcF3665FE568dE98Ab',
       poolIndex: 8,
       chainId: 10,
-    },
-    moonriver: {
-      ypoolToken: '0xE3F5a90F9cb311505cd691a46596599aA1A0AD7D',
-      xyWrappedToken: '0x1e4992E1Be86c9d8ed7dcBFcF3665FE568dE98Ab',
-      ypoolVault: '0x680ab543ACd0e52035E9d409014dd57861FA1eDf',
-      poolIndex: 9,
-      chainId: 1285,
-    },
-    klaytn: {
-      ypoolToken: '0x754288077D0fF82AF7a5317C7CB8c444D421d103',
-      xyWrappedToken: '0xD236639F5B00BC6711aC799bac5AceaF788b2Aa3',
-      ypoolVault: '0xB238d4339a44f93aBCF4071A9bB0f55D2403Fd84',
-      poolIndex: 10,
-      chainId: 1285,
     },
     zksync_era: {
       ypoolToken: '0x3355df6D4c9C3035724Fd0e3914dE96A5a83aaf4',
@@ -143,13 +122,6 @@ export const YPOOLS: YPools = {
       poolIndex: 4,
       chainId: 250,
     },
-    kucoin: {
-      ypoolToken: '0x0039f574eE5cC39bdD162E9A88e3EB1f111bAF48',
-      xyWrappedToken: '0x3689D3B912d4D73FfcAad3a80861e7caF2d4F049',
-      ypoolVault: '0xF526EFc174b512e66243Cb52524C1BE720144e8d',
-      poolIndex: 5,
-      chainId: 321,
-    },
     arbitrum: {
       ypoolToken: '0xFd086bC7CD5C481DCC9C85ebE478A1C0b69FCbb9',
       xyWrappedToken: '0xA5Cb30E5d30A9843B6481fFd8D8D35DDED3a3251',
@@ -170,20 +142,6 @@ export const YPOOLS: YPools = {
       ypoolVault: '0xF526EFc174b512e66243Cb52524C1BE720144e8d',
       poolIndex: 8,
       chainId: 10,
-    },
-    moonriver: {
-      ypoolToken: '0xB44a9B6905aF7c801311e8F4E76932ee959c663C',
-      xyWrappedToken: '0x3689D3B912d4D73FfcAad3a80861e7caF2d4F049',
-      ypoolVault: '0xF526EFc174b512e66243Cb52524C1BE720144e8d',
-      poolIndex: 9,
-      chainId: 1285,
-    },
-    klaytn: {
-      ypoolToken: '0xceE8FAF64bB97a73bb51E115Aa89C17FfA8dD167',
-      xyWrappedToken: '0x3689D3B912d4D73FfcAad3a80861e7caF2d4F049',
-      ypoolVault: '0xF526EFc174b512e66243Cb52524C1BE720144e8d',
-      poolIndex: 10,
-      chainId: 1285,
     },
     // thunderCore
     // astar

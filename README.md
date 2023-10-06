@@ -204,27 +204,17 @@ export interface ModuleDefinitionInterface {
 Full list: [SupportedChain](apps/sandbox/src/types/module.ts)
 
 - **Arbitrum**: `arbitrum`
-- **Aurora**: `aurora`
 - **Avalanche**: `avalanche`
 - **Binance**: `binance`
-- **Boba**: `boba`
 - **Celo**: `celo`
 - **Cronos**: `cronos`
 - **Ethereum**: `ethereum`
 - **Fantom**: `fantom`
-- **Fuse**: `fuse`
 - **Gnosis**: `gnosis`
-- **Harmony**: `harmony`
-- **Heco**: `heco`
 - **Iotex**: `iotex`
 - **Kava**: `kava`
-- **Klaytn**: `klaytn`
-- **Kucoin**: `kucoin`
 - **Metis**: `metis`
-- **Milkomedia**: `milkomedia`
 - **Moonbeam**: `moonbeam`
-- **Moonriver**: `moonriver`
-- **Okx**: `okx`
 - **Optimism**: `optimism`
 - **Polygon**: `polygon`
 - **Solana**: `solana`

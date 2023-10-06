@@ -21,8 +21,6 @@ const project: ProjectDefinitionInterface = {
     getPool('binance'),
     getPool('avalanche'),
     getPool('polygon'),
-    getPool('boba'),
-    getPool('kava-evm'),
     lpFarm('ethereum'),
     lpFarm('arbitrum'),
     lpFarm('binance'),
