@@ -31,16 +31,6 @@ export const POOLS: Pools = {
     poolIndex: 3,
     chainId: 137,
   },
-  boba: {
-    underlyingStable: '0x66a2A913e447d6b4BF33EFbec43aAeF87890FBbc',
-    poolIndex: 5,
-    chainId: 288,
-  },
-  'kava-evm': {
-    underlyingStable: '0xfA9343C3897324496A05fC75abeD6bAC29f8A40f',
-    poolIndex: 9,
-    chainId: 2222,
-  },
 };
 
 export type VeConfig = {

@@ -18,53 +18,17 @@ export class Provider extends EthcallProvider {
     const ZK_SYNC_ERA_MULTICALL_3_ADDRESS = '0xf6c80f1645c22e30abb02389515c5ac88586681e';
 
     const addressMap3: Record<number, Multicall> = {
-      [NetworkId.kava_evm]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 3661165,
-      },
       [NetworkId.zksync_era]: {
         address: ZK_SYNC_ERA_MULTICALL_3_ADDRESS,
         block: 1951111,
-      },
-      [NetworkId.near]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 62907816,
-      },
-      [NetworkId.boba]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 446859,
-      },
-      [NetworkId.fuse]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 16146628,
-      },
-      [NetworkId.heco]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 14413501,
       },
       [NetworkId.iotex]: {
         address: MULTICALL_3_ADDRESS,
         block: 22163670,
       },
-      [NetworkId.klay]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 96002415,
-      },
-      [NetworkId.kcc]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 11760430,
-      },
-      [NetworkId.milk_c]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 4377424,
-      },
       [NetworkId.metis]: {
         address: MULTICALL_3_ADDRESS,
         block: 2338552,
-      },
-      [NetworkId.okex]: {
-        address: MULTICALL_3_ADDRESS,
-        block: 10364792,
       },
       [NetworkId.cro]: {
         address: MULTICALL_3_ADDRESS,
