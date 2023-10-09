@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+## [1.11.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.10.0...v1.11.0) (2023-10-09)
+
+
+### Features
+
+* add Single Finance LYF ([#61](https://github.com/defiyield-app/defiyield-self-integrations/issues/61)) ([f563f33](https://github.com/defiyield-app/defiyield-self-integrations/commit/f563f338570b1344e82b19f2c1ec3730d5a7d84f))
+* **project:** debtRatio for Kord.Fi ([#63](https://github.com/defiyield-app/defiyield-self-integrations/issues/63)) ([1ae028c](https://github.com/defiyield-app/defiyield-self-integrations/commit/1ae028ca7b12060ad61af823b2b4333501cc64a1))
+* **sandbox,workshop:** chains list update ([#74](https://github.com/defiyield-app/defiyield-self-integrations/issues/74)) ([ae12638](https://github.com/defiyield-app/defiyield-self-integrations/commit/ae12638806701f68d3f1ac783d3552020b12ab37))
+
+
+### Bug Fixes
+
+* **project:** AuraFinance. toString property of undefined [#64](https://github.com/defiyield-app/defiyield-self-integrations/issues/64) ([207f500](https://github.com/defiyield-app/defiyield-self-integrations/commit/207f50065d5159ab81608556159b9e2d67a05d48))
+* **project:** bolide deposit pools module initialization ([#62](https://github.com/defiyield-app/defiyield-self-integrations/issues/62)) ([5965606](https://github.com/defiyield-app/defiyield-self-integrations/commit/596560622df334cb7cece695cc22c2685526ccdf))
+
 ## [1.10.0](https://github.com/defiyield-app/defiyield-self-integrations/compare/v1.9.0...v1.10.0) (2023-07-20)
 
 
